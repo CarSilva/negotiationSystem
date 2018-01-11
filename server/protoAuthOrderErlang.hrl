@@ -10,17 +10,17 @@
 -ifndef('AUTH_PB_H').
 -define('AUTH_PB_H', true).
 -record('Auth',
-        {name                   :: iolist(),        % = 1
-         password               :: iolist()         % = 2
+        {name = []              :: iolist(),        % = 1
+         password = []          :: iolist()         % = 2
         }).
 -endif.
 
 -ifndef('ORDER_PB_H').
 -define('ORDER_PB_H', true).
 -record('Order',
-        {company                :: iolist(),        % = 1
-         quantity               :: integer(),       % = 2, 32 bits
-         price_min_max          :: integer()        % = 3, 32 bits
+        {company = []           :: iolist(),        % = 1
+         quantity = 0           :: integer(),       % = 2, 32 bits
+         price_min_max = 0      :: integer()        % = 3, 32 bits
         }).
 -endif.
 

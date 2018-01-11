@@ -1,13 +1,13 @@
-syntax = "proto2";
+syntax = "proto3";
 
 package server;
 
 message Auth {
-  required string name = 1;
-  required string password = 2;
+  string name = 1;
+  string password = 2;
 }
 message Order {
-  required string company = 1;
-  required int32 quantity = 2;
-  required int32 price_min_max = 3;
+  string company = 1;
+  int32 quantity = 2;
+  int32 price_min_max = 3;
 }

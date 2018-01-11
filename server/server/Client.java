@@ -17,16 +17,16 @@ public class Client {
     String host = args[0];
     int port = Integer.parseInt(args[1]);
     Socket s = new Socket(host, port);
-    CodedInputStream cis = CodedInputStream.newInstance(s.getInputStream());
-    CodedOutputStream cos = CodedOutputStream.newInstance(s.getOutputStream());
+    InputStream is = s.getInputStream();
+    OutputStream os = s.getOutputStream();
     System.out.println("Username:");
     String username = System.console().readLine();
     System.out.println("Password:");
     String pwd = System.console().readLine();
     Auth auth = createAuth(username, pwd);
     byte[] ba = auth.toByteArray();
-    cos.writeRawBytes(ba);
-    cos.flush();
+    auth.writeTo(os);
+    os.flush();
     /*
     while (true) {
       System.out.println("Len: " + ba.length);

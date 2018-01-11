@@ -19,29 +19,21 @@ public final class ProtoAuthOrder {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string name = 1;</code>
-     */
-    boolean hasName();
-    /**
-     * <code>required string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     java.lang.String getName();
     /**
-     * <code>required string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>required string password = 2;</code>
-     */
-    boolean hasPassword();
-    /**
-     * <code>required string password = 2;</code>
+     * <code>string password = 2;</code>
      */
     java.lang.String getPassword();
     /**
-     * <code>required string password = 2;</code>
+     * <code>string password = 2;</code>
      */
     com.google.protobuf.ByteString
         getPasswordBytes();
@@ -85,22 +77,22 @@ public final class ProtoAuthOrder {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(
+              if (!parseUnknownFieldProto3(
                   input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              name_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
               break;
             }
             case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              password_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              password_ = s;
               break;
             }
           }
@@ -127,17 +119,10 @@ public final class ProtoAuthOrder {
               server.ProtoAuthOrder.Auth.class, server.ProtoAuthOrder.Auth.Builder.class);
     }
 
-    private int bitField0_;
     public static final int NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object name_;
     /**
-     * <code>required string name = 1;</code>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -147,14 +132,12 @@ public final class ProtoAuthOrder {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       }
     }
     /**
-     * <code>required string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -173,13 +156,7 @@ public final class ProtoAuthOrder {
     public static final int PASSWORD_FIELD_NUMBER = 2;
     private volatile java.lang.Object password_;
     /**
-     * <code>required string password = 2;</code>
-     */
-    public boolean hasPassword() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required string password = 2;</code>
+     * <code>string password = 2;</code>
      */
     public java.lang.String getPassword() {
       java.lang.Object ref = password_;
@@ -189,14 +166,12 @@ public final class ProtoAuthOrder {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          password_ = s;
-        }
+        password_ = s;
         return s;
       }
     }
     /**
-     * <code>required string password = 2;</code>
+     * <code>string password = 2;</code>
      */
     public com.google.protobuf.ByteString
         getPasswordBytes() {
@@ -218,24 +193,16 @@ public final class ProtoAuthOrder {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPassword()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (!getPasswordBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, password_);
       }
       unknownFields.writeTo(output);
@@ -246,10 +213,10 @@ public final class ProtoAuthOrder {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (!getPasswordBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, password_);
       }
       size += unknownFields.getSerializedSize();
@@ -268,16 +235,10 @@ public final class ProtoAuthOrder {
       server.ProtoAuthOrder.Auth other = (server.ProtoAuthOrder.Auth) obj;
 
       boolean result = true;
-      result = result && (hasName() == other.hasName());
-      if (hasName()) {
-        result = result && getName()
-            .equals(other.getName());
-      }
-      result = result && (hasPassword() == other.hasPassword());
-      if (hasPassword()) {
-        result = result && getPassword()
-            .equals(other.getPassword());
-      }
+      result = result && getName()
+          .equals(other.getName());
+      result = result && getPassword()
+          .equals(other.getPassword());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -289,14 +250,10 @@ public final class ProtoAuthOrder {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasName()) {
-        hash = (37 * hash) + NAME_FIELD_NUMBER;
-        hash = (53 * hash) + getName().hashCode();
-      }
-      if (hasPassword()) {
-        hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
-        hash = (53 * hash) + getPassword().hashCode();
-      }
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
+      hash = (53 * hash) + getPassword().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -427,9 +384,9 @@ public final class ProtoAuthOrder {
       public Builder clear() {
         super.clear();
         name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         password_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         return this;
       }
 
@@ -452,17 +409,8 @@ public final class ProtoAuthOrder {
 
       public server.ProtoAuthOrder.Auth buildPartial() {
         server.ProtoAuthOrder.Auth result = new server.ProtoAuthOrder.Auth(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.name_ = name_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.password_ = password_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -504,13 +452,11 @@ public final class ProtoAuthOrder {
 
       public Builder mergeFrom(server.ProtoAuthOrder.Auth other) {
         if (other == server.ProtoAuthOrder.Auth.getDefaultInstance()) return this;
-        if (other.hasName()) {
-          bitField0_ |= 0x00000001;
+        if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
         }
-        if (other.hasPassword()) {
-          bitField0_ |= 0x00000002;
+        if (!other.getPassword().isEmpty()) {
           password_ = other.password_;
           onChanged();
         }
@@ -520,12 +466,6 @@ public final class ProtoAuthOrder {
       }
 
       public final boolean isInitialized() {
-        if (!hasName()) {
-          return false;
-        }
-        if (!hasPassword()) {
-          return false;
-        }
         return true;
       }
 
@@ -546,17 +486,10 @@ public final class ProtoAuthOrder {
         }
         return this;
       }
-      private int bitField0_;
 
       private java.lang.Object name_ = "";
       /**
-       * <code>required string name = 1;</code>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required string name = 1;</code>
+       * <code>string name = 1;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -564,16 +497,14 @@ public final class ProtoAuthOrder {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
+          name_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>string name = 1;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -589,36 +520,37 @@ public final class ProtoAuthOrder {
         }
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>string name = 1;</code>
        */
       public Builder setName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
         name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>string name = 1;</code>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>string name = 1;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+        
         name_ = value;
         onChanged();
         return this;
@@ -626,13 +558,7 @@ public final class ProtoAuthOrder {
 
       private java.lang.Object password_ = "";
       /**
-       * <code>required string password = 2;</code>
-       */
-      public boolean hasPassword() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required string password = 2;</code>
+       * <code>string password = 2;</code>
        */
       public java.lang.String getPassword() {
         java.lang.Object ref = password_;
@@ -640,16 +566,14 @@ public final class ProtoAuthOrder {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            password_ = s;
-          }
+          password_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>required string password = 2;</code>
+       * <code>string password = 2;</code>
        */
       public com.google.protobuf.ByteString
           getPasswordBytes() {
@@ -665,43 +589,44 @@ public final class ProtoAuthOrder {
         }
       }
       /**
-       * <code>required string password = 2;</code>
+       * <code>string password = 2;</code>
        */
       public Builder setPassword(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  
         password_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string password = 2;</code>
+       * <code>string password = 2;</code>
        */
       public Builder clearPassword() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         password_ = getDefaultInstance().getPassword();
         onChanged();
         return this;
       }
       /**
-       * <code>required string password = 2;</code>
+       * <code>string password = 2;</code>
        */
       public Builder setPasswordBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  checkByteStringIsUtf8(value);
+        
         password_ = value;
         onChanged();
         return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
+        return super.setUnknownFieldsProto3(unknownFields);
       }
 
       public final Builder mergeUnknownFields(
@@ -723,7 +648,7 @@ public final class ProtoAuthOrder {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Auth>
+    private static final com.google.protobuf.Parser<Auth>
         PARSER = new com.google.protobuf.AbstractParser<Auth>() {
       public Auth parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -753,34 +678,22 @@ public final class ProtoAuthOrder {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string company = 1;</code>
-     */
-    boolean hasCompany();
-    /**
-     * <code>required string company = 1;</code>
+     * <code>string company = 1;</code>
      */
     java.lang.String getCompany();
     /**
-     * <code>required string company = 1;</code>
+     * <code>string company = 1;</code>
      */
     com.google.protobuf.ByteString
         getCompanyBytes();
 
     /**
-     * <code>required int32 quantity = 2;</code>
-     */
-    boolean hasQuantity();
-    /**
-     * <code>required int32 quantity = 2;</code>
+     * <code>int32 quantity = 2;</code>
      */
     int getQuantity();
 
     /**
-     * <code>required int32 price_min_max = 3;</code>
-     */
-    boolean hasPriceMinMax();
-    /**
-     * <code>required int32 price_min_max = 3;</code>
+     * <code>int32 price_min_max = 3;</code>
      */
     int getPriceMinMax();
   }
@@ -824,25 +737,25 @@ public final class ProtoAuthOrder {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(
+              if (!parseUnknownFieldProto3(
                   input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              company_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              company_ = s;
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+
               quantity_ = input.readInt32();
               break;
             }
             case 24: {
-              bitField0_ |= 0x00000004;
+
               priceMinMax_ = input.readInt32();
               break;
             }
@@ -870,17 +783,10 @@ public final class ProtoAuthOrder {
               server.ProtoAuthOrder.Order.class, server.ProtoAuthOrder.Order.Builder.class);
     }
 
-    private int bitField0_;
     public static final int COMPANY_FIELD_NUMBER = 1;
     private volatile java.lang.Object company_;
     /**
-     * <code>required string company = 1;</code>
-     */
-    public boolean hasCompany() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string company = 1;</code>
+     * <code>string company = 1;</code>
      */
     public java.lang.String getCompany() {
       java.lang.Object ref = company_;
@@ -890,14 +796,12 @@ public final class ProtoAuthOrder {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          company_ = s;
-        }
+        company_ = s;
         return s;
       }
     }
     /**
-     * <code>required string company = 1;</code>
+     * <code>string company = 1;</code>
      */
     public com.google.protobuf.ByteString
         getCompanyBytes() {
@@ -916,13 +820,7 @@ public final class ProtoAuthOrder {
     public static final int QUANTITY_FIELD_NUMBER = 2;
     private int quantity_;
     /**
-     * <code>required int32 quantity = 2;</code>
-     */
-    public boolean hasQuantity() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required int32 quantity = 2;</code>
+     * <code>int32 quantity = 2;</code>
      */
     public int getQuantity() {
       return quantity_;
@@ -931,13 +829,7 @@ public final class ProtoAuthOrder {
     public static final int PRICE_MIN_MAX_FIELD_NUMBER = 3;
     private int priceMinMax_;
     /**
-     * <code>required int32 price_min_max = 3;</code>
-     */
-    public boolean hasPriceMinMax() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required int32 price_min_max = 3;</code>
+     * <code>int32 price_min_max = 3;</code>
      */
     public int getPriceMinMax() {
       return priceMinMax_;
@@ -949,31 +841,19 @@ public final class ProtoAuthOrder {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasCompany()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasQuantity()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPriceMinMax()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getCompanyBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, company_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (quantity_ != 0) {
         output.writeInt32(2, quantity_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (priceMinMax_ != 0) {
         output.writeInt32(3, priceMinMax_);
       }
       unknownFields.writeTo(output);
@@ -984,14 +864,14 @@ public final class ProtoAuthOrder {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getCompanyBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, company_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (quantity_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, quantity_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (priceMinMax_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, priceMinMax_);
       }
@@ -1011,21 +891,12 @@ public final class ProtoAuthOrder {
       server.ProtoAuthOrder.Order other = (server.ProtoAuthOrder.Order) obj;
 
       boolean result = true;
-      result = result && (hasCompany() == other.hasCompany());
-      if (hasCompany()) {
-        result = result && getCompany()
-            .equals(other.getCompany());
-      }
-      result = result && (hasQuantity() == other.hasQuantity());
-      if (hasQuantity()) {
-        result = result && (getQuantity()
-            == other.getQuantity());
-      }
-      result = result && (hasPriceMinMax() == other.hasPriceMinMax());
-      if (hasPriceMinMax()) {
-        result = result && (getPriceMinMax()
-            == other.getPriceMinMax());
-      }
+      result = result && getCompany()
+          .equals(other.getCompany());
+      result = result && (getQuantity()
+          == other.getQuantity());
+      result = result && (getPriceMinMax()
+          == other.getPriceMinMax());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -1037,18 +908,12 @@ public final class ProtoAuthOrder {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasCompany()) {
-        hash = (37 * hash) + COMPANY_FIELD_NUMBER;
-        hash = (53 * hash) + getCompany().hashCode();
-      }
-      if (hasQuantity()) {
-        hash = (37 * hash) + QUANTITY_FIELD_NUMBER;
-        hash = (53 * hash) + getQuantity();
-      }
-      if (hasPriceMinMax()) {
-        hash = (37 * hash) + PRICE_MIN_MAX_FIELD_NUMBER;
-        hash = (53 * hash) + getPriceMinMax();
-      }
+      hash = (37 * hash) + COMPANY_FIELD_NUMBER;
+      hash = (53 * hash) + getCompany().hashCode();
+      hash = (37 * hash) + QUANTITY_FIELD_NUMBER;
+      hash = (53 * hash) + getQuantity();
+      hash = (37 * hash) + PRICE_MIN_MAX_FIELD_NUMBER;
+      hash = (53 * hash) + getPriceMinMax();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1179,11 +1044,11 @@ public final class ProtoAuthOrder {
       public Builder clear() {
         super.clear();
         company_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         quantity_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         priceMinMax_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         return this;
       }
 
@@ -1206,21 +1071,9 @@ public final class ProtoAuthOrder {
 
       public server.ProtoAuthOrder.Order buildPartial() {
         server.ProtoAuthOrder.Order result = new server.ProtoAuthOrder.Order(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.company_ = company_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.quantity_ = quantity_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.priceMinMax_ = priceMinMax_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -1262,15 +1115,14 @@ public final class ProtoAuthOrder {
 
       public Builder mergeFrom(server.ProtoAuthOrder.Order other) {
         if (other == server.ProtoAuthOrder.Order.getDefaultInstance()) return this;
-        if (other.hasCompany()) {
-          bitField0_ |= 0x00000001;
+        if (!other.getCompany().isEmpty()) {
           company_ = other.company_;
           onChanged();
         }
-        if (other.hasQuantity()) {
+        if (other.getQuantity() != 0) {
           setQuantity(other.getQuantity());
         }
-        if (other.hasPriceMinMax()) {
+        if (other.getPriceMinMax() != 0) {
           setPriceMinMax(other.getPriceMinMax());
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -1279,15 +1131,6 @@ public final class ProtoAuthOrder {
       }
 
       public final boolean isInitialized() {
-        if (!hasCompany()) {
-          return false;
-        }
-        if (!hasQuantity()) {
-          return false;
-        }
-        if (!hasPriceMinMax()) {
-          return false;
-        }
         return true;
       }
 
@@ -1308,17 +1151,10 @@ public final class ProtoAuthOrder {
         }
         return this;
       }
-      private int bitField0_;
 
       private java.lang.Object company_ = "";
       /**
-       * <code>required string company = 1;</code>
-       */
-      public boolean hasCompany() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required string company = 1;</code>
+       * <code>string company = 1;</code>
        */
       public java.lang.String getCompany() {
         java.lang.Object ref = company_;
@@ -1326,16 +1162,14 @@ public final class ProtoAuthOrder {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            company_ = s;
-          }
+          company_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>required string company = 1;</code>
+       * <code>string company = 1;</code>
        */
       public com.google.protobuf.ByteString
           getCompanyBytes() {
@@ -1351,36 +1185,37 @@ public final class ProtoAuthOrder {
         }
       }
       /**
-       * <code>required string company = 1;</code>
+       * <code>string company = 1;</code>
        */
       public Builder setCompany(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
         company_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string company = 1;</code>
+       * <code>string company = 1;</code>
        */
       public Builder clearCompany() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         company_ = getDefaultInstance().getCompany();
         onChanged();
         return this;
       }
       /**
-       * <code>required string company = 1;</code>
+       * <code>string company = 1;</code>
        */
       public Builder setCompanyBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+        
         company_ = value;
         onChanged();
         return this;
@@ -1388,31 +1223,25 @@ public final class ProtoAuthOrder {
 
       private int quantity_ ;
       /**
-       * <code>required int32 quantity = 2;</code>
-       */
-      public boolean hasQuantity() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required int32 quantity = 2;</code>
+       * <code>int32 quantity = 2;</code>
        */
       public int getQuantity() {
         return quantity_;
       }
       /**
-       * <code>required int32 quantity = 2;</code>
+       * <code>int32 quantity = 2;</code>
        */
       public Builder setQuantity(int value) {
-        bitField0_ |= 0x00000002;
+        
         quantity_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 quantity = 2;</code>
+       * <code>int32 quantity = 2;</code>
        */
       public Builder clearQuantity() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         quantity_ = 0;
         onChanged();
         return this;
@@ -1420,38 +1249,32 @@ public final class ProtoAuthOrder {
 
       private int priceMinMax_ ;
       /**
-       * <code>required int32 price_min_max = 3;</code>
-       */
-      public boolean hasPriceMinMax() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required int32 price_min_max = 3;</code>
+       * <code>int32 price_min_max = 3;</code>
        */
       public int getPriceMinMax() {
         return priceMinMax_;
       }
       /**
-       * <code>required int32 price_min_max = 3;</code>
+       * <code>int32 price_min_max = 3;</code>
        */
       public Builder setPriceMinMax(int value) {
-        bitField0_ |= 0x00000004;
+        
         priceMinMax_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 price_min_max = 3;</code>
+       * <code>int32 price_min_max = 3;</code>
        */
       public Builder clearPriceMinMax() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        
         priceMinMax_ = 0;
         onChanged();
         return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
+        return super.setUnknownFieldsProto3(unknownFields);
       }
 
       public final Builder mergeUnknownFields(
@@ -1473,7 +1296,7 @@ public final class ProtoAuthOrder {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Order>
+    private static final com.google.protobuf.Parser<Order>
         PARSER = new com.google.protobuf.AbstractParser<Order>() {
       public Order parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -1518,9 +1341,9 @@ public final class ProtoAuthOrder {
   static {
     java.lang.String[] descriptorData = {
       "\n\024protoAuthOrder.proto\022\006server\"&\n\004Auth\022\014" +
-      "\n\004name\030\001 \002(\t\022\020\n\010password\030\002 \002(\t\"A\n\005Order\022" +
-      "\017\n\007company\030\001 \002(\t\022\020\n\010quantity\030\002 \002(\005\022\025\n\rpr" +
-      "ice_min_max\030\003 \002(\005"
+      "\n\004name\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\"A\n\005Order\022" +
+      "\017\n\007company\030\001 \001(\t\022\020\n\010quantity\030\002 \001(\005\022\025\n\rpr" +
+      "ice_min_max\030\003 \001(\005b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

@@ -1,9 +1,10 @@
 -module(main).
 -export([server/1, room/1]).
+-include("protoAuthOrderErlang.hrl").
 
 server(Port) ->
 	Channel = spawn(fun()-> room([]) end),
-	{ok, LSock} = gen_tcp:listen(Port, [binary, {packet, line}, {reuseaddr, true}]),
+	{ok, LSock} = gen_tcp:listen(Port, [list, {packet, 0}, {reuseaddr, true}]),
 	acceptor(LSock, Channel).
 
 acceptor(LSock, Channel) ->
@@ -25,7 +26,7 @@ room(Pids) ->
 client(Sock, Channel) ->
 	receive
 		{tcp, _, Data} ->
-			X = protoAuthOrderErlang:decode_msg(Data, 'Auth'),
+			X = protoAuthOrderErlang:decode_msg(list_to_binary(Data), 'Auth'),
 			io:format(X, []),
 			client(Sock, Channel);
 		{tcp_closed, Sock} ->
@@ -33,5 +34,9 @@ client(Sock, Channel) ->
    		{tcp_error, Sock, _} ->
    			Channel ! {leave, self()}
 	end.
+	
+
+
+
 
 
