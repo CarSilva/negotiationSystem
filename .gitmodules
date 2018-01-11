@@ -1,0 +1,3 @@
+[submodule "server/gpb"]
+	path = server/gpb
+	url = https://github.com/tomas-abrahamsson/gpb
