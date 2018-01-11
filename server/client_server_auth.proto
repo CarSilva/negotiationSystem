@@ -1,6 +1,0 @@
-syntax = "proto2";
-
-message Auth {
-  required string name = 1;
-  required string password = 2;
-}

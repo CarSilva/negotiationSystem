@@ -3,7 +3,7 @@
 
 server(Port) ->
 	Channel = spawn(fun()-> room([]) end),
-	{ok, LSock} = gen_tcp:listen(Port, [list, {packet, line}, {reuseaddr, true}]),
+	{ok, LSock} = gen_tcp:listen(Port, [binary, {packet, line}, {reuseaddr, true}]),
 	acceptor(LSock, Channel).
 
 acceptor(LSock, Channel) ->
@@ -24,6 +24,10 @@ room(Pids) ->
 
 client(Sock, Channel) ->
 	receive
+		{tcp, _, Data} ->
+			X = protoAuthOrderErlang:decode_msg(Data, 'Auth'),
+			io:format(X, []),
+			client(Sock, Channel);
 		{tcp_closed, Sock} ->
 			Channel ! {leave, self()};
    		{tcp_error, Sock, _} ->
