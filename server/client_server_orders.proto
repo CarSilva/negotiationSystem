@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+message Auth {
+  required string company = 1;
+  required int32 quantity = 2;
+  required int32 price_min_max = 3;
+}
