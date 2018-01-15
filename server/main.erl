@@ -1,42 +1,66 @@
 -module(main).
--export([server/1, room/1]).
--include("protoAuthOrderErlang.hrl").
+-export([server/1]).
+-include("protobuf/protoAuthErlang.hrl").
+-include("protobuf/protoReqRecvErlang.hrl").
 
 server(Port) ->
-	Channel = spawn(fun()-> room([]) end),
-	{ok, LSock} = gen_tcp:listen(Port, [list, {packet, 0}, {reuseaddr, true}]),
-	acceptor(LSock, Channel).
+	client_login:start(),
+	{ok, LSock} = gen_tcp:listen(Port, [binary, {active,false}]),
+	acceptor(LSock).
 
-acceptor(LSock, Channel) ->
+acceptor(LSock) ->
 	{ok, Sock} = gen_tcp:accept(LSock),
-  	spawn(fun() -> acceptor(LSock, Channel) end),
-  	Channel ! {new_user, self()},
-  	client(Sock, Channel).
+  	spawn(fun() -> acceptor(LSock) end),
+		login(Sock).
 
-room(Pids) ->
-  	receive
-	    {new_user, Pid} ->
-	      io:format("new user~n", []),
-	      room([Pid | Pids]);
-	   	{leave, Pid} -> 
-	   		io:format("user left~n", []),
-	    	room(Pids -- [Pid])
-  	end.
-
-client(Sock, Channel) ->
-	receive
-		{tcp, _, Data} ->
-			X = protoAuthOrderErlang:decode_msg(list_to_binary(Data), 'Auth'),
-			io:format(X, []),
-			client(Sock, Channel);
-		{tcp_closed, Sock} ->
-			Channel ! {leave, self()};
-   		{tcp_error, Sock, _} ->
-   			Channel ! {leave, self()}
+login(Sock) ->
+	Size = receivePacketSize(Sock),
+	case receivePacket(Sock, Size, 'Auth') of
+		{ok, Recv} ->
+				Username = element(2, Recv),
+				Password = element(3, Recv),
+				Type = element(4, Recv),
+				case Type of
+					"registo" -> R = client_login:create_account(Username, Password);
+					"login" ->	R = client_login:login(Username, Password)
+				end,
+				Send_Packet = protoAuthErlang:encode_msg(#'ResponseAuth'{statusResponse=atom_to_list(R)}),
+				sendPacketSize(Sock, Send_Packet),
+				reqRep(Sock);
+		{error, Reason} -> Reason
 	end.
-	
 
 
+reqRep(Sock) ->
+	Size = receivePacketSize(Sock),
+	case receivePacket(Sock, Size, 'General') of
+		{ok, Recv} ->
+				case Recv of
+						#'General'{general = {order,#'Order'{company=Company, quantity=Qtt, price_min_max=Price}}} ->
+								order(Company, Qtt, Price)
+				end;
+		{error, Reason} -> Reason
+	end.
+
+order(Company, Qtt, Price) ->
+		Price.
+
+sendPacketSize(Sock, Send_Packet) ->
+	Tam = byte_size(Send_Packet),
+	gen_tcp:send(Sock, <<Tam>>),
+	gen_tcp:send(Sock, Send_Packet).
 
 
+receivePacket(Sock, Size, Type) ->
+	case gen_tcp:recv(Sock, Size) of
+		{ok, Packet} ->
+				Recv = protoAuthErlang:decode_msg(Packet, Type),
+				{ok, Recv };
+		{error, Reason} -> {error, Reason}
+	end.
 
+receivePacketSize(Sock) ->
+	case gen_tcp:recv(Sock, 1) of
+		{ok, <<Tam>>} -> Tam;
+		{error, Reason}  -> Reason
+	end.

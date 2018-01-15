@@ -4,19 +4,19 @@
 start() -> register(?MODULE, spawn(fun() -> loop(#{}) end)).
 
 
-create_account(U, P) -> 
+create_account(U, P) ->
 	?MODULE ! {create_account, U, P, self()},
-	receive 
+	receive
 		{?MODULE, Res} -> Res
 	end.
 
-close_account(U, P) -> 
+close_account(U, P) ->
 	?MODULE ! {close_account, U, P, self()},
 	receive
 		{?MODULE, Res} -> Res
 	end.
 
-login(U, P) -> 
+login(U, P) ->
 	?MODULE ! {login, U, P, self()},
 	receive
 		{?MODULE, Res} -> Res
@@ -28,32 +28,32 @@ logout(U) ->
 		{?MODULE, Res} -> Res
 	end.
 
-loop(M) -> 
+loop(M) ->
 	receive
-		{create_account, U, P, From} -> 
+		{create_account, U, P, From} ->
 			case maps:find(U, M) of
-				error -> 
+				error ->
 					From ! {?MODULE, ok},
 					loop(maps:put(U, {P, true}, M));
 					_ ->
 						From ! {?MODULE, user_exists},
 						loop(M)
 			end;
-		{close_account, U, P, From} -> 
+		{close_account, U, P, From} ->
 			case maps:find(U, M) of
-				{ok, {P, _}} -> 
+				{ok, {P, _}} ->
 					From ! {?MODULE, ok},
 					loop(maps:remove(U, M));
-				_ -> 
+				_ ->
 					From ! {?MODULE, invalid},
 					loop(M)
 			end;
 		{login, U, P, From} ->
 			case maps:find(U, M) of
-				{ok, {P, _}} -> 
+				{ok, {P, _}} ->
 					From ! {?MODULE, ok},
 					loop(maps:update(U, {P, true}, M));
-				_ -> 
+				_ ->
 					From ! {?MODULE, invalid},
 					loop(M)
 			end;
@@ -62,7 +62,7 @@ loop(M) ->
 				{ok, {P, _}} ->
 					From ! {?MODULE, ok},
 					loop(maps:update(U, {P, false}, M));
-				_ -> 
+				_ ->
 					From ! {?MODULE, ok},
 					loop(M)
 			end
