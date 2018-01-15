@@ -20,9 +20,9 @@ public class Client {
         InputStream is = s.getInputStream();
         OutputStream os = s.getOutputStream();
         auth(is, os);
-        /*Thread handleReq = new HandleReq(is, os);
+        Thread handleReq = new HandleReq(is, os);
         handleReq.start();
-        Thread handleRcv = new HandleRcv(is, os);
+        /*Thread handleRcv = new HandleRcv(is, os);
         handleRcv.start();*/
     }
 
