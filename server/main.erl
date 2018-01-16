@@ -15,7 +15,7 @@ acceptor(LSock) ->
 
 login(Sock) ->
 	Size = receivePacketSize(Sock),
-	case receivePacketAuth(Sock, Size) of % 0 means that is authentication
+	case receivePacketAuth(Sock, Size) of
 		{ok, Recv} ->
 				Username = element(2, Recv),
 				Password = element(3, Recv),
@@ -33,15 +33,18 @@ login(Sock) ->
 
 reqRep(Sock) ->
 	Size = receivePacketSize(Sock),
-	case receivePacketGeneral(Sock, Size) of %1 means that is orders (buy/sell)
+	case receivePacketGeneral(Sock, Size) of
 		{ok, Recv} ->
 				case Recv of
 						#'General'{general={buy,#'Buy'{companyBuy=Company,qttBuy=Qtt,priceMax=Price}}} ->
+								io:format("okBuf~n",[]),
 								buy(Company, Qtt, Price);
 						#'General'{general={sell,#'Sell'{companySell=Company,qttSell=Qtt,priceMin=Price}}} ->
+								io:format("okBuf~n",[]),
 								sell(Company, Qtt, Price)
-				end;
-		{error, Reason} -> Reason
+				end,
+				reqRep(Sock);
+		{error, Reason} -> io:format("Some error to be fix")
 	end.
 
 buy(Company, Qtt, Price) -> true.
