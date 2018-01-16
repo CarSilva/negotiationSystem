@@ -14,46 +14,46 @@ public final class ProtoReqRecv {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface OrderOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:server.Order)
+  public interface BuyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:server.Buy)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string company = 1;</code>
+     * <code>string companyBuy = 1;</code>
      */
-    java.lang.String getCompany();
+    java.lang.String getCompanyBuy();
     /**
-     * <code>string company = 1;</code>
+     * <code>string companyBuy = 1;</code>
      */
     com.google.protobuf.ByteString
-        getCompanyBytes();
+        getCompanyBuyBytes();
 
     /**
-     * <code>int32 quantity = 2;</code>
+     * <code>int32 qttBuy = 2;</code>
      */
-    int getQuantity();
+    int getQttBuy();
 
     /**
-     * <code>int32 price_min_max = 3;</code>
+     * <code>float priceMax = 3;</code>
      */
-    int getPriceMinMax();
+    float getPriceMax();
   }
   /**
-   * Protobuf type {@code server.Order}
+   * Protobuf type {@code server.Buy}
    */
-  public  static final class Order extends
+  public  static final class Buy extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:server.Order)
-      OrderOrBuilder {
+      // @@protoc_insertion_point(message_implements:server.Buy)
+      BuyOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use Order.newBuilder() to construct.
-    private Order(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use Buy.newBuilder() to construct.
+    private Buy(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Order() {
-      company_ = "";
-      quantity_ = 0;
-      priceMinMax_ = 0;
+    private Buy() {
+      companyBuy_ = "";
+      qttBuy_ = 0;
+      priceMax_ = 0F;
     }
 
     @java.lang.Override
@@ -61,7 +61,7 @@ public final class ProtoReqRecv {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private Order(
+    private Buy(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -87,17 +87,17 @@ public final class ProtoReqRecv {
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              company_ = s;
+              companyBuy_ = s;
               break;
             }
             case 16: {
 
-              quantity_ = input.readInt32();
+              qttBuy_ = input.readInt32();
               break;
             }
-            case 24: {
+            case 29: {
 
-              priceMinMax_ = input.readInt32();
+              priceMax_ = input.readFloat();
               break;
             }
           }
@@ -114,66 +114,66 @@ public final class ProtoReqRecv {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return server.ProtoReqRecv.internal_static_server_Order_descriptor;
+      return server.ProtoReqRecv.internal_static_server_Buy_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return server.ProtoReqRecv.internal_static_server_Order_fieldAccessorTable
+      return server.ProtoReqRecv.internal_static_server_Buy_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              server.ProtoReqRecv.Order.class, server.ProtoReqRecv.Order.Builder.class);
+              server.ProtoReqRecv.Buy.class, server.ProtoReqRecv.Buy.Builder.class);
     }
 
-    public static final int COMPANY_FIELD_NUMBER = 1;
-    private volatile java.lang.Object company_;
+    public static final int COMPANYBUY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object companyBuy_;
     /**
-     * <code>string company = 1;</code>
+     * <code>string companyBuy = 1;</code>
      */
-    public java.lang.String getCompany() {
-      java.lang.Object ref = company_;
+    public java.lang.String getCompanyBuy() {
+      java.lang.Object ref = companyBuy_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        company_ = s;
+        companyBuy_ = s;
         return s;
       }
     }
     /**
-     * <code>string company = 1;</code>
+     * <code>string companyBuy = 1;</code>
      */
     public com.google.protobuf.ByteString
-        getCompanyBytes() {
-      java.lang.Object ref = company_;
+        getCompanyBuyBytes() {
+      java.lang.Object ref = companyBuy_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        company_ = b;
+        companyBuy_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
 
-    public static final int QUANTITY_FIELD_NUMBER = 2;
-    private int quantity_;
+    public static final int QTTBUY_FIELD_NUMBER = 2;
+    private int qttBuy_;
     /**
-     * <code>int32 quantity = 2;</code>
+     * <code>int32 qttBuy = 2;</code>
      */
-    public int getQuantity() {
-      return quantity_;
+    public int getQttBuy() {
+      return qttBuy_;
     }
 
-    public static final int PRICE_MIN_MAX_FIELD_NUMBER = 3;
-    private int priceMinMax_;
+    public static final int PRICEMAX_FIELD_NUMBER = 3;
+    private float priceMax_;
     /**
-     * <code>int32 price_min_max = 3;</code>
+     * <code>float priceMax = 3;</code>
      */
-    public int getPriceMinMax() {
-      return priceMinMax_;
+    public float getPriceMax() {
+      return priceMax_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -188,14 +188,14 @@ public final class ProtoReqRecv {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getCompanyBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, company_);
+      if (!getCompanyBuyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, companyBuy_);
       }
-      if (quantity_ != 0) {
-        output.writeInt32(2, quantity_);
+      if (qttBuy_ != 0) {
+        output.writeInt32(2, qttBuy_);
       }
-      if (priceMinMax_ != 0) {
-        output.writeInt32(3, priceMinMax_);
+      if (priceMax_ != 0F) {
+        output.writeFloat(3, priceMax_);
       }
       unknownFields.writeTo(output);
     }
@@ -205,16 +205,16 @@ public final class ProtoReqRecv {
       if (size != -1) return size;
 
       size = 0;
-      if (!getCompanyBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, company_);
+      if (!getCompanyBuyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, companyBuy_);
       }
-      if (quantity_ != 0) {
+      if (qttBuy_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, quantity_);
+          .computeInt32Size(2, qttBuy_);
       }
-      if (priceMinMax_ != 0) {
+      if (priceMax_ != 0F) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, priceMinMax_);
+          .computeFloatSize(3, priceMax_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -226,18 +226,20 @@ public final class ProtoReqRecv {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof server.ProtoReqRecv.Order)) {
+      if (!(obj instanceof server.ProtoReqRecv.Buy)) {
         return super.equals(obj);
       }
-      server.ProtoReqRecv.Order other = (server.ProtoReqRecv.Order) obj;
+      server.ProtoReqRecv.Buy other = (server.ProtoReqRecv.Buy) obj;
 
       boolean result = true;
-      result = result && getCompany()
-          .equals(other.getCompany());
-      result = result && (getQuantity()
-          == other.getQuantity());
-      result = result && (getPriceMinMax()
-          == other.getPriceMinMax());
+      result = result && getCompanyBuy()
+          .equals(other.getCompanyBuy());
+      result = result && (getQttBuy()
+          == other.getQttBuy());
+      result = result && (
+          java.lang.Float.floatToIntBits(getPriceMax())
+          == java.lang.Float.floatToIntBits(
+              other.getPriceMax()));
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -249,80 +251,81 @@ public final class ProtoReqRecv {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + COMPANY_FIELD_NUMBER;
-      hash = (53 * hash) + getCompany().hashCode();
-      hash = (37 * hash) + QUANTITY_FIELD_NUMBER;
-      hash = (53 * hash) + getQuantity();
-      hash = (37 * hash) + PRICE_MIN_MAX_FIELD_NUMBER;
-      hash = (53 * hash) + getPriceMinMax();
+      hash = (37 * hash) + COMPANYBUY_FIELD_NUMBER;
+      hash = (53 * hash) + getCompanyBuy().hashCode();
+      hash = (37 * hash) + QTTBUY_FIELD_NUMBER;
+      hash = (53 * hash) + getQttBuy();
+      hash = (37 * hash) + PRICEMAX_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getPriceMax());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static server.ProtoReqRecv.Order parseFrom(
+    public static server.ProtoReqRecv.Buy parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static server.ProtoReqRecv.Order parseFrom(
+    public static server.ProtoReqRecv.Buy parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static server.ProtoReqRecv.Order parseFrom(
+    public static server.ProtoReqRecv.Buy parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static server.ProtoReqRecv.Order parseFrom(
+    public static server.ProtoReqRecv.Buy parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static server.ProtoReqRecv.Order parseFrom(byte[] data)
+    public static server.ProtoReqRecv.Buy parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static server.ProtoReqRecv.Order parseFrom(
+    public static server.ProtoReqRecv.Buy parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static server.ProtoReqRecv.Order parseFrom(java.io.InputStream input)
+    public static server.ProtoReqRecv.Buy parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static server.ProtoReqRecv.Order parseFrom(
+    public static server.ProtoReqRecv.Buy parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static server.ProtoReqRecv.Order parseDelimitedFrom(java.io.InputStream input)
+    public static server.ProtoReqRecv.Buy parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static server.ProtoReqRecv.Order parseDelimitedFrom(
+    public static server.ProtoReqRecv.Buy parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static server.ProtoReqRecv.Order parseFrom(
+    public static server.ProtoReqRecv.Buy parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static server.ProtoReqRecv.Order parseFrom(
+    public static server.ProtoReqRecv.Buy parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -334,7 +337,7 @@ public final class ProtoReqRecv {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(server.ProtoReqRecv.Order prototype) {
+    public static Builder newBuilder(server.ProtoReqRecv.Buy prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -349,25 +352,25 @@ public final class ProtoReqRecv {
       return builder;
     }
     /**
-     * Protobuf type {@code server.Order}
+     * Protobuf type {@code server.Buy}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:server.Order)
-        server.ProtoReqRecv.OrderOrBuilder {
+        // @@protoc_insertion_point(builder_implements:server.Buy)
+        server.ProtoReqRecv.BuyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return server.ProtoReqRecv.internal_static_server_Order_descriptor;
+        return server.ProtoReqRecv.internal_static_server_Buy_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return server.ProtoReqRecv.internal_static_server_Order_fieldAccessorTable
+        return server.ProtoReqRecv.internal_static_server_Buy_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                server.ProtoReqRecv.Order.class, server.ProtoReqRecv.Order.Builder.class);
+                server.ProtoReqRecv.Buy.class, server.ProtoReqRecv.Buy.Builder.class);
       }
 
-      // Construct using server.ProtoReqRecv.Order.newBuilder()
+      // Construct using server.ProtoReqRecv.Buy.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -384,37 +387,37 @@ public final class ProtoReqRecv {
       }
       public Builder clear() {
         super.clear();
-        company_ = "";
+        companyBuy_ = "";
 
-        quantity_ = 0;
+        qttBuy_ = 0;
 
-        priceMinMax_ = 0;
+        priceMax_ = 0F;
 
         return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return server.ProtoReqRecv.internal_static_server_Order_descriptor;
+        return server.ProtoReqRecv.internal_static_server_Buy_descriptor;
       }
 
-      public server.ProtoReqRecv.Order getDefaultInstanceForType() {
-        return server.ProtoReqRecv.Order.getDefaultInstance();
+      public server.ProtoReqRecv.Buy getDefaultInstanceForType() {
+        return server.ProtoReqRecv.Buy.getDefaultInstance();
       }
 
-      public server.ProtoReqRecv.Order build() {
-        server.ProtoReqRecv.Order result = buildPartial();
+      public server.ProtoReqRecv.Buy build() {
+        server.ProtoReqRecv.Buy result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public server.ProtoReqRecv.Order buildPartial() {
-        server.ProtoReqRecv.Order result = new server.ProtoReqRecv.Order(this);
-        result.company_ = company_;
-        result.quantity_ = quantity_;
-        result.priceMinMax_ = priceMinMax_;
+      public server.ProtoReqRecv.Buy buildPartial() {
+        server.ProtoReqRecv.Buy result = new server.ProtoReqRecv.Buy(this);
+        result.companyBuy_ = companyBuy_;
+        result.qttBuy_ = qttBuy_;
+        result.priceMax_ = priceMax_;
         onBuilt();
         return result;
       }
@@ -446,25 +449,25 @@ public final class ProtoReqRecv {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof server.ProtoReqRecv.Order) {
-          return mergeFrom((server.ProtoReqRecv.Order)other);
+        if (other instanceof server.ProtoReqRecv.Buy) {
+          return mergeFrom((server.ProtoReqRecv.Buy)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(server.ProtoReqRecv.Order other) {
-        if (other == server.ProtoReqRecv.Order.getDefaultInstance()) return this;
-        if (!other.getCompany().isEmpty()) {
-          company_ = other.company_;
+      public Builder mergeFrom(server.ProtoReqRecv.Buy other) {
+        if (other == server.ProtoReqRecv.Buy.getDefaultInstance()) return this;
+        if (!other.getCompanyBuy().isEmpty()) {
+          companyBuy_ = other.companyBuy_;
           onChanged();
         }
-        if (other.getQuantity() != 0) {
-          setQuantity(other.getQuantity());
+        if (other.getQttBuy() != 0) {
+          setQttBuy(other.getQttBuy());
         }
-        if (other.getPriceMinMax() != 0) {
-          setPriceMinMax(other.getPriceMinMax());
+        if (other.getPriceMax() != 0F) {
+          setPriceMax(other.getPriceMax());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -479,11 +482,11 @@ public final class ProtoReqRecv {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        server.ProtoReqRecv.Order parsedMessage = null;
+        server.ProtoReqRecv.Buy parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (server.ProtoReqRecv.Order) e.getUnfinishedMessage();
+          parsedMessage = (server.ProtoReqRecv.Buy) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -493,123 +496,123 @@ public final class ProtoReqRecv {
         return this;
       }
 
-      private java.lang.Object company_ = "";
+      private java.lang.Object companyBuy_ = "";
       /**
-       * <code>string company = 1;</code>
+       * <code>string companyBuy = 1;</code>
        */
-      public java.lang.String getCompany() {
-        java.lang.Object ref = company_;
+      public java.lang.String getCompanyBuy() {
+        java.lang.Object ref = companyBuy_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          company_ = s;
+          companyBuy_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>string company = 1;</code>
+       * <code>string companyBuy = 1;</code>
        */
       public com.google.protobuf.ByteString
-          getCompanyBytes() {
-        java.lang.Object ref = company_;
+          getCompanyBuyBytes() {
+        java.lang.Object ref = companyBuy_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          company_ = b;
+          companyBuy_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>string company = 1;</code>
+       * <code>string companyBuy = 1;</code>
        */
-      public Builder setCompany(
+      public Builder setCompanyBuy(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        company_ = value;
+        companyBuy_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>string company = 1;</code>
+       * <code>string companyBuy = 1;</code>
        */
-      public Builder clearCompany() {
+      public Builder clearCompanyBuy() {
         
-        company_ = getDefaultInstance().getCompany();
+        companyBuy_ = getDefaultInstance().getCompanyBuy();
         onChanged();
         return this;
       }
       /**
-       * <code>string company = 1;</code>
+       * <code>string companyBuy = 1;</code>
        */
-      public Builder setCompanyBytes(
+      public Builder setCompanyBuyBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
         
-        company_ = value;
+        companyBuy_ = value;
         onChanged();
         return this;
       }
 
-      private int quantity_ ;
+      private int qttBuy_ ;
       /**
-       * <code>int32 quantity = 2;</code>
+       * <code>int32 qttBuy = 2;</code>
        */
-      public int getQuantity() {
-        return quantity_;
+      public int getQttBuy() {
+        return qttBuy_;
       }
       /**
-       * <code>int32 quantity = 2;</code>
+       * <code>int32 qttBuy = 2;</code>
        */
-      public Builder setQuantity(int value) {
+      public Builder setQttBuy(int value) {
         
-        quantity_ = value;
+        qttBuy_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 quantity = 2;</code>
+       * <code>int32 qttBuy = 2;</code>
        */
-      public Builder clearQuantity() {
+      public Builder clearQttBuy() {
         
-        quantity_ = 0;
+        qttBuy_ = 0;
         onChanged();
         return this;
       }
 
-      private int priceMinMax_ ;
+      private float priceMax_ ;
       /**
-       * <code>int32 price_min_max = 3;</code>
+       * <code>float priceMax = 3;</code>
        */
-      public int getPriceMinMax() {
-        return priceMinMax_;
+      public float getPriceMax() {
+        return priceMax_;
       }
       /**
-       * <code>int32 price_min_max = 3;</code>
+       * <code>float priceMax = 3;</code>
        */
-      public Builder setPriceMinMax(int value) {
+      public Builder setPriceMax(float value) {
         
-        priceMinMax_ = value;
+        priceMax_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 price_min_max = 3;</code>
+       * <code>float priceMax = 3;</code>
        */
-      public Builder clearPriceMinMax() {
+      public Builder clearPriceMax() {
         
-        priceMinMax_ = 0;
+        priceMax_ = 0F;
         onChanged();
         return this;
       }
@@ -624,39 +627,690 @@ public final class ProtoReqRecv {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:server.Order)
+      // @@protoc_insertion_point(builder_scope:server.Buy)
     }
 
-    // @@protoc_insertion_point(class_scope:server.Order)
-    private static final server.ProtoReqRecv.Order DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:server.Buy)
+    private static final server.ProtoReqRecv.Buy DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new server.ProtoReqRecv.Order();
+      DEFAULT_INSTANCE = new server.ProtoReqRecv.Buy();
     }
 
-    public static server.ProtoReqRecv.Order getDefaultInstance() {
+    public static server.ProtoReqRecv.Buy getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<Order>
-        PARSER = new com.google.protobuf.AbstractParser<Order>() {
-      public Order parsePartialFrom(
+    private static final com.google.protobuf.Parser<Buy>
+        PARSER = new com.google.protobuf.AbstractParser<Buy>() {
+      public Buy parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new Order(input, extensionRegistry);
+          return new Buy(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<Order> parser() {
+    public static com.google.protobuf.Parser<Buy> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<Order> getParserForType() {
+    public com.google.protobuf.Parser<Buy> getParserForType() {
       return PARSER;
     }
 
-    public server.ProtoReqRecv.Order getDefaultInstanceForType() {
+    public server.ProtoReqRecv.Buy getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SellOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:server.Sell)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string companySell = 1;</code>
+     */
+    java.lang.String getCompanySell();
+    /**
+     * <code>string companySell = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getCompanySellBytes();
+
+    /**
+     * <code>int32 qttSell = 2;</code>
+     */
+    int getQttSell();
+
+    /**
+     * <code>float priceMin = 3;</code>
+     */
+    float getPriceMin();
+  }
+  /**
+   * Protobuf type {@code server.Sell}
+   */
+  public  static final class Sell extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:server.Sell)
+      SellOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Sell.newBuilder() to construct.
+    private Sell(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Sell() {
+      companySell_ = "";
+      qttSell_ = 0;
+      priceMin_ = 0F;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Sell(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              companySell_ = s;
+              break;
+            }
+            case 16: {
+
+              qttSell_ = input.readInt32();
+              break;
+            }
+            case 29: {
+
+              priceMin_ = input.readFloat();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return server.ProtoReqRecv.internal_static_server_Sell_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return server.ProtoReqRecv.internal_static_server_Sell_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              server.ProtoReqRecv.Sell.class, server.ProtoReqRecv.Sell.Builder.class);
+    }
+
+    public static final int COMPANYSELL_FIELD_NUMBER = 1;
+    private volatile java.lang.Object companySell_;
+    /**
+     * <code>string companySell = 1;</code>
+     */
+    public java.lang.String getCompanySell() {
+      java.lang.Object ref = companySell_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        companySell_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string companySell = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getCompanySellBytes() {
+      java.lang.Object ref = companySell_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        companySell_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int QTTSELL_FIELD_NUMBER = 2;
+    private int qttSell_;
+    /**
+     * <code>int32 qttSell = 2;</code>
+     */
+    public int getQttSell() {
+      return qttSell_;
+    }
+
+    public static final int PRICEMIN_FIELD_NUMBER = 3;
+    private float priceMin_;
+    /**
+     * <code>float priceMin = 3;</code>
+     */
+    public float getPriceMin() {
+      return priceMin_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getCompanySellBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, companySell_);
+      }
+      if (qttSell_ != 0) {
+        output.writeInt32(2, qttSell_);
+      }
+      if (priceMin_ != 0F) {
+        output.writeFloat(3, priceMin_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getCompanySellBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, companySell_);
+      }
+      if (qttSell_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, qttSell_);
+      }
+      if (priceMin_ != 0F) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(3, priceMin_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof server.ProtoReqRecv.Sell)) {
+        return super.equals(obj);
+      }
+      server.ProtoReqRecv.Sell other = (server.ProtoReqRecv.Sell) obj;
+
+      boolean result = true;
+      result = result && getCompanySell()
+          .equals(other.getCompanySell());
+      result = result && (getQttSell()
+          == other.getQttSell());
+      result = result && (
+          java.lang.Float.floatToIntBits(getPriceMin())
+          == java.lang.Float.floatToIntBits(
+              other.getPriceMin()));
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + COMPANYSELL_FIELD_NUMBER;
+      hash = (53 * hash) + getCompanySell().hashCode();
+      hash = (37 * hash) + QTTSELL_FIELD_NUMBER;
+      hash = (53 * hash) + getQttSell();
+      hash = (37 * hash) + PRICEMIN_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getPriceMin());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static server.ProtoReqRecv.Sell parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static server.ProtoReqRecv.Sell parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static server.ProtoReqRecv.Sell parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static server.ProtoReqRecv.Sell parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(server.ProtoReqRecv.Sell prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code server.Sell}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:server.Sell)
+        server.ProtoReqRecv.SellOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return server.ProtoReqRecv.internal_static_server_Sell_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return server.ProtoReqRecv.internal_static_server_Sell_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                server.ProtoReqRecv.Sell.class, server.ProtoReqRecv.Sell.Builder.class);
+      }
+
+      // Construct using server.ProtoReqRecv.Sell.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        companySell_ = "";
+
+        qttSell_ = 0;
+
+        priceMin_ = 0F;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return server.ProtoReqRecv.internal_static_server_Sell_descriptor;
+      }
+
+      public server.ProtoReqRecv.Sell getDefaultInstanceForType() {
+        return server.ProtoReqRecv.Sell.getDefaultInstance();
+      }
+
+      public server.ProtoReqRecv.Sell build() {
+        server.ProtoReqRecv.Sell result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public server.ProtoReqRecv.Sell buildPartial() {
+        server.ProtoReqRecv.Sell result = new server.ProtoReqRecv.Sell(this);
+        result.companySell_ = companySell_;
+        result.qttSell_ = qttSell_;
+        result.priceMin_ = priceMin_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof server.ProtoReqRecv.Sell) {
+          return mergeFrom((server.ProtoReqRecv.Sell)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(server.ProtoReqRecv.Sell other) {
+        if (other == server.ProtoReqRecv.Sell.getDefaultInstance()) return this;
+        if (!other.getCompanySell().isEmpty()) {
+          companySell_ = other.companySell_;
+          onChanged();
+        }
+        if (other.getQttSell() != 0) {
+          setQttSell(other.getQttSell());
+        }
+        if (other.getPriceMin() != 0F) {
+          setPriceMin(other.getPriceMin());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        server.ProtoReqRecv.Sell parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (server.ProtoReqRecv.Sell) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object companySell_ = "";
+      /**
+       * <code>string companySell = 1;</code>
+       */
+      public java.lang.String getCompanySell() {
+        java.lang.Object ref = companySell_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          companySell_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string companySell = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getCompanySellBytes() {
+        java.lang.Object ref = companySell_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          companySell_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string companySell = 1;</code>
+       */
+      public Builder setCompanySell(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        companySell_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string companySell = 1;</code>
+       */
+      public Builder clearCompanySell() {
+        
+        companySell_ = getDefaultInstance().getCompanySell();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string companySell = 1;</code>
+       */
+      public Builder setCompanySellBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        companySell_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int qttSell_ ;
+      /**
+       * <code>int32 qttSell = 2;</code>
+       */
+      public int getQttSell() {
+        return qttSell_;
+      }
+      /**
+       * <code>int32 qttSell = 2;</code>
+       */
+      public Builder setQttSell(int value) {
+        
+        qttSell_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 qttSell = 2;</code>
+       */
+      public Builder clearQttSell() {
+        
+        qttSell_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private float priceMin_ ;
+      /**
+       * <code>float priceMin = 3;</code>
+       */
+      public float getPriceMin() {
+        return priceMin_;
+      }
+      /**
+       * <code>float priceMin = 3;</code>
+       */
+      public Builder setPriceMin(float value) {
+        
+        priceMin_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float priceMin = 3;</code>
+       */
+      public Builder clearPriceMin() {
+        
+        priceMin_ = 0F;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:server.Sell)
+    }
+
+    // @@protoc_insertion_point(class_scope:server.Sell)
+    private static final server.ProtoReqRecv.Sell DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new server.ProtoReqRecv.Sell();
+    }
+
+    public static server.ProtoReqRecv.Sell getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Sell>
+        PARSER = new com.google.protobuf.AbstractParser<Sell>() {
+      public Sell parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Sell(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Sell> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Sell> getParserForType() {
+      return PARSER;
+    }
+
+    public server.ProtoReqRecv.Sell getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -667,17 +1321,30 @@ public final class ProtoReqRecv {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.server.Order order = 1;</code>
+     * <code>.server.Buy buy = 1;</code>
      */
-    boolean hasOrder();
+    boolean hasBuy();
     /**
-     * <code>.server.Order order = 1;</code>
+     * <code>.server.Buy buy = 1;</code>
      */
-    server.ProtoReqRecv.Order getOrder();
+    server.ProtoReqRecv.Buy getBuy();
     /**
-     * <code>.server.Order order = 1;</code>
+     * <code>.server.Buy buy = 1;</code>
      */
-    server.ProtoReqRecv.OrderOrBuilder getOrderOrBuilder();
+    server.ProtoReqRecv.BuyOrBuilder getBuyOrBuilder();
+
+    /**
+     * <code>.server.Sell sell = 2;</code>
+     */
+    boolean hasSell();
+    /**
+     * <code>.server.Sell sell = 2;</code>
+     */
+    server.ProtoReqRecv.Sell getSell();
+    /**
+     * <code>.server.Sell sell = 2;</code>
+     */
+    server.ProtoReqRecv.SellOrBuilder getSellOrBuilder();
 
     public server.ProtoReqRecv.General.GeneralCase getGeneralCase();
   }
@@ -725,17 +1392,31 @@ public final class ProtoReqRecv {
               break;
             }
             case 10: {
-              server.ProtoReqRecv.Order.Builder subBuilder = null;
+              server.ProtoReqRecv.Buy.Builder subBuilder = null;
               if (generalCase_ == 1) {
-                subBuilder = ((server.ProtoReqRecv.Order) general_).toBuilder();
+                subBuilder = ((server.ProtoReqRecv.Buy) general_).toBuilder();
               }
               general_ =
-                  input.readMessage(server.ProtoReqRecv.Order.parser(), extensionRegistry);
+                  input.readMessage(server.ProtoReqRecv.Buy.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((server.ProtoReqRecv.Order) general_);
+                subBuilder.mergeFrom((server.ProtoReqRecv.Buy) general_);
                 general_ = subBuilder.buildPartial();
               }
               generalCase_ = 1;
+              break;
+            }
+            case 18: {
+              server.ProtoReqRecv.Sell.Builder subBuilder = null;
+              if (generalCase_ == 2) {
+                subBuilder = ((server.ProtoReqRecv.Sell) general_).toBuilder();
+              }
+              general_ =
+                  input.readMessage(server.ProtoReqRecv.Sell.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((server.ProtoReqRecv.Sell) general_);
+                general_ = subBuilder.buildPartial();
+              }
+              generalCase_ = 2;
               break;
             }
           }
@@ -766,7 +1447,8 @@ public final class ProtoReqRecv {
     private java.lang.Object general_;
     public enum GeneralCase
         implements com.google.protobuf.Internal.EnumLite {
-      ORDER(1),
+      BUY(1),
+      SELL(2),
       GENERAL_NOT_SET(0);
       private final int value;
       private GeneralCase(int value) {
@@ -782,7 +1464,8 @@ public final class ProtoReqRecv {
 
       public static GeneralCase forNumber(int value) {
         switch (value) {
-          case 1: return ORDER;
+          case 1: return BUY;
+          case 2: return SELL;
           case 0: return GENERAL_NOT_SET;
           default: return null;
         }
@@ -798,30 +1481,56 @@ public final class ProtoReqRecv {
           generalCase_);
     }
 
-    public static final int ORDER_FIELD_NUMBER = 1;
+    public static final int BUY_FIELD_NUMBER = 1;
     /**
-     * <code>.server.Order order = 1;</code>
+     * <code>.server.Buy buy = 1;</code>
      */
-    public boolean hasOrder() {
+    public boolean hasBuy() {
       return generalCase_ == 1;
     }
     /**
-     * <code>.server.Order order = 1;</code>
+     * <code>.server.Buy buy = 1;</code>
      */
-    public server.ProtoReqRecv.Order getOrder() {
+    public server.ProtoReqRecv.Buy getBuy() {
       if (generalCase_ == 1) {
-         return (server.ProtoReqRecv.Order) general_;
+         return (server.ProtoReqRecv.Buy) general_;
       }
-      return server.ProtoReqRecv.Order.getDefaultInstance();
+      return server.ProtoReqRecv.Buy.getDefaultInstance();
     }
     /**
-     * <code>.server.Order order = 1;</code>
+     * <code>.server.Buy buy = 1;</code>
      */
-    public server.ProtoReqRecv.OrderOrBuilder getOrderOrBuilder() {
+    public server.ProtoReqRecv.BuyOrBuilder getBuyOrBuilder() {
       if (generalCase_ == 1) {
-         return (server.ProtoReqRecv.Order) general_;
+         return (server.ProtoReqRecv.Buy) general_;
       }
-      return server.ProtoReqRecv.Order.getDefaultInstance();
+      return server.ProtoReqRecv.Buy.getDefaultInstance();
+    }
+
+    public static final int SELL_FIELD_NUMBER = 2;
+    /**
+     * <code>.server.Sell sell = 2;</code>
+     */
+    public boolean hasSell() {
+      return generalCase_ == 2;
+    }
+    /**
+     * <code>.server.Sell sell = 2;</code>
+     */
+    public server.ProtoReqRecv.Sell getSell() {
+      if (generalCase_ == 2) {
+         return (server.ProtoReqRecv.Sell) general_;
+      }
+      return server.ProtoReqRecv.Sell.getDefaultInstance();
+    }
+    /**
+     * <code>.server.Sell sell = 2;</code>
+     */
+    public server.ProtoReqRecv.SellOrBuilder getSellOrBuilder() {
+      if (generalCase_ == 2) {
+         return (server.ProtoReqRecv.Sell) general_;
+      }
+      return server.ProtoReqRecv.Sell.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -837,7 +1546,10 @@ public final class ProtoReqRecv {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (generalCase_ == 1) {
-        output.writeMessage(1, (server.ProtoReqRecv.Order) general_);
+        output.writeMessage(1, (server.ProtoReqRecv.Buy) general_);
+      }
+      if (generalCase_ == 2) {
+        output.writeMessage(2, (server.ProtoReqRecv.Sell) general_);
       }
       unknownFields.writeTo(output);
     }
@@ -849,7 +1561,11 @@ public final class ProtoReqRecv {
       size = 0;
       if (generalCase_ == 1) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, (server.ProtoReqRecv.Order) general_);
+          .computeMessageSize(1, (server.ProtoReqRecv.Buy) general_);
+      }
+      if (generalCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (server.ProtoReqRecv.Sell) general_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -872,8 +1588,12 @@ public final class ProtoReqRecv {
       if (!result) return false;
       switch (generalCase_) {
         case 1:
-          result = result && getOrder()
-              .equals(other.getOrder());
+          result = result && getBuy()
+              .equals(other.getBuy());
+          break;
+        case 2:
+          result = result && getSell()
+              .equals(other.getSell());
           break;
         case 0:
         default:
@@ -891,8 +1611,12 @@ public final class ProtoReqRecv {
       hash = (19 * hash) + getDescriptor().hashCode();
       switch (generalCase_) {
         case 1:
-          hash = (37 * hash) + ORDER_FIELD_NUMBER;
-          hash = (53 * hash) + getOrder().hashCode();
+          hash = (37 * hash) + BUY_FIELD_NUMBER;
+          hash = (53 * hash) + getBuy().hashCode();
+          break;
+        case 2:
+          hash = (37 * hash) + SELL_FIELD_NUMBER;
+          hash = (53 * hash) + getSell().hashCode();
           break;
         case 0:
         default:
@@ -1051,10 +1775,17 @@ public final class ProtoReqRecv {
       public server.ProtoReqRecv.General buildPartial() {
         server.ProtoReqRecv.General result = new server.ProtoReqRecv.General(this);
         if (generalCase_ == 1) {
-          if (orderBuilder_ == null) {
+          if (buyBuilder_ == null) {
             result.general_ = general_;
           } else {
-            result.general_ = orderBuilder_.build();
+            result.general_ = buyBuilder_.build();
+          }
+        }
+        if (generalCase_ == 2) {
+          if (sellBuilder_ == null) {
+            result.general_ = general_;
+          } else {
+            result.general_ = sellBuilder_.build();
           }
         }
         result.generalCase_ = generalCase_;
@@ -1100,8 +1831,12 @@ public final class ProtoReqRecv {
       public Builder mergeFrom(server.ProtoReqRecv.General other) {
         if (other == server.ProtoReqRecv.General.getDefaultInstance()) return this;
         switch (other.getGeneralCase()) {
-          case ORDER: {
-            mergeOrder(other.getOrder());
+          case BUY: {
+            mergeBuy(other.getBuy());
+            break;
+          }
+          case SELL: {
+            mergeSell(other.getSell());
             break;
           }
           case GENERAL_NOT_SET: {
@@ -1151,67 +1886,67 @@ public final class ProtoReqRecv {
 
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          server.ProtoReqRecv.Order, server.ProtoReqRecv.Order.Builder, server.ProtoReqRecv.OrderOrBuilder> orderBuilder_;
+          server.ProtoReqRecv.Buy, server.ProtoReqRecv.Buy.Builder, server.ProtoReqRecv.BuyOrBuilder> buyBuilder_;
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
-      public boolean hasOrder() {
+      public boolean hasBuy() {
         return generalCase_ == 1;
       }
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
-      public server.ProtoReqRecv.Order getOrder() {
-        if (orderBuilder_ == null) {
+      public server.ProtoReqRecv.Buy getBuy() {
+        if (buyBuilder_ == null) {
           if (generalCase_ == 1) {
-            return (server.ProtoReqRecv.Order) general_;
+            return (server.ProtoReqRecv.Buy) general_;
           }
-          return server.ProtoReqRecv.Order.getDefaultInstance();
+          return server.ProtoReqRecv.Buy.getDefaultInstance();
         } else {
           if (generalCase_ == 1) {
-            return orderBuilder_.getMessage();
+            return buyBuilder_.getMessage();
           }
-          return server.ProtoReqRecv.Order.getDefaultInstance();
+          return server.ProtoReqRecv.Buy.getDefaultInstance();
         }
       }
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
-      public Builder setOrder(server.ProtoReqRecv.Order value) {
-        if (orderBuilder_ == null) {
+      public Builder setBuy(server.ProtoReqRecv.Buy value) {
+        if (buyBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
           general_ = value;
           onChanged();
         } else {
-          orderBuilder_.setMessage(value);
+          buyBuilder_.setMessage(value);
         }
         generalCase_ = 1;
         return this;
       }
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
-      public Builder setOrder(
-          server.ProtoReqRecv.Order.Builder builderForValue) {
-        if (orderBuilder_ == null) {
+      public Builder setBuy(
+          server.ProtoReqRecv.Buy.Builder builderForValue) {
+        if (buyBuilder_ == null) {
           general_ = builderForValue.build();
           onChanged();
         } else {
-          orderBuilder_.setMessage(builderForValue.build());
+          buyBuilder_.setMessage(builderForValue.build());
         }
         generalCase_ = 1;
         return this;
       }
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
-      public Builder mergeOrder(server.ProtoReqRecv.Order value) {
-        if (orderBuilder_ == null) {
+      public Builder mergeBuy(server.ProtoReqRecv.Buy value) {
+        if (buyBuilder_ == null) {
           if (generalCase_ == 1 &&
-              general_ != server.ProtoReqRecv.Order.getDefaultInstance()) {
-            general_ = server.ProtoReqRecv.Order.newBuilder((server.ProtoReqRecv.Order) general_)
+              general_ != server.ProtoReqRecv.Buy.getDefaultInstance()) {
+            general_ = server.ProtoReqRecv.Buy.newBuilder((server.ProtoReqRecv.Buy) general_)
                 .mergeFrom(value).buildPartial();
           } else {
             general_ = value;
@@ -1219,18 +1954,18 @@ public final class ProtoReqRecv {
           onChanged();
         } else {
           if (generalCase_ == 1) {
-            orderBuilder_.mergeFrom(value);
+            buyBuilder_.mergeFrom(value);
           }
-          orderBuilder_.setMessage(value);
+          buyBuilder_.setMessage(value);
         }
         generalCase_ = 1;
         return this;
       }
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
-      public Builder clearOrder() {
-        if (orderBuilder_ == null) {
+      public Builder clearBuy() {
+        if (buyBuilder_ == null) {
           if (generalCase_ == 1) {
             generalCase_ = 0;
             general_ = null;
@@ -1241,49 +1976,185 @@ public final class ProtoReqRecv {
             generalCase_ = 0;
             general_ = null;
           }
-          orderBuilder_.clear();
+          buyBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
-      public server.ProtoReqRecv.Order.Builder getOrderBuilder() {
-        return getOrderFieldBuilder().getBuilder();
+      public server.ProtoReqRecv.Buy.Builder getBuyBuilder() {
+        return getBuyFieldBuilder().getBuilder();
       }
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
-      public server.ProtoReqRecv.OrderOrBuilder getOrderOrBuilder() {
-        if ((generalCase_ == 1) && (orderBuilder_ != null)) {
-          return orderBuilder_.getMessageOrBuilder();
+      public server.ProtoReqRecv.BuyOrBuilder getBuyOrBuilder() {
+        if ((generalCase_ == 1) && (buyBuilder_ != null)) {
+          return buyBuilder_.getMessageOrBuilder();
         } else {
           if (generalCase_ == 1) {
-            return (server.ProtoReqRecv.Order) general_;
+            return (server.ProtoReqRecv.Buy) general_;
           }
-          return server.ProtoReqRecv.Order.getDefaultInstance();
+          return server.ProtoReqRecv.Buy.getDefaultInstance();
         }
       }
       /**
-       * <code>.server.Order order = 1;</code>
+       * <code>.server.Buy buy = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          server.ProtoReqRecv.Order, server.ProtoReqRecv.Order.Builder, server.ProtoReqRecv.OrderOrBuilder> 
-          getOrderFieldBuilder() {
-        if (orderBuilder_ == null) {
+          server.ProtoReqRecv.Buy, server.ProtoReqRecv.Buy.Builder, server.ProtoReqRecv.BuyOrBuilder> 
+          getBuyFieldBuilder() {
+        if (buyBuilder_ == null) {
           if (!(generalCase_ == 1)) {
-            general_ = server.ProtoReqRecv.Order.getDefaultInstance();
+            general_ = server.ProtoReqRecv.Buy.getDefaultInstance();
           }
-          orderBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              server.ProtoReqRecv.Order, server.ProtoReqRecv.Order.Builder, server.ProtoReqRecv.OrderOrBuilder>(
-                  (server.ProtoReqRecv.Order) general_,
+          buyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              server.ProtoReqRecv.Buy, server.ProtoReqRecv.Buy.Builder, server.ProtoReqRecv.BuyOrBuilder>(
+                  (server.ProtoReqRecv.Buy) general_,
                   getParentForChildren(),
                   isClean());
           general_ = null;
         }
         generalCase_ = 1;
         onChanged();;
-        return orderBuilder_;
+        return buyBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          server.ProtoReqRecv.Sell, server.ProtoReqRecv.Sell.Builder, server.ProtoReqRecv.SellOrBuilder> sellBuilder_;
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      public boolean hasSell() {
+        return generalCase_ == 2;
+      }
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      public server.ProtoReqRecv.Sell getSell() {
+        if (sellBuilder_ == null) {
+          if (generalCase_ == 2) {
+            return (server.ProtoReqRecv.Sell) general_;
+          }
+          return server.ProtoReqRecv.Sell.getDefaultInstance();
+        } else {
+          if (generalCase_ == 2) {
+            return sellBuilder_.getMessage();
+          }
+          return server.ProtoReqRecv.Sell.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      public Builder setSell(server.ProtoReqRecv.Sell value) {
+        if (sellBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          general_ = value;
+          onChanged();
+        } else {
+          sellBuilder_.setMessage(value);
+        }
+        generalCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      public Builder setSell(
+          server.ProtoReqRecv.Sell.Builder builderForValue) {
+        if (sellBuilder_ == null) {
+          general_ = builderForValue.build();
+          onChanged();
+        } else {
+          sellBuilder_.setMessage(builderForValue.build());
+        }
+        generalCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      public Builder mergeSell(server.ProtoReqRecv.Sell value) {
+        if (sellBuilder_ == null) {
+          if (generalCase_ == 2 &&
+              general_ != server.ProtoReqRecv.Sell.getDefaultInstance()) {
+            general_ = server.ProtoReqRecv.Sell.newBuilder((server.ProtoReqRecv.Sell) general_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            general_ = value;
+          }
+          onChanged();
+        } else {
+          if (generalCase_ == 2) {
+            sellBuilder_.mergeFrom(value);
+          }
+          sellBuilder_.setMessage(value);
+        }
+        generalCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      public Builder clearSell() {
+        if (sellBuilder_ == null) {
+          if (generalCase_ == 2) {
+            generalCase_ = 0;
+            general_ = null;
+            onChanged();
+          }
+        } else {
+          if (generalCase_ == 2) {
+            generalCase_ = 0;
+            general_ = null;
+          }
+          sellBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      public server.ProtoReqRecv.Sell.Builder getSellBuilder() {
+        return getSellFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      public server.ProtoReqRecv.SellOrBuilder getSellOrBuilder() {
+        if ((generalCase_ == 2) && (sellBuilder_ != null)) {
+          return sellBuilder_.getMessageOrBuilder();
+        } else {
+          if (generalCase_ == 2) {
+            return (server.ProtoReqRecv.Sell) general_;
+          }
+          return server.ProtoReqRecv.Sell.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.server.Sell sell = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          server.ProtoReqRecv.Sell, server.ProtoReqRecv.Sell.Builder, server.ProtoReqRecv.SellOrBuilder> 
+          getSellFieldBuilder() {
+        if (sellBuilder_ == null) {
+          if (!(generalCase_ == 2)) {
+            general_ = server.ProtoReqRecv.Sell.getDefaultInstance();
+          }
+          sellBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              server.ProtoReqRecv.Sell, server.ProtoReqRecv.Sell.Builder, server.ProtoReqRecv.SellOrBuilder>(
+                  (server.ProtoReqRecv.Sell) general_,
+                  getParentForChildren(),
+                  isClean());
+          general_ = null;
+        }
+        generalCase_ = 2;
+        onChanged();;
+        return sellBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1335,10 +2206,15 @@ public final class ProtoReqRecv {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_server_Order_descriptor;
+    internal_static_server_Buy_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_server_Order_fieldAccessorTable;
+      internal_static_server_Buy_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_server_Sell_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_server_Sell_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_server_General_descriptor;
   private static final 
@@ -1353,11 +2229,13 @@ public final class ProtoReqRecv {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\033protobuf/protoReqRecv.proto\022\006server\"A\n" +
-      "\005Order\022\017\n\007company\030\001 \001(\t\022\020\n\010quantity\030\002 \001(" +
-      "\005\022\025\n\rprice_min_max\030\003 \001(\005\"4\n\007General\022\036\n\005o" +
-      "rder\030\001 \001(\0132\r.server.OrderH\000B\t\n\007generalb\006" +
-      "proto3"
+      "\n\033protobuf/protoReqRecv.proto\022\006server\";\n" +
+      "\003Buy\022\022\n\ncompanyBuy\030\001 \001(\t\022\016\n\006qttBuy\030\002 \001(\005" +
+      "\022\020\n\010priceMax\030\003 \001(\002\">\n\004Sell\022\023\n\013companySel" +
+      "l\030\001 \001(\t\022\017\n\007qttSell\030\002 \001(\005\022\020\n\010priceMin\030\003 \001" +
+      "(\002\"N\n\007General\022\032\n\003buy\030\001 \001(\0132\013.server.BuyH" +
+      "\000\022\034\n\004sell\030\002 \001(\0132\014.server.SellH\000B\t\n\007gener" +
+      "alb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1371,18 +2249,24 @@ public final class ProtoReqRecv {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_server_Order_descriptor =
+    internal_static_server_Buy_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_server_Order_fieldAccessorTable = new
+    internal_static_server_Buy_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_server_Order_descriptor,
-        new java.lang.String[] { "Company", "Quantity", "PriceMinMax", });
-    internal_static_server_General_descriptor =
+        internal_static_server_Buy_descriptor,
+        new java.lang.String[] { "CompanyBuy", "QttBuy", "PriceMax", });
+    internal_static_server_Sell_descriptor =
       getDescriptor().getMessageTypes().get(1);
+    internal_static_server_Sell_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_server_Sell_descriptor,
+        new java.lang.String[] { "CompanySell", "QttSell", "PriceMin", });
+    internal_static_server_General_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_server_General_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_server_General_descriptor,
-        new java.lang.String[] { "Order", "General", });
+        new java.lang.String[] { "Buy", "Sell", "General", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

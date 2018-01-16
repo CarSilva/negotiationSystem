@@ -15,7 +15,7 @@ acceptor(LSock) ->
 
 login(Sock) ->
 	Size = receivePacketSize(Sock),
-	case receivePacket(Sock, Size, 'Auth') of
+	case receivePacketAuth(Sock, Size) of % 0 means that is authentication
 		{ok, Recv} ->
 				Username = element(2, Recv),
 				Password = element(3, Recv),
@@ -33,28 +33,37 @@ login(Sock) ->
 
 reqRep(Sock) ->
 	Size = receivePacketSize(Sock),
-	case receivePacket(Sock, Size, 'General') of
+	case receivePacketGeneral(Sock, Size) of %1 means that is orders (buy/sell)
 		{ok, Recv} ->
 				case Recv of
-						#'General'{general = {order,#'Order'{company=Company, quantity=Qtt, price_min_max=Price}}} ->
-								order(Company, Qtt, Price)
+						#'General'{general={buy,#'Buy'{companyBuy=Company,qttBuy=Qtt,priceMax=Price}}} ->
+								buy(Company, Qtt, Price);
+						#'General'{general={sell,#'Sell'{companySell=Company,qttSell=Qtt,priceMin=Price}}} ->
+								sell(Company, Qtt, Price)
 				end;
 		{error, Reason} -> Reason
 	end.
 
-order(Company, Qtt, Price) ->
-		Price.
+buy(Company, Qtt, Price) -> true.
+sell(Company, Qtt, Price) -> true.
 
 sendPacketSize(Sock, Send_Packet) ->
 	Tam = byte_size(Send_Packet),
 	gen_tcp:send(Sock, <<Tam>>),
 	gen_tcp:send(Sock, Send_Packet).
 
-
-receivePacket(Sock, Size, Type) ->
+receivePacketGeneral(Sock, Size) ->
 	case gen_tcp:recv(Sock, Size) of
 		{ok, Packet} ->
-				Recv = protoAuthErlang:decode_msg(Packet, Type),
+				Recv = protoReqRecvErlang:decode_msg(Packet, 'General'),
+				{ok, Recv };
+		{error, Reason} -> {error, Reason}
+end.
+
+receivePacketAuth(Sock, Size) ->
+	case gen_tcp:recv(Sock, Size) of
+		{ok, Packet} ->
+				Recv = protoAuthErlang:decode_msg(Packet, 'Auth'),
 				{ok, Recv };
 		{error, Reason} -> {error, Reason}
 	end.

@@ -7,19 +7,28 @@
 
 -define(protoReqRecvErlang_gpb_version, "4.1.1").
 
--ifndef('ORDER_PB_H').
--define('ORDER_PB_H', true).
--record('Order',
-        {company = []           :: iolist() | undefined, % = 1
-         quantity = 0           :: integer() | undefined, % = 2, 32 bits
-         price_min_max = 0      :: integer() | undefined % = 3, 32 bits
+-ifndef('SELL_PB_H').
+-define('SELL_PB_H', true).
+-record('Sell',
+        {companySell = []       :: iolist() | undefined, % = 1
+         qttSell = 0            :: integer() | undefined, % = 2, 32 bits
+         priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined % = 3
+        }).
+-endif.
+
+-ifndef('BUY_PB_H').
+-define('BUY_PB_H', true).
+-record('Buy',
+        {companyBuy = []        :: iolist() | undefined, % = 1
+         qttBuy = 0             :: integer() | undefined, % = 2, 32 bits
+         priceMax = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined % = 3
         }).
 -endif.
 
 -ifndef('GENERAL_PB_H').
 -define('GENERAL_PB_H', true).
 -record('General',
-        {general                :: {order, #'Order'{}} | undefined % oneof
+        {general                :: {buy, #'Buy'{}} | {sell, #'Sell'{}} | undefined % oneof
         }).
 -endif.
 

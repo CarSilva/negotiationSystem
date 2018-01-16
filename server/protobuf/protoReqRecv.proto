@@ -2,14 +2,20 @@ syntax = "proto3";
 
 package server;
 
-message Order {
-  string company = 1;
-  int32 quantity = 2;
-  int32 price_min_max = 3;
+message Buy {
+  string companyBuy = 1;
+  int32 qttBuy = 2;
+  float priceMax = 3;
+}
+message Sell {
+  string companySell = 1;
+  int32 qttSell = 2;
+  float priceMin = 3;
 }
 
 message General{
   oneof general {
-    Order order = 1;
+    Buy buy = 1;
+    Sell sell = 2;
   }
 }

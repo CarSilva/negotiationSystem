@@ -30,15 +30,16 @@
 -export_type([]).
 
 %% message types
--type 'Order'() :: #'Order'{}.
+-type 'Sell'() :: #'Sell'{}.
+-type 'Buy'() :: #'Buy'{}.
 -type 'General'() :: #'General'{}.
--export_type(['Order'/0, 'General'/0]).
+-export_type(['Sell'/0, 'Buy'/0, 'General'/0]).
 
--spec encode_msg(#'Order'{} | #'General'{}) -> binary().
+-spec encode_msg(#'Sell'{} | #'Buy'{} | #'General'{}) -> binary().
 encode_msg(Msg) -> encode_msg(Msg, []).
 
 
--spec encode_msg(#'Order'{} | #'General'{}, list()) -> binary().
+-spec encode_msg(#'Sell'{} | #'Buy'{} | #'General'{}, list()) -> binary().
 encode_msg(Msg, Opts) ->
     case proplists:get_bool(verify, Opts) of
       true -> verify_msg(Msg, Opts);
@@ -46,19 +47,20 @@ encode_msg(Msg, Opts) ->
     end,
     TrUserData = proplists:get_value(user_data, Opts),
     case Msg of
-      #'Order'{} -> e_msg_Order(Msg, TrUserData);
+      #'Sell'{} -> e_msg_Sell(Msg, TrUserData);
+      #'Buy'{} -> e_msg_Buy(Msg, TrUserData);
       #'General'{} -> e_msg_General(Msg, TrUserData)
     end.
 
 
 
-e_msg_Order(Msg, TrUserData) ->
-    e_msg_Order(Msg, <<>>, TrUserData).
+e_msg_Sell(Msg, TrUserData) ->
+    e_msg_Sell(Msg, <<>>, TrUserData).
 
 
-e_msg_Order(#'Order'{company = F1, quantity = F2,
-		     price_min_max = F3},
-	    Bin, TrUserData) ->
+e_msg_Sell(#'Sell'{companySell = F1, qttSell = F2,
+		   priceMin = F3},
+	   Bin, TrUserData) ->
     B1 = if F1 == undefined -> Bin;
 	    true ->
 		begin
@@ -82,8 +84,44 @@ e_msg_Order(#'Order'{company = F1, quantity = F2,
        true ->
 	   begin
 	     TrF3 = id(F3, TrUserData),
-	     if TrF3 =:= 0 -> B2;
-		true -> e_type_int32(TrF3, <<B2/binary, 24>>)
+	     if TrF3 =:= 0.0 -> B2;
+		true -> e_type_float(TrF3, <<B2/binary, 29>>)
+	     end
+	   end
+    end.
+
+e_msg_Buy(Msg, TrUserData) ->
+    e_msg_Buy(Msg, <<>>, TrUserData).
+
+
+e_msg_Buy(#'Buy'{companyBuy = F1, qttBuy = F2,
+		 priceMax = F3},
+	  Bin, TrUserData) ->
+    B1 = if F1 == undefined -> Bin;
+	    true ->
+		begin
+		  TrF1 = id(F1, TrUserData),
+		  case is_empty_string(TrF1) of
+		    true -> Bin;
+		    false -> e_type_string(TrF1, <<Bin/binary, 10>>)
+		  end
+		end
+	 end,
+    B2 = if F2 == undefined -> B1;
+	    true ->
+		begin
+		  TrF2 = id(F2, TrUserData),
+		  if TrF2 =:= 0 -> B1;
+		     true -> e_type_int32(TrF2, <<B1/binary, 16>>)
+		  end
+		end
+	 end,
+    if F3 == undefined -> B2;
+       true ->
+	   begin
+	     TrF3 = id(F3, TrUserData),
+	     if TrF3 =:= 0.0 -> B2;
+		true -> e_type_float(TrF3, <<B2/binary, 29>>)
 	     end
 	   end
     end.
@@ -96,16 +134,27 @@ e_msg_General(#'General'{general = F1}, Bin,
 	      TrUserData) ->
     case F1 of
       undefined -> Bin;
-      {order, OF1} ->
+      {buy, OF1} ->
 	  begin
 	    TrOF1 = id(OF1, TrUserData),
-	    e_mfield_General_order(TrOF1, <<Bin/binary, 10>>,
-				   TrUserData)
+	    e_mfield_General_buy(TrOF1, <<Bin/binary, 10>>,
+				 TrUserData)
+	  end;
+      {sell, OF1} ->
+	  begin
+	    TrOF1 = id(OF1, TrUserData),
+	    e_mfield_General_sell(TrOF1, <<Bin/binary, 18>>,
+				  TrUserData)
 	  end
     end.
 
-e_mfield_General_order(Msg, Bin, TrUserData) ->
-    SubBin = e_msg_Order(Msg, <<>>, TrUserData),
+e_mfield_General_buy(Msg, Bin, TrUserData) ->
+    SubBin = e_msg_Buy(Msg, <<>>, TrUserData),
+    Bin2 = e_varint(byte_size(SubBin), Bin),
+    <<Bin2/binary, SubBin/binary>>.
+
+e_mfield_General_sell(Msg, Bin, TrUserData) ->
+    SubBin = e_msg_Sell(Msg, <<>>, TrUserData),
     Bin2 = e_varint(byte_size(SubBin), Bin),
     <<Bin2/binary, SubBin/binary>>.
 
@@ -120,6 +169,15 @@ e_type_string(S, Bin) ->
     Utf8 = unicode:characters_to_binary(S),
     Bin2 = e_varint(byte_size(Utf8), Bin),
     <<Bin2/binary, Utf8/binary>>.
+
+e_type_float(V, Bin) when is_number(V) ->
+    <<Bin/binary, V:32/little-float>>;
+e_type_float(infinity, Bin) ->
+    <<Bin/binary, 0:16, 128, 127>>;
+e_type_float('-infinity', Bin) ->
+    <<Bin/binary, 0:16, 128, 255>>;
+e_type_float(nan, Bin) ->
+    <<Bin/binary, 0:16, 192, 127>>.
 
 e_varint(N, Bin) when N =< 127 -> <<Bin/binary, N>>;
 e_varint(N, Bin) ->
@@ -152,13 +210,21 @@ decode_msg(Bin, MsgName) when is_binary(Bin) ->
 decode_msg(Bin, MsgName, Opts) when is_binary(Bin) ->
     TrUserData = proplists:get_value(user_data, Opts),
     case MsgName of
-      'Order' ->
-	  try d_msg_Order(Bin, TrUserData) catch
+      'Sell' ->
+	  try d_msg_Sell(Bin, TrUserData) catch
 	    Class:Reason ->
 		StackTrace = erlang:get_stacktrace(),
 		error({gpb_error,
 		       {decoding_failure,
-			{Bin, 'Order', {Class, Reason, StackTrace}}}})
+			{Bin, 'Sell', {Class, Reason, StackTrace}}}})
+	  end;
+      'Buy' ->
+	  try d_msg_Buy(Bin, TrUserData) catch
+	    Class:Reason ->
+		StackTrace = erlang:get_stacktrace(),
+		error({gpb_error,
+		       {decoding_failure,
+			{Bin, 'Buy', {Class, Reason, StackTrace}}}})
 	  end;
       'General' ->
 	  try d_msg_General(Bin, TrUserData) catch
@@ -172,154 +238,309 @@ decode_msg(Bin, MsgName, Opts) when is_binary(Bin) ->
 
 
 
-d_msg_Order(Bin, TrUserData) ->
-    dfp_read_field_def_Order(Bin, 0, 0, id([], TrUserData),
-			     id(0, TrUserData), id(0, TrUserData), TrUserData).
+d_msg_Sell(Bin, TrUserData) ->
+    dfp_read_field_def_Sell(Bin, 0, 0, id([], TrUserData),
+			    id(0, TrUserData), id(0.0, TrUserData), TrUserData).
 
-dfp_read_field_def_Order(<<10, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, TrUserData) ->
-    d_field_Order_company(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+dfp_read_field_def_Sell(<<10, Rest/binary>>, Z1, Z2,
+			F@_1, F@_2, F@_3, TrUserData) ->
+    d_field_Sell_companySell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			     TrUserData);
+dfp_read_field_def_Sell(<<16, Rest/binary>>, Z1, Z2,
+			F@_1, F@_2, F@_3, TrUserData) ->
+    d_field_Sell_qttSell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			 TrUserData);
+dfp_read_field_def_Sell(<<29, Rest/binary>>, Z1, Z2,
+			F@_1, F@_2, F@_3, TrUserData) ->
+    d_field_Sell_priceMin(Rest, Z1, Z2, F@_1, F@_2, F@_3,
 			  TrUserData);
-dfp_read_field_def_Order(<<16, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, TrUserData) ->
-    d_field_Order_quantity(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			   TrUserData);
-dfp_read_field_def_Order(<<24, Rest/binary>>, Z1, Z2,
-			 F@_1, F@_2, F@_3, TrUserData) ->
-    d_field_Order_price_min_max(Rest, Z1, Z2, F@_1, F@_2,
-				F@_3, TrUserData);
-dfp_read_field_def_Order(<<>>, 0, 0, F@_1, F@_2, F@_3,
-			 _) ->
-    #'Order'{company = F@_1, quantity = F@_2,
-	     price_min_max = F@_3};
-dfp_read_field_def_Order(Other, Z1, Z2, F@_1, F@_2,
-			 F@_3, TrUserData) ->
-    dg_read_field_def_Order(Other, Z1, Z2, F@_1, F@_2, F@_3,
-			    TrUserData).
+dfp_read_field_def_Sell(<<>>, 0, 0, F@_1, F@_2, F@_3,
+			_) ->
+    #'Sell'{companySell = F@_1, qttSell = F@_2,
+	    priceMin = F@_3};
+dfp_read_field_def_Sell(Other, Z1, Z2, F@_1, F@_2, F@_3,
+			TrUserData) ->
+    dg_read_field_def_Sell(Other, Z1, Z2, F@_1, F@_2, F@_3,
+			   TrUserData).
 
-dg_read_field_def_Order(<<1:1, X:7, Rest/binary>>, N,
-			Acc, F@_1, F@_2, F@_3, TrUserData)
+dg_read_field_def_Sell(<<1:1, X:7, Rest/binary>>, N,
+		       Acc, F@_1, F@_2, F@_3, TrUserData)
     when N < 32 - 7 ->
-    dg_read_field_def_Order(Rest, N + 7, X bsl N + Acc,
-			    F@_1, F@_2, F@_3, TrUserData);
-dg_read_field_def_Order(<<0:1, X:7, Rest/binary>>, N,
-			Acc, F@_1, F@_2, F@_3, TrUserData) ->
+    dg_read_field_def_Sell(Rest, N + 7, X bsl N + Acc, F@_1,
+			   F@_2, F@_3, TrUserData);
+dg_read_field_def_Sell(<<0:1, X:7, Rest/binary>>, N,
+		       Acc, F@_1, F@_2, F@_3, TrUserData) ->
     Key = X bsl N + Acc,
     case Key of
       10 ->
-	  d_field_Order_company(Rest, 0, 0, F@_1, F@_2, F@_3,
-				TrUserData);
+	  d_field_Sell_companySell(Rest, 0, 0, F@_1, F@_2, F@_3,
+				   TrUserData);
       16 ->
-	  d_field_Order_quantity(Rest, 0, 0, F@_1, F@_2, F@_3,
-				 TrUserData);
-      24 ->
-	  d_field_Order_price_min_max(Rest, 0, 0, F@_1, F@_2,
-				      F@_3, TrUserData);
+	  d_field_Sell_qttSell(Rest, 0, 0, F@_1, F@_2, F@_3,
+			       TrUserData);
+      29 ->
+	  d_field_Sell_priceMin(Rest, 0, 0, F@_1, F@_2, F@_3,
+				TrUserData);
       _ ->
 	  case Key band 7 of
 	    0 ->
-		skip_varint_Order(Rest, 0, 0, F@_1, F@_2, F@_3,
-				  TrUserData);
-	    1 ->
-		skip_64_Order(Rest, 0, 0, F@_1, F@_2, F@_3, TrUserData);
-	    2 ->
-		skip_length_delimited_Order(Rest, 0, 0, F@_1, F@_2,
-					    F@_3, TrUserData);
-	    3 ->
-		skip_group_Order(Rest, Key bsr 3, 0, F@_1, F@_2, F@_3,
+		skip_varint_Sell(Rest, 0, 0, F@_1, F@_2, F@_3,
 				 TrUserData);
+	    1 ->
+		skip_64_Sell(Rest, 0, 0, F@_1, F@_2, F@_3, TrUserData);
+	    2 ->
+		skip_length_delimited_Sell(Rest, 0, 0, F@_1, F@_2, F@_3,
+					   TrUserData);
+	    3 ->
+		skip_group_Sell(Rest, Key bsr 3, 0, F@_1, F@_2, F@_3,
+				TrUserData);
 	    5 ->
-		skip_32_Order(Rest, 0, 0, F@_1, F@_2, F@_3, TrUserData)
+		skip_32_Sell(Rest, 0, 0, F@_1, F@_2, F@_3, TrUserData)
 	  end
     end;
-dg_read_field_def_Order(<<>>, 0, 0, F@_1, F@_2, F@_3,
-			_) ->
-    #'Order'{company = F@_1, quantity = F@_2,
-	     price_min_max = F@_3}.
+dg_read_field_def_Sell(<<>>, 0, 0, F@_1, F@_2, F@_3,
+		       _) ->
+    #'Sell'{companySell = F@_1, qttSell = F@_2,
+	    priceMin = F@_3}.
 
-d_field_Order_company(<<1:1, X:7, Rest/binary>>, N, Acc,
-		      F@_1, F@_2, F@_3, TrUserData)
+d_field_Sell_companySell(<<1:1, X:7, Rest/binary>>, N,
+			 Acc, F@_1, F@_2, F@_3, TrUserData)
     when N < 57 ->
-    d_field_Order_company(Rest, N + 7, X bsl N + Acc, F@_1,
-			  F@_2, F@_3, TrUserData);
-d_field_Order_company(<<0:1, X:7, Rest/binary>>, N, Acc,
-		      _, F@_2, F@_3, TrUserData) ->
+    d_field_Sell_companySell(Rest, N + 7, X bsl N + Acc,
+			     F@_1, F@_2, F@_3, TrUserData);
+d_field_Sell_companySell(<<0:1, X:7, Rest/binary>>, N,
+			 Acc, _, F@_2, F@_3, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
 			   {unicode:characters_to_list(Utf8, unicode), Rest2}
 			 end,
-    dfp_read_field_def_Order(RestF, 0, 0, NewFValue, F@_2,
-			     F@_3, TrUserData).
+    dfp_read_field_def_Sell(RestF, 0, 0, NewFValue, F@_2,
+			    F@_3, TrUserData).
 
-d_field_Order_quantity(<<1:1, X:7, Rest/binary>>, N,
-		       Acc, F@_1, F@_2, F@_3, TrUserData)
+d_field_Sell_qttSell(<<1:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, F@_2, F@_3, TrUserData)
     when N < 57 ->
-    d_field_Order_quantity(Rest, N + 7, X bsl N + Acc, F@_1,
-			   F@_2, F@_3, TrUserData);
-d_field_Order_quantity(<<0:1, X:7, Rest/binary>>, N,
-		       Acc, F@_1, _, F@_3, TrUserData) ->
+    d_field_Sell_qttSell(Rest, N + 7, X bsl N + Acc, F@_1,
+			 F@_2, F@_3, TrUserData);
+d_field_Sell_qttSell(<<0:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, _, F@_3, TrUserData) ->
     {NewFValue, RestF} = {begin
 			    <<Res:32/signed-native>> = <<(X bsl N +
 							    Acc):32/unsigned-native>>,
 			    Res
 			  end,
 			  Rest},
-    dfp_read_field_def_Order(RestF, 0, 0, F@_1, NewFValue,
-			     F@_3, TrUserData).
+    dfp_read_field_def_Sell(RestF, 0, 0, F@_1, NewFValue,
+			    F@_3, TrUserData).
 
-d_field_Order_price_min_max(<<1:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, F@_3, TrUserData)
+d_field_Sell_priceMin(<<0:16, 128, 127, Rest/binary>>,
+		      Z1, Z2, F@_1, F@_2, _, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2,
+			    infinity, TrUserData);
+d_field_Sell_priceMin(<<0:16, 128, 255, Rest/binary>>,
+		      Z1, Z2, F@_1, F@_2, _, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2,
+			    '-infinity', TrUserData);
+d_field_Sell_priceMin(<<_:16, 1:1, _:7, _:1, 127:7,
+			Rest/binary>>,
+		      Z1, Z2, F@_1, F@_2, _, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, nan,
+			    TrUserData);
+d_field_Sell_priceMin(<<Value:32/little-float,
+			Rest/binary>>,
+		      Z1, Z2, F@_1, F@_2, _, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, Value,
+			    TrUserData).
+
+skip_varint_Sell(<<1:1, _:7, Rest/binary>>, Z1, Z2,
+		 F@_1, F@_2, F@_3, TrUserData) ->
+    skip_varint_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+		     TrUserData);
+skip_varint_Sell(<<0:1, _:7, Rest/binary>>, Z1, Z2,
+		 F@_1, F@_2, F@_3, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			    TrUserData).
+
+skip_length_delimited_Sell(<<1:1, X:7, Rest/binary>>, N,
+			   Acc, F@_1, F@_2, F@_3, TrUserData)
     when N < 57 ->
-    d_field_Order_price_min_max(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, F@_3, TrUserData);
-d_field_Order_price_min_max(<<0:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, _, TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    Res
-			  end,
-			  Rest},
-    dfp_read_field_def_Order(RestF, 0, 0, F@_1, F@_2,
-			     NewFValue, TrUserData).
-
-skip_varint_Order(<<1:1, _:7, Rest/binary>>, Z1, Z2,
-		  F@_1, F@_2, F@_3, TrUserData) ->
-    skip_varint_Order(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-		      TrUserData);
-skip_varint_Order(<<0:1, _:7, Rest/binary>>, Z1, Z2,
-		  F@_1, F@_2, F@_3, TrUserData) ->
-    dfp_read_field_def_Order(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			     TrUserData).
-
-skip_length_delimited_Order(<<1:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, F@_3, TrUserData)
-    when N < 57 ->
-    skip_length_delimited_Order(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, F@_3, TrUserData);
-skip_length_delimited_Order(<<0:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, F@_3, TrUserData) ->
+    skip_length_delimited_Sell(Rest, N + 7, X bsl N + Acc,
+			       F@_1, F@_2, F@_3, TrUserData);
+skip_length_delimited_Sell(<<0:1, X:7, Rest/binary>>, N,
+			   Acc, F@_1, F@_2, F@_3, TrUserData) ->
     Length = X bsl N + Acc,
     <<_:Length/binary, Rest2/binary>> = Rest,
-    dfp_read_field_def_Order(Rest2, 0, 0, F@_1, F@_2, F@_3,
-			     TrUserData).
+    dfp_read_field_def_Sell(Rest2, 0, 0, F@_1, F@_2, F@_3,
+			    TrUserData).
 
-skip_group_Order(Bin, FNum, Z2, F@_1, F@_2, F@_3,
-		 TrUserData) ->
+skip_group_Sell(Bin, FNum, Z2, F@_1, F@_2, F@_3,
+		TrUserData) ->
     {_, Rest} = read_group(Bin, FNum),
-    dfp_read_field_def_Order(Rest, 0, Z2, F@_1, F@_2, F@_3,
-			     TrUserData).
+    dfp_read_field_def_Sell(Rest, 0, Z2, F@_1, F@_2, F@_3,
+			    TrUserData).
 
-skip_32_Order(<<_:32, Rest/binary>>, Z1, Z2, F@_1, F@_2,
-	      F@_3, TrUserData) ->
-    dfp_read_field_def_Order(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			     TrUserData).
+skip_32_Sell(<<_:32, Rest/binary>>, Z1, Z2, F@_1, F@_2,
+	     F@_3, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			    TrUserData).
 
-skip_64_Order(<<_:64, Rest/binary>>, Z1, Z2, F@_1, F@_2,
-	      F@_3, TrUserData) ->
-    dfp_read_field_def_Order(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			     TrUserData).
+skip_64_Sell(<<_:64, Rest/binary>>, Z1, Z2, F@_1, F@_2,
+	     F@_3, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			    TrUserData).
+
+d_msg_Buy(Bin, TrUserData) ->
+    dfp_read_field_def_Buy(Bin, 0, 0, id([], TrUserData),
+			   id(0, TrUserData), id(0.0, TrUserData), TrUserData).
+
+dfp_read_field_def_Buy(<<10, Rest/binary>>, Z1, Z2,
+		       F@_1, F@_2, F@_3, TrUserData) ->
+    d_field_Buy_companyBuy(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			   TrUserData);
+dfp_read_field_def_Buy(<<16, Rest/binary>>, Z1, Z2,
+		       F@_1, F@_2, F@_3, TrUserData) ->
+    d_field_Buy_qttBuy(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+		       TrUserData);
+dfp_read_field_def_Buy(<<29, Rest/binary>>, Z1, Z2,
+		       F@_1, F@_2, F@_3, TrUserData) ->
+    d_field_Buy_priceMax(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			 TrUserData);
+dfp_read_field_def_Buy(<<>>, 0, 0, F@_1, F@_2, F@_3,
+		       _) ->
+    #'Buy'{companyBuy = F@_1, qttBuy = F@_2,
+	   priceMax = F@_3};
+dfp_read_field_def_Buy(Other, Z1, Z2, F@_1, F@_2, F@_3,
+		       TrUserData) ->
+    dg_read_field_def_Buy(Other, Z1, Z2, F@_1, F@_2, F@_3,
+			  TrUserData).
+
+dg_read_field_def_Buy(<<1:1, X:7, Rest/binary>>, N, Acc,
+		      F@_1, F@_2, F@_3, TrUserData)
+    when N < 32 - 7 ->
+    dg_read_field_def_Buy(Rest, N + 7, X bsl N + Acc, F@_1,
+			  F@_2, F@_3, TrUserData);
+dg_read_field_def_Buy(<<0:1, X:7, Rest/binary>>, N, Acc,
+		      F@_1, F@_2, F@_3, TrUserData) ->
+    Key = X bsl N + Acc,
+    case Key of
+      10 ->
+	  d_field_Buy_companyBuy(Rest, 0, 0, F@_1, F@_2, F@_3,
+				 TrUserData);
+      16 ->
+	  d_field_Buy_qttBuy(Rest, 0, 0, F@_1, F@_2, F@_3,
+			     TrUserData);
+      29 ->
+	  d_field_Buy_priceMax(Rest, 0, 0, F@_1, F@_2, F@_3,
+			       TrUserData);
+      _ ->
+	  case Key band 7 of
+	    0 ->
+		skip_varint_Buy(Rest, 0, 0, F@_1, F@_2, F@_3,
+				TrUserData);
+	    1 ->
+		skip_64_Buy(Rest, 0, 0, F@_1, F@_2, F@_3, TrUserData);
+	    2 ->
+		skip_length_delimited_Buy(Rest, 0, 0, F@_1, F@_2, F@_3,
+					  TrUserData);
+	    3 ->
+		skip_group_Buy(Rest, Key bsr 3, 0, F@_1, F@_2, F@_3,
+			       TrUserData);
+	    5 ->
+		skip_32_Buy(Rest, 0, 0, F@_1, F@_2, F@_3, TrUserData)
+	  end
+    end;
+dg_read_field_def_Buy(<<>>, 0, 0, F@_1, F@_2, F@_3,
+		      _) ->
+    #'Buy'{companyBuy = F@_1, qttBuy = F@_2,
+	   priceMax = F@_3}.
+
+d_field_Buy_companyBuy(<<1:1, X:7, Rest/binary>>, N,
+		       Acc, F@_1, F@_2, F@_3, TrUserData)
+    when N < 57 ->
+    d_field_Buy_companyBuy(Rest, N + 7, X bsl N + Acc, F@_1,
+			   F@_2, F@_3, TrUserData);
+d_field_Buy_companyBuy(<<0:1, X:7, Rest/binary>>, N,
+		       Acc, _, F@_2, F@_3, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
+			   {unicode:characters_to_list(Utf8, unicode), Rest2}
+			 end,
+    dfp_read_field_def_Buy(RestF, 0, 0, NewFValue, F@_2,
+			   F@_3, TrUserData).
+
+d_field_Buy_qttBuy(<<1:1, X:7, Rest/binary>>, N, Acc,
+		   F@_1, F@_2, F@_3, TrUserData)
+    when N < 57 ->
+    d_field_Buy_qttBuy(Rest, N + 7, X bsl N + Acc, F@_1,
+		       F@_2, F@_3, TrUserData);
+d_field_Buy_qttBuy(<<0:1, X:7, Rest/binary>>, N, Acc,
+		   F@_1, _, F@_3, TrUserData) ->
+    {NewFValue, RestF} = {begin
+			    <<Res:32/signed-native>> = <<(X bsl N +
+							    Acc):32/unsigned-native>>,
+			    Res
+			  end,
+			  Rest},
+    dfp_read_field_def_Buy(RestF, 0, 0, F@_1, NewFValue,
+			   F@_3, TrUserData).
+
+d_field_Buy_priceMax(<<0:16, 128, 127, Rest/binary>>,
+		     Z1, Z2, F@_1, F@_2, _, TrUserData) ->
+    dfp_read_field_def_Buy(Rest, Z1, Z2, F@_1, F@_2,
+			   infinity, TrUserData);
+d_field_Buy_priceMax(<<0:16, 128, 255, Rest/binary>>,
+		     Z1, Z2, F@_1, F@_2, _, TrUserData) ->
+    dfp_read_field_def_Buy(Rest, Z1, Z2, F@_1, F@_2,
+			   '-infinity', TrUserData);
+d_field_Buy_priceMax(<<_:16, 1:1, _:7, _:1, 127:7,
+		       Rest/binary>>,
+		     Z1, Z2, F@_1, F@_2, _, TrUserData) ->
+    dfp_read_field_def_Buy(Rest, Z1, Z2, F@_1, F@_2, nan,
+			   TrUserData);
+d_field_Buy_priceMax(<<Value:32/little-float,
+		       Rest/binary>>,
+		     Z1, Z2, F@_1, F@_2, _, TrUserData) ->
+    dfp_read_field_def_Buy(Rest, Z1, Z2, F@_1, F@_2, Value,
+			   TrUserData).
+
+skip_varint_Buy(<<1:1, _:7, Rest/binary>>, Z1, Z2, F@_1,
+		F@_2, F@_3, TrUserData) ->
+    skip_varint_Buy(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+		    TrUserData);
+skip_varint_Buy(<<0:1, _:7, Rest/binary>>, Z1, Z2, F@_1,
+		F@_2, F@_3, TrUserData) ->
+    dfp_read_field_def_Buy(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			   TrUserData).
+
+skip_length_delimited_Buy(<<1:1, X:7, Rest/binary>>, N,
+			  Acc, F@_1, F@_2, F@_3, TrUserData)
+    when N < 57 ->
+    skip_length_delimited_Buy(Rest, N + 7, X bsl N + Acc,
+			      F@_1, F@_2, F@_3, TrUserData);
+skip_length_delimited_Buy(<<0:1, X:7, Rest/binary>>, N,
+			  Acc, F@_1, F@_2, F@_3, TrUserData) ->
+    Length = X bsl N + Acc,
+    <<_:Length/binary, Rest2/binary>> = Rest,
+    dfp_read_field_def_Buy(Rest2, 0, 0, F@_1, F@_2, F@_3,
+			   TrUserData).
+
+skip_group_Buy(Bin, FNum, Z2, F@_1, F@_2, F@_3,
+	       TrUserData) ->
+    {_, Rest} = read_group(Bin, FNum),
+    dfp_read_field_def_Buy(Rest, 0, Z2, F@_1, F@_2, F@_3,
+			   TrUserData).
+
+skip_32_Buy(<<_:32, Rest/binary>>, Z1, Z2, F@_1, F@_2,
+	    F@_3, TrUserData) ->
+    dfp_read_field_def_Buy(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			   TrUserData).
+
+skip_64_Buy(<<_:64, Rest/binary>>, Z1, Z2, F@_1, F@_2,
+	    F@_3, TrUserData) ->
+    dfp_read_field_def_Buy(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			   TrUserData).
 
 d_msg_General(Bin, TrUserData) ->
     dfp_read_field_def_General(Bin, 0, 0,
@@ -327,7 +548,10 @@ d_msg_General(Bin, TrUserData) ->
 
 dfp_read_field_def_General(<<10, Rest/binary>>, Z1, Z2,
 			   F@_1, TrUserData) ->
-    d_field_General_order(Rest, Z1, Z2, F@_1, TrUserData);
+    d_field_General_buy(Rest, Z1, Z2, F@_1, TrUserData);
+dfp_read_field_def_General(<<18, Rest/binary>>, Z1, Z2,
+			   F@_1, TrUserData) ->
+    d_field_General_sell(Rest, Z1, Z2, F@_1, TrUserData);
 dfp_read_field_def_General(<<>>, 0, 0, F@_1, _) ->
     #'General'{general = F@_1};
 dfp_read_field_def_General(Other, Z1, Z2, F@_1,
@@ -344,8 +568,9 @@ dg_read_field_def_General(<<0:1, X:7, Rest/binary>>, N,
 			  Acc, F@_1, TrUserData) ->
     Key = X bsl N + Acc,
     case Key of
-      10 ->
-	  d_field_General_order(Rest, 0, 0, F@_1, TrUserData);
+      10 -> d_field_General_buy(Rest, 0, 0, F@_1, TrUserData);
+      18 ->
+	  d_field_General_sell(Rest, 0, 0, F@_1, TrUserData);
       _ ->
 	  case Key band 7 of
 	    0 -> skip_varint_General(Rest, 0, 0, F@_1, TrUserData);
@@ -362,26 +587,49 @@ dg_read_field_def_General(<<0:1, X:7, Rest/binary>>, N,
 dg_read_field_def_General(<<>>, 0, 0, F@_1, _) ->
     #'General'{general = F@_1}.
 
-d_field_General_order(<<1:1, X:7, Rest/binary>>, N, Acc,
-		      F@_1, TrUserData)
+d_field_General_buy(<<1:1, X:7, Rest/binary>>, N, Acc,
+		    F@_1, TrUserData)
     when N < 57 ->
-    d_field_General_order(Rest, N + 7, X bsl N + Acc, F@_1,
-			  TrUserData);
-d_field_General_order(<<0:1, X:7, Rest/binary>>, N, Acc,
-		      Prev, TrUserData) ->
+    d_field_General_buy(Rest, N + 7, X bsl N + Acc, F@_1,
+			TrUserData);
+d_field_General_buy(<<0:1, X:7, Rest/binary>>, N, Acc,
+		    Prev, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
-			   {id(d_msg_Order(Bs, TrUserData), TrUserData), Rest2}
+			   {id(d_msg_Buy(Bs, TrUserData), TrUserData), Rest2}
 			 end,
     dfp_read_field_def_General(RestF, 0, 0,
 			       case Prev of
-				 undefined -> {order, NewFValue};
-				 {order, MVPrev} ->
-				     {order,
-				      merge_msg_Order(MVPrev, NewFValue,
-						      TrUserData)};
-				 _ -> {order, NewFValue}
+				 undefined -> {buy, NewFValue};
+				 {buy, MVPrev} ->
+				     {buy,
+				      merge_msg_Buy(MVPrev, NewFValue,
+						    TrUserData)};
+				 _ -> {buy, NewFValue}
+			       end,
+			       TrUserData).
+
+d_field_General_sell(<<1:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, TrUserData)
+    when N < 57 ->
+    d_field_General_sell(Rest, N + 7, X bsl N + Acc, F@_1,
+			 TrUserData);
+d_field_General_sell(<<0:1, X:7, Rest/binary>>, N, Acc,
+		     Prev, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Bs:Len/binary, Rest2/binary>> = Rest,
+			   {id(d_msg_Sell(Bs, TrUserData), TrUserData), Rest2}
+			 end,
+    dfp_read_field_def_General(RestF, 0, 0,
+			       case Prev of
+				 undefined -> {sell, NewFValue};
+				 {sell, MVPrev} ->
+				     {sell,
+				      merge_msg_Sell(MVPrev, NewFValue,
+						     TrUserData)};
+				 _ -> {sell, NewFValue}
 			       end,
 			       TrUserData).
 
@@ -484,36 +732,57 @@ merge_msgs(Prev, New, Opts)
     when element(1, Prev) =:= element(1, New) ->
     TrUserData = proplists:get_value(user_data, Opts),
     case Prev of
-      #'Order'{} -> merge_msg_Order(Prev, New, TrUserData);
+      #'Sell'{} -> merge_msg_Sell(Prev, New, TrUserData);
+      #'Buy'{} -> merge_msg_Buy(Prev, New, TrUserData);
       #'General'{} -> merge_msg_General(Prev, New, TrUserData)
     end.
 
-merge_msg_Order(#'Order'{company = PFcompany,
-			 quantity = PFquantity,
-			 price_min_max = PFprice_min_max},
-		#'Order'{company = NFcompany, quantity = NFquantity,
-			 price_min_max = NFprice_min_max},
-		_) ->
-    #'Order'{company =
-		 if NFcompany =:= undefined -> PFcompany;
-		    true -> NFcompany
-		 end,
-	     quantity =
-		 if NFquantity =:= undefined -> PFquantity;
-		    true -> NFquantity
-		 end,
-	     price_min_max =
-		 if NFprice_min_max =:= undefined -> PFprice_min_max;
-		    true -> NFprice_min_max
-		 end}.
+merge_msg_Sell(#'Sell'{companySell = PFcompanySell,
+		       qttSell = PFqttSell, priceMin = PFpriceMin},
+	       #'Sell'{companySell = NFcompanySell,
+		       qttSell = NFqttSell, priceMin = NFpriceMin},
+	       _) ->
+    #'Sell'{companySell =
+		if NFcompanySell =:= undefined -> PFcompanySell;
+		   true -> NFcompanySell
+		end,
+	    qttSell =
+		if NFqttSell =:= undefined -> PFqttSell;
+		   true -> NFqttSell
+		end,
+	    priceMin =
+		if NFpriceMin =:= undefined -> PFpriceMin;
+		   true -> NFpriceMin
+		end}.
+
+merge_msg_Buy(#'Buy'{companyBuy = PFcompanyBuy,
+		     qttBuy = PFqttBuy, priceMax = PFpriceMax},
+	      #'Buy'{companyBuy = NFcompanyBuy, qttBuy = NFqttBuy,
+		     priceMax = NFpriceMax},
+	      _) ->
+    #'Buy'{companyBuy =
+	       if NFcompanyBuy =:= undefined -> PFcompanyBuy;
+		  true -> NFcompanyBuy
+	       end,
+	   qttBuy =
+	       if NFqttBuy =:= undefined -> PFqttBuy;
+		  true -> NFqttBuy
+	       end,
+	   priceMax =
+	       if NFpriceMax =:= undefined -> PFpriceMax;
+		  true -> NFpriceMax
+	       end}.
 
 merge_msg_General(#'General'{general = PFgeneral},
 		  #'General'{general = NFgeneral}, TrUserData) ->
     #'General'{general =
 		   case {PFgeneral, NFgeneral} of
-		     {{order, OPFgeneral}, {order, ONFgeneral}} ->
-			 {order,
-			  merge_msg_Order(OPFgeneral, ONFgeneral, TrUserData)};
+		     {{buy, OPFgeneral}, {buy, ONFgeneral}} ->
+			 {buy,
+			  merge_msg_Buy(OPFgeneral, ONFgeneral, TrUserData)};
+		     {{sell, OPFgeneral}, {sell, ONFgeneral}} ->
+			 {sell,
+			  merge_msg_Sell(OPFgeneral, ONFgeneral, TrUserData)};
 		     {_, undefined} -> PFgeneral;
 		     _ -> NFgeneral
 		   end}.
@@ -524,37 +793,57 @@ verify_msg(Msg) -> verify_msg(Msg, []).
 verify_msg(Msg, Opts) ->
     TrUserData = proplists:get_value(user_data, Opts),
     case Msg of
-      #'Order'{} -> v_msg_Order(Msg, ['Order'], TrUserData);
+      #'Sell'{} -> v_msg_Sell(Msg, ['Sell'], TrUserData);
+      #'Buy'{} -> v_msg_Buy(Msg, ['Buy'], TrUserData);
       #'General'{} ->
 	  v_msg_General(Msg, ['General'], TrUserData);
       _ -> mk_type_error(not_a_known_message, Msg, [])
     end.
 
 
--dialyzer({nowarn_function,v_msg_Order/3}).
-v_msg_Order(#'Order'{company = F1, quantity = F2,
-		     price_min_max = F3},
-	    Path, _) ->
+-dialyzer({nowarn_function,v_msg_Sell/3}).
+v_msg_Sell(#'Sell'{companySell = F1, qttSell = F2,
+		   priceMin = F3},
+	   Path, _) ->
     if F1 == undefined -> ok;
-       true -> v_type_string(F1, [company | Path])
+       true -> v_type_string(F1, [companySell | Path])
     end,
     if F2 == undefined -> ok;
-       true -> v_type_int32(F2, [quantity | Path])
+       true -> v_type_int32(F2, [qttSell | Path])
     end,
     if F3 == undefined -> ok;
-       true -> v_type_int32(F3, [price_min_max | Path])
+       true -> v_type_float(F3, [priceMin | Path])
     end,
     ok;
-v_msg_Order(X, Path, _TrUserData) ->
-    mk_type_error({expected_msg, 'Order'}, X, Path).
+v_msg_Sell(X, Path, _TrUserData) ->
+    mk_type_error({expected_msg, 'Sell'}, X, Path).
+
+-dialyzer({nowarn_function,v_msg_Buy/3}).
+v_msg_Buy(#'Buy'{companyBuy = F1, qttBuy = F2,
+		 priceMax = F3},
+	  Path, _) ->
+    if F1 == undefined -> ok;
+       true -> v_type_string(F1, [companyBuy | Path])
+    end,
+    if F2 == undefined -> ok;
+       true -> v_type_int32(F2, [qttBuy | Path])
+    end,
+    if F3 == undefined -> ok;
+       true -> v_type_float(F3, [priceMax | Path])
+    end,
+    ok;
+v_msg_Buy(X, Path, _TrUserData) ->
+    mk_type_error({expected_msg, 'Buy'}, X, Path).
 
 -dialyzer({nowarn_function,v_msg_General/3}).
 v_msg_General(#'General'{general = F1}, Path,
 	      TrUserData) ->
     case F1 of
       undefined -> ok;
-      {order, OF1} ->
-	  v_msg_Order(OF1, [order, general | Path], TrUserData);
+      {buy, OF1} ->
+	  v_msg_Buy(OF1, [buy, general | Path], TrUserData);
+      {sell, OF1} ->
+	  v_msg_Sell(OF1, [sell, general | Path], TrUserData);
       _ -> mk_type_error(invalid_oneof, F1, [general | Path])
     end,
     ok.
@@ -569,6 +858,15 @@ v_type_int32(N, Path) when is_integer(N) ->
 v_type_int32(X, Path) ->
     mk_type_error({bad_integer, int32, signed, 32}, X,
 		  Path).
+
+-dialyzer({nowarn_function,v_type_float/2}).
+v_type_float(N, _Path) when is_float(N) -> ok;
+v_type_float(N, _Path) when is_integer(N) -> ok;
+v_type_float(infinity, _Path) -> ok;
+v_type_float('-infinity', _Path) -> ok;
+v_type_float(nan, _Path) -> ok;
+v_type_float(X, Path) ->
+    mk_type_error(bad_float_value, X, Path).
 
 -dialyzer({nowarn_function,v_type_string/2}).
 v_type_string(S, Path) when is_list(S); is_binary(S) ->
@@ -602,28 +900,38 @@ id(X, _TrUserData) -> X.
 
 
 get_msg_defs() ->
-    [{{msg, 'Order'},
-      [#field{name = company, fnum = 1, rnum = 2,
+    [{{msg, 'Sell'},
+      [#field{name = companySell, fnum = 1, rnum = 2,
 	      type = string, occurrence = optional, opts = []},
-       #field{name = quantity, fnum = 2, rnum = 3,
-	      type = int32, occurrence = optional, opts = []},
-       #field{name = price_min_max, fnum = 3, rnum = 4,
-	      type = int32, occurrence = optional, opts = []}]},
+       #field{name = qttSell, fnum = 2, rnum = 3, type = int32,
+	      occurrence = optional, opts = []},
+       #field{name = priceMin, fnum = 3, rnum = 4,
+	      type = float, occurrence = optional, opts = []}]},
+     {{msg, 'Buy'},
+      [#field{name = companyBuy, fnum = 1, rnum = 2,
+	      type = string, occurrence = optional, opts = []},
+       #field{name = qttBuy, fnum = 2, rnum = 3, type = int32,
+	      occurrence = optional, opts = []},
+       #field{name = priceMax, fnum = 3, rnum = 4,
+	      type = float, occurrence = optional, opts = []}]},
      {{msg, 'General'},
       [#gpb_oneof{name = general, rnum = 2,
 		  fields =
-		      [#field{name = order, fnum = 1, rnum = 2,
-			      type = {msg, 'Order'}, occurrence = optional,
+		      [#field{name = buy, fnum = 1, rnum = 2,
+			      type = {msg, 'Buy'}, occurrence = optional,
+			      opts = []},
+		       #field{name = sell, fnum = 2, rnum = 2,
+			      type = {msg, 'Sell'}, occurrence = optional,
 			      opts = []}]}]}].
 
 
-get_msg_names() -> ['Order', 'General'].
+get_msg_names() -> ['Sell', 'Buy', 'General'].
 
 
 get_group_names() -> [].
 
 
-get_msg_or_group_names() -> ['Order', 'General'].
+get_msg_or_group_names() -> ['Sell', 'Buy', 'General'].
 
 
 get_enum_names() -> [].
@@ -641,18 +949,28 @@ fetch_enum_def(EnumName) ->
     erlang:error({no_such_enum, EnumName}).
 
 
-find_msg_def('Order') ->
-    [#field{name = company, fnum = 1, rnum = 2,
+find_msg_def('Sell') ->
+    [#field{name = companySell, fnum = 1, rnum = 2,
 	    type = string, occurrence = optional, opts = []},
-     #field{name = quantity, fnum = 2, rnum = 3,
-	    type = int32, occurrence = optional, opts = []},
-     #field{name = price_min_max, fnum = 3, rnum = 4,
-	    type = int32, occurrence = optional, opts = []}];
+     #field{name = qttSell, fnum = 2, rnum = 3, type = int32,
+	    occurrence = optional, opts = []},
+     #field{name = priceMin, fnum = 3, rnum = 4,
+	    type = float, occurrence = optional, opts = []}];
+find_msg_def('Buy') ->
+    [#field{name = companyBuy, fnum = 1, rnum = 2,
+	    type = string, occurrence = optional, opts = []},
+     #field{name = qttBuy, fnum = 2, rnum = 3, type = int32,
+	    occurrence = optional, opts = []},
+     #field{name = priceMax, fnum = 3, rnum = 4,
+	    type = float, occurrence = optional, opts = []}];
 find_msg_def('General') ->
     [#gpb_oneof{name = general, rnum = 2,
 		fields =
-		    [#field{name = order, fnum = 1, rnum = 2,
-			    type = {msg, 'Order'}, occurrence = optional,
+		    [#field{name = buy, fnum = 1, rnum = 2,
+			    type = {msg, 'Buy'}, occurrence = optional,
+			    opts = []},
+		     #field{name = sell, fnum = 2, rnum = 2,
+			    type = {msg, 'Sell'}, occurrence = optional,
 			    opts = []}]}];
 find_msg_def(_) -> error.
 
