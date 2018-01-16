@@ -37,10 +37,8 @@ reqRep(Sock) ->
 		{ok, Recv} ->
 				case Recv of
 						#'General'{general={buy,#'Buy'{companyBuy=Company,qttBuy=Qtt,priceMax=Price}}} ->
-								io:format("okBuf~n",[]),
 								buy(Company, Qtt, Price);
 						#'General'{general={sell,#'Sell'{companySell=Company,qttSell=Qtt,priceMin=Price}}} ->
-								io:format("okBuf~n",[]),
 								sell(Company, Qtt, Price)
 				end,
 				reqRep(Sock);
