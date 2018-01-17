@@ -1,7 +1,7 @@
 -module(main).
 -export([server/1]).
--include("protobuf/protoAuthErlang.hrl").
--include("protobuf/protoReqRecvErlang.hrl").
+-include("protobuf/protoAuth.hrl").
+-include("protobuf/protoReqRecv.hrl").
 
 server(Port) ->
 	client_login:start(),
@@ -24,7 +24,7 @@ login(Sock) ->
 					"registo" -> R = client_login:create_account(Username, Password);
 					"login" ->	R = client_login:login(Username, Password)
 				end,
-				Send_Packet = protoAuthErlang:encode_msg(#'ResponseAuth'{statusResponse=atom_to_list(R)}),
+				Send_Packet = protoAuth:encode_msg(#'ResponseAuth'{statusResponse=atom_to_list(R)}),
 				sendPacketSize(Sock, Send_Packet),
 				reqRep(Sock);
 		{error, Reason} -> Reason
@@ -33,12 +33,16 @@ login(Sock) ->
 
 reqRep(Sock) ->
 	Size = receivePacketSize(Sock),
-	case receivePacketGeneral(Sock, Size) of
+	case receivePacketGeneral(Sock, Size, 'General') of
 		{ok, Recv} ->
 				case Recv of
 						#'General'{general={buy,#'Buy'{companyBuy=Company,qttBuy=Qtt,priceMax=Price}}} ->
+								Send_Packet = protoReqRecv:encode_msg(#'Reply'{reply={rAR,#'ResponseAfterRecv'{rep = "Success"}}}),
+								sendPacketSize(Sock, Send_Packet),
 								buy(Company, Qtt, Price);
 						#'General'{general={sell,#'Sell'{companySell=Company,qttSell=Qtt,priceMin=Price}}} ->
+								Send_Packet = protoReqRecv:encode_msg(#'Reply'{reply={rAR,#'ResponseAfterRecv'{rep = "Success"}}}),
+								sendPacketSize(Sock, Send_Packet),
 								sell(Company, Qtt, Price)
 				end,
 				reqRep(Sock);
@@ -53,10 +57,10 @@ sendPacketSize(Sock, Send_Packet) ->
 	gen_tcp:send(Sock, <<Tam>>),
 	gen_tcp:send(Sock, Send_Packet).
 
-receivePacketGeneral(Sock, Size) ->
+receivePacketGeneral(Sock, Size, Field) ->
 	case gen_tcp:recv(Sock, Size) of
 		{ok, Packet} ->
-				Recv = protoReqRecvErlang:decode_msg(Packet, 'General'),
+				Recv = protoReqRecv:decode_msg(Packet, Field),
 				{ok, Recv };
 		{error, Reason} -> {error, Reason}
 end.
@@ -64,7 +68,7 @@ end.
 receivePacketAuth(Sock, Size) ->
 	case gen_tcp:recv(Sock, Size) of
 		{ok, Packet} ->
-				Recv = protoAuthErlang:decode_msg(Packet, 'Auth'),
+				Recv = protoAuth:decode_msg(Packet, 'Auth'),
 				{ok, Recv };
 		{error, Reason} -> {error, Reason}
 	end.

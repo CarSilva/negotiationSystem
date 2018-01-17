@@ -19,30 +19,40 @@ public class Client {
         Socket s = new Socket(host, port);
         InputStream is = s.getInputStream();
         OutputStream os = s.getOutputStream();
-        auth(is, os);
-        Thread handleReq = new HandleReq(is, os);
-        handleReq.start();
-        /*Thread handleRcv = new HandleRcv(is, os);
-        handleRcv.start();*/
+        boolean bool = auth(is, os);
+        if(!bool){
+          System.out.println("Something went wrong. Please try again");
+        }
+        while(!bool){
+          bool = auth(is,os);
+          if(!bool){
+            System.out.println("Something went wrong. Please try again");
+          }
+        }
+          Thread handleReq = new HandleReq(is, os);
+          handleReq.start();
+          Thread handleRcv = new HandleRcv(is, os);
+          handleRcv.start();
     }
 
-    public static void auth(InputStream is, OutputStream os){
+    public static boolean auth(InputStream is, OutputStream os){
+        boolean result = false;
+        System.out.println("Login/Registo?");
+        String registerOrnot = null;
+        String choice = System.console().readLine();
+        if(choice.equals("login"))
+            registerOrnot = choice;
+        else if(choice.equals("registo"))
+            registerOrnot = choice;
+        else {
+            System.out.println("Error");
+            System.exit(1);
+        }
+        System.out.println("Username:");
+        String username = System.console().readLine();
+        System.out.println("Password:");
+        String pwd = System.console().readLine();
         try{
-            System.out.println("Login/Registo?");
-            String registerOrnot = null;
-            String choice = System.console().readLine();
-            if(choice.equals("login"))
-                registerOrnot = choice;
-            else if(choice.equals("registo"))
-                registerOrnot = choice;
-            else {
-                System.out.println("Error");
-                System.exit(1);
-            }
-            System.out.println("Username:");
-            String username = System.console().readLine();
-            System.out.println("Password:");
-            String pwd = System.console().readLine();
             Auth auth = createAuth(username, pwd, registerOrnot);
             Integer size = auth.getSerializedSize();
             os.write(size.byteValue());
@@ -52,10 +62,13 @@ public class Client {
             byte[] read = new byte[tam];
             is.read(read, 0, tam);
             ResponseAuth rA = ResponseAuth.parseFrom(read);
-            System.out.println(rA.getStatusResponse());
+            if(rA.getStatusResponse().equals("ok"))
+              result = true;
+            else result = false;
         }catch(Exception e){
             e.printStackTrace();
         }
+        return result;
     }
 
     static Auth createAuth(String username, String pwd, String register) {
