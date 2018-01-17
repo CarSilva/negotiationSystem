@@ -1,4 +1,4 @@
-package directory;
+package exchange;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,14 +18,14 @@ public class Exchange {
 
     public void buy_request(String share_name, int quantity, float price) {
         Share share = shares.get(share_name);
-        // procura por share_name (key) mas pode-se alterar 
+        // procura por share_name (key) mas pode-se alterar
         // e procurar também por shares da companhia x
         share.add_buy_request(quantity, price);
     }
 
     public void sell_request(String share_name, int quantity, float price) {
         Share share = shares.get(share_name);
-        share.add_sell_request(quantity, price);        
+        share.add_sell_request(quantity, price);
     }
 
     class Share {
@@ -96,5 +96,3 @@ public class Exchange {
         }
     }
 }
-
-
