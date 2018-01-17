@@ -1,7 +1,8 @@
 # stockExchange
   Negotiation Stock System implementation --- Distributed System
   
-# Developed with
-ZeroMQ 
-Protocol Buffers
-Dropwizard
+ Developed with
+ -------------------------
+* ZeroMQ 
+* Protocol Buffers
+* Dropwizard
