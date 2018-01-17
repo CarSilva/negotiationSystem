@@ -9,27 +9,42 @@ import static java.lang.Math.round;
 
 public class Exchange {
 
-    private Map<String, Share> shares = new HashMap<>();
+    private Map<String, Share> shares;
     //falta povoar o mapa com shares
 
-    private void add_request(String share_name, int quantity, float price, boolean flag) {
-
-        Share share = shares.get(share_name);
-        //procura por share_name (key) mas pode-se alterar e procurar também por shares da companhia x
-
-        if (flag) //true para buy
-            share.add_buy_request(quantity, price);
-        else
-            share.add_sell_request(quantity, price);
+    public Exchange() {
+        this.shares = new HashMap<>();
     }
 
-    private class Share {
+    public void buy_request(String share_name, int quantity, float price) {
+        Share share = shares.get(share_name);
+        // procura por share_name (key) mas pode-se alterar 
+        // e procurar também por shares da companhia x
+        share.add_buy_request(quantity, price);
+    }
 
-        private String company_name;
-        private Queue<Request> buy_requests = new LinkedList<>();
-        private Queue<Request> sell_requests = new LinkedList<>();
+    public void sell_request(String share_name, int quantity, float price) {
+        Share share = shares.get(share_name);
+        share.add_sell_request(quantity, price);        
+    }
 
-        private void add_buy_request(int quantity, float price) {
+    class Share {
+
+        String company_name;
+        Queue<Request> buy_requests = new LinkedList<>();
+        Queue<Request> sell_requests = new LinkedList<>();
+
+        class Request {
+            int quantity;
+            float price;
+
+            Request(int quantity, float price) {
+                this.quantity = quantity;
+                this.price = price;
+            }
+        }
+
+        void add_buy_request(int quantity, float price) {
 
             Request buy = new Request(quantity, price);
 
@@ -42,7 +57,7 @@ public class Exchange {
             }
         }
 
-        private void add_sell_request(int quantity, float price) {
+        void add_sell_request(int quantity, float price) {
 
             Request sell = new Request(quantity, price);
 
@@ -55,15 +70,15 @@ public class Exchange {
             }
         }
 
-        private void aux(Request buy, Request sell) {
+        void aux(Request buy, Request sell) {
 
-            float sell_price = sell.getPrice();
-            float buy_price = buy.getPrice();
+            float sell_price = sell.price;
+            float buy_price = buy.price;
 
             float mean = (sell_price + buy_price)/2;
 
-            int sell_quantity = sell.getQuantity();
-            int buy_quantity = buy.getQuantity();
+            int sell_quantity = sell.quantity;
+            int buy_quantity = buy.quantity;
 
             if (sell_quantity < buy_quantity) {
                 int remaining = buy_quantity - sell_quantity;
@@ -78,25 +93,6 @@ public class Exchange {
 
             } //else
             //efectuada compra: quantidade=sell_quantity=buy_quantity; preço: mean
-        }
-
-        private class Request {
-
-            private int quantity;
-            private float price;
-
-            private Request(int quantity, float price) {
-                this.quantity = quantity;
-                this.price = price;
-            }
-
-            public float getPrice() {
-                return price;
-            }
-
-            public int getQuantity() {
-                return quantity;
-            }
         }
     }
 }
