@@ -1,22 +1,31 @@
 package exchange;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import httpDirectory.DirectoryAccess;
+import httpDirectory.Json;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
-import static java.lang.Math.round;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Exchange {
 
     private Map<String, Share> shares;
-    //falta povoar o mapa com shares
+    DirectoryAccess http;
+    Json json;
 
-    public Exchange() {
+    public Exchange(int exchangeId){
         this.shares = new HashMap<>();
-        Share s = new Share("iota");
-        this.shares.put("iota", s);
+        json = new Json();
+        http = new DirectoryAccess();
+        String query = "companies";
+        fillShares(query);
     }
+
 
     public boolean buy_request(String share_name, int quantity, float price) {
         boolean existsShare = false;
@@ -34,21 +43,65 @@ public class Exchange {
         share.add_sell_request(quantity, price);
     }
 
+    public void fillShares(String query){
+        String reply = "";
+        try {
+            reply = http.sendRequest(query,"GET");
+            JSONArray array = json.parseArray(reply);
+            for(int i = 0; i < array.size(); i++){
+                JSONObject e = (JSONObject) array.get(i);
+                String name = (String) e.get("name");
+                double opValue = (double) e.get("openingValue");
+                double clValue = (double) e.get("closingValue");
+                double minValue = (double) e.get("minimumValue");
+                double maxValue = (double) e.get("maximumValue");
+                Share share = new Share(name, opValue,
+                                        clValue, minValue,
+                                        maxValue);
+                shares.put(name, share);
+            }
+        } catch (IOException|ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     class Share {
 
         String company_name;
-        Queue<Request> buy_requests = new LinkedList<>();
-        Queue<Request> sell_requests = new LinkedList<>();
+        double openingValue;
+        double closingValue;
+        double minimumValue;
+        double maximumValue;
+        Queue<RequestBuy> buy_requests;
+        Queue<RequestSell> sell_requests;
 
-        Share (String company_name){
+        Share(String company_name, double opValue, double clValue,
+              double minValue, double maxValue){
             this.company_name = company_name;
+            this.openingValue = opValue;
+            this.closingValue = clValue;
+            this.minimumValue = minValue;
+            this.maximumValue = maxValue;
+            this.buy_requests = new PriorityQueue<>();
+            this.sell_requests = new PriorityQueue<>();
         }
 
-        class Request {
+        class RequestBuy {
             int quantity;
             float price;
 
-            Request(int quantity, float price) {
+            RequestBuy(int quantity, float price) {
+                this.quantity = quantity;
+                this.price = price;
+            }
+        }
+
+        class RequestSell{
+            int quantity;
+            float price;
+
+            RequestSell(int quantity, float price) {
                 this.quantity = quantity;
                 this.price = price;
             }
@@ -56,53 +109,79 @@ public class Exchange {
 
         void add_buy_request(int quantity, float price) {
 
-            Request buy = new Request(quantity, price);
+            RequestBuy buy = new RequestBuy(quantity, price);
 
             if (sell_requests.isEmpty())
                 buy_requests.add(buy);
 
             else {
-                Request sell = sell_requests.remove();
-                aux(buy, sell);
+                //Request sell = sell_requests.remove();
+                trade(buy);
             }
         }
 
         void add_sell_request(int quantity, float price) {
 
-            Request sell = new Request(quantity, price);
+            RequestSell sell = new RequestSell(quantity, price);
 
             if (buy_requests.isEmpty())
                 sell_requests.add(sell);
 
             else {
-                Request buy = buy_requests.remove();
-                aux(buy, sell);
+                //Request buy = buy_requests.remove();
+                trade(sell);
             }
         }
 
-        void aux(Request buy, Request sell) {
+        void trade(RequestBuy reqBuy) {
 
-            float sell_price = sell.price;
-            float buy_price = buy.price;
-
-            float mean = (sell_price + buy_price)/2;
-
-            int sell_quantity = sell.quantity;
-            int buy_quantity = buy.quantity;
-
-            if (sell_quantity < buy_quantity) {
-                int remaining = buy_quantity - sell_quantity;
-                buy_requests.add(new Request(remaining, buy_price));
-                //efectuada compra: quantidade=sell_quantity; preço=mean
-            } else
-
-            if (sell_quantity > buy_quantity) {
-                int remaining = sell_quantity - buy_quantity;
-                sell_requests.add(new Request(remaining, sell_price));
-                //efectuada compra: quantidade=buy_quantity; preço=mean
-
-            } //else
-            //efectuada compra: quantidade=sell_quantity=buy_quantity; preço: mean
+            for(RequestSell sell : sell_requests){
+                if(sell.price <= reqBuy.price) {
+                    float tradePrice = (sell.price + reqBuy.price) / 2;
+                    if (sell.quantity < reqBuy.quantity) {
+                        int remaining = reqBuy.quantity - sell.quantity;
+                        reqBuy.quantity = remaining;
+                        //Say nothing to the buyer --> informs seller
+                    }else if(sell.quantity > reqBuy.quantity){
+                        int remaining = sell.quantity - reqBuy.quantity;
+                        sell.quantity = remaining;
+                        break;
+                        //Say nothing to the seller --> informs buyer
+                    }else {
+                        sell_requests.remove(sell);
+                        buy_requests.remove(reqBuy);
+                        //Informs seller and buyer
+                        break;
+                    }
+                }
+            }
         }
+
+
+        void trade(RequestSell reqSell) {
+
+            for(RequestBuy buy : buy_requests){
+                if(buy.price >= reqSell.price) {
+                    float tradePrice = (buy.price + reqSell.price) / 2;
+                    if (buy.quantity < reqSell.quantity) {
+                        int remaining = reqSell.quantity - buy.quantity;
+                        reqSell.quantity = remaining;
+                        //Say nothing to the seller --> informs buyer
+                    }else if(buy.quantity > reqSell.quantity){
+                        int remaining = buy.quantity - reqSell.quantity;
+                        buy.quantity = remaining;
+                        break;
+                        //Say nothing to the buyer --> informs seller
+                    }else {
+                        sell_requests.remove(reqSell);
+                        buy_requests.remove(buy);
+                        //Informs seller and buyer
+                        break;
+                    }
+                }
+            }
+        }
+
+
     }
 }

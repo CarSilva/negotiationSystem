@@ -16,7 +16,7 @@ public class Server {
         try {
             int port = java.lang.Integer.parseInt(args[0]);
             ServerSocket srv = new ServerSocket(port);
-            Exchange exchange = new Exchange();
+            Exchange exchange = new Exchange(Integer.parseInt(args[1]));
             while (true) {
                 Socket cli = srv.accept();
                 InputStream cis = cli.getInputStream();
@@ -48,19 +48,24 @@ class ClientHandler extends Thread {
                 int tam = cis.read();
                     byte[] packetRead = new byte[tam];
                 cis.read(packetRead, 0, tam);
-                ProtoReqRecv.General general =  ProtoReqRecv.General.parseFrom(packetRead);
+                ProtoReqRecv.General general =  ProtoReqRecv.General
+                                                .parseFrom(packetRead);
                 if(general.hasBuy())
                     reply = general.getBuy();
                 else if(general.hasSell())
                         reply = general.getSell();
                 if(reply instanceof ProtoReqRecv.Buy){
                     ProtoReqRecv.Buy buy = (ProtoReqRecv.Buy) reply;
-                    boolean result = exchange.buy_request(buy.getCompanyBuy(), buy.getQttBuy(), buy.getPriceMax());
+                    boolean result = exchange.buy_request(buy.getCompanyBuy(),
+                                                        buy.getQttBuy(),
+                                                        buy.getPriceMax());
                     ProtoReqRecv.ResponseAfterRecv rep = createReply(result);
                     sendPacket(rep);
                 }else if(reply instanceof ProtoReqRecv.Sell){
                     ProtoReqRecv.Sell sell = (ProtoReqRecv.Sell) reply;
-                    boolean result = exchange.buy_request(sell.getCompanySell(), sell.getQttSell(), sell.getPriceMin());
+                    boolean result = exchange.buy_request(sell.getCompanySell(),
+                                                        sell.getQttSell(),
+                                                        sell.getPriceMin());
                     ProtoReqRecv.ResponseAfterRecv rep = createReply(result);
                     sendPacket(rep);
                 }
