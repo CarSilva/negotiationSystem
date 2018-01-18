@@ -31,7 +31,9 @@ public class HelloResource {
         final String content = String.format(template, name.or(defaultName));
         long i;
         synchronized (this) { counter++; i = counter; }
-        // demo only; if counter is resource state, GET should not increment it
+        // demo only;
+        // if counter is resource state,
+        // GET should not increment it
         return new Saying(i, content);
     }
 
@@ -49,6 +51,8 @@ public class HelloResource {
         synchronized (this) { counter += n; }
         return Response.ok().build();
     }
+
+
 
 }
 

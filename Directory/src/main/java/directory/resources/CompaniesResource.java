@@ -1,31 +1,25 @@
 package directory.resources;
 
 
+import directory.representations.Company;
 import directory.representations.Saying;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Path("/companies")
 @Produces(MediaType.APPLICATION_JSON)
 public class CompaniesResource {
     Map<String, Company> companies;
 
-    class Company {
-        String name;
-        float stockValue;
-    }
-
-    public CompaniesResource() {
-        companies = new HashMap<String, Company>();
+    public CompaniesResource(Map<String, Company> companies) {
+        this.companies = companies;
     }
 
     @GET
-    public Saying listCompanies() {
-        return new Saying(0, "todas as empresas");
+    public List<Company> listCompanies() {
+        return new ArrayList<Company>(companies.values());
     }
 
 }

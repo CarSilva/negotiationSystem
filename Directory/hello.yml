@@ -1,7 +1,0 @@
-# Map for companies
-companies:
-  iota: {name: iota, price: 2.35}
-  verge: {name: verge, price: 5.00}
-  dash: {name: dash, price: 688}
-  monero: {name: monero, price: 300}
-  ethereum: {name: ethereum, price: 1200}

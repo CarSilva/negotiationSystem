@@ -1,0 +1,37 @@
+# Map for companies
+
+companies:
+  iota: { name: iota,
+          openingValue: 2.54,
+          closingValue: 2.55,
+          minimumValue: 2.13,
+          maximumValue: 2.66,
+          exchangeId: 1 }
+  verge: { name: verge,
+          openingValue: 0.22,
+          closingValue: 0.23,
+          minimumValue: 2.13,
+          maximumValue: 0.5,
+          exchangeId: 2 }
+  sonm: { name: sonm,
+          openingValue: 0.25,
+          closingValue: 0.27,
+          minimumValue: 0.23,
+          maximumValue: 0.6,
+          exchangeId: 2 }
+  vechain: { name: vechain,
+          openingValue: 4.25,
+          closingValue: 5.27,
+          minimumValue: 4.23,
+          maximumValue: 6.6,
+          exchangeId: 1 }
+
+exchanges:
+  ex1: {id: 1, host: localhost, port: 12345}
+  ex2: {id: 2, host: localhost, port: 12346}
+  ex3: {id: 3, host: localhost, port: 12347}
+  ex4: {id: 4, host: localhost, port: 12348}
+  ex5: {id: 5, host: localhost, port: 12349}
+  ex6: {id: 6, host: localhost, port: 12350}
+  ex7: {id: 7, host: localhost, port: 12351}
+  ex8: {id: 8, host: localhost, port: 12352}
