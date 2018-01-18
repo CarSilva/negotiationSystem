@@ -41,7 +41,7 @@ reqRep(Sock) ->
 								sendPacketSize(Sock, Send_Packet),
 								buy(Company, Qtt, Price);
 						#'General'{general={sell,#'Sell'{companySell=Company,qttSell=Qtt,priceMin=Price}}} ->
-								Send_Packet = protoReqRecv:encode_msg(#'Reply'{reply={rAR,#'ResponseAfterRecv'{rep = "Success"}}}),
+								Send_Packet = protoReqRecv:encode_msg(#'Reply'{reply={rAR,#'ResponseAfterRecv'{rep = "Success"}}}),%Needs to be UpdateReply
 								sendPacketSize(Sock, Send_Packet),
 								sell(Company, Qtt, Price)
 				end,
@@ -49,7 +49,12 @@ reqRep(Sock) ->
 		{error, Reason} -> io:format("Some error to be fix")
 	end.
 
-buy(Company, Qtt, Price) -> true.
+buy(Company, Qtt, Price) ->
+	%NEEDS TO GET INFO ABOUT EXCHANGE ON DIRECTORY
+	{ok, Sock}= gen_tcp:connect("localhost", 12346, []),
+	Send_Packet = protoReqRecv:encode_msg(#'Buy'{companyBuy=Company,qttBuy=Qtt,priceMax=Price}),
+	sendPacketSize(Sock, Send_Packet).
+
 sell(Company, Qtt, Price) -> true.
 
 sendPacketSize(Sock, Send_Packet) ->
