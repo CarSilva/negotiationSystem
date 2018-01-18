@@ -1,2 +1,3 @@
 *.beam
 server/*.class
+../Exchang/out/*

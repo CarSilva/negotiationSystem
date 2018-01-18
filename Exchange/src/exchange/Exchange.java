@@ -14,13 +14,19 @@ public class Exchange {
 
     public Exchange() {
         this.shares = new HashMap<>();
+        Share s = new Share("iota");
+        this.shares.put("iota", s);
     }
 
-    public void buy_request(String share_name, int quantity, float price) {
+    public boolean buy_request(String share_name, int quantity, float price) {
+        boolean existsShare = false;
         Share share = shares.get(share_name);
+        if(share != null)
+            existsShare = true;
         // procura por share_name (key) mas pode-se alterar
         // e procurar também por shares da companhia x
         share.add_buy_request(quantity, price);
+        return existsShare;
     }
 
     public void sell_request(String share_name, int quantity, float price) {
@@ -33,6 +39,10 @@ public class Exchange {
         String company_name;
         Queue<Request> buy_requests = new LinkedList<>();
         Queue<Request> sell_requests = new LinkedList<>();
+
+        Share (String company_name){
+            this.company_name = company_name;
+        }
 
         class Request {
             int quantity;

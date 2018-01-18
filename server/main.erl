@@ -24,7 +24,8 @@ login(Sock) ->
 					"registo" -> R = client_login:create_account(Username, Password);
 					"login" ->	R = client_login:login(Username, Password)
 				end,
-				Send_Packet = protoAuth:encode_msg(#'ResponseAuth'{statusResponse=atom_to_list(R)}),
+				Send_Packet = protoAuth:encode_msg(#'ResponseAuth'{
+																						statusResponse=atom_to_list(R)}),
 				sendPacketSize(Sock, Send_Packet),
 				reqRep(Sock);
 		{error, Reason} -> Reason
@@ -36,26 +37,56 @@ reqRep(Sock) ->
 	case receivePacketGeneral(Sock, Size, 'General') of
 		{ok, Recv} ->
 				case Recv of
-						#'General'{general={buy,#'Buy'{companyBuy=Company,qttBuy=Qtt,priceMax=Price}}} ->
-								Send_Packet = protoReqRecv:encode_msg(#'Reply'{reply={rAR,#'ResponseAfterRecv'{rep = "Success"}}}),
-								sendPacketSize(Sock, Send_Packet),
-								buy(Company, Qtt, Price);
-						#'General'{general={sell,#'Sell'{companySell=Company,qttSell=Qtt,priceMin=Price}}} ->
-								Send_Packet = protoReqRecv:encode_msg(#'Reply'{reply={rAR,#'ResponseAfterRecv'{rep = "Success"}}}),%Needs to be UpdateReply
-								sendPacketSize(Sock, Send_Packet),
-								sell(Company, Qtt, Price)
+						#'General'{general={buy,#'Buy'{
+																companyBuy=Company,
+																qttBuy=Qtt,
+																priceMax=Price}}} ->
+								buy(Company, Qtt, Price, Sock);
+						#'General'{general={sell,#'Sell'{
+																companySell=Company,
+																qttSell=Qtt,
+																priceMin=Price}}} ->
+								sell(Company, Qtt, Price, Sock)
 				end,
 				reqRep(Sock);
 		{error, Reason} -> io:format("Some error to be fix")
 	end.
 
-buy(Company, Qtt, Price) ->
+buy(Company, Qtt, Price, CSock) ->
 	%NEEDS TO GET INFO ABOUT EXCHANGE ON DIRECTORY
-	{ok, Sock}= gen_tcp:connect("localhost", 12346, []),
-	Send_Packet = protoReqRecv:encode_msg(#'Buy'{companyBuy=Company,qttBuy=Qtt,priceMax=Price}),
-	sendPacketSize(Sock, Send_Packet).
+	{ok, Sock} = gen_tcp:connect("localhost", 12347, [binary,{active,false}]),
+	Send_Packet = protoReqRecv:encode_msg(#'General'{
+																				general={buy,#'Buy'{
+																				companyBuy=Company,
+																				qttBuy=Qtt,
+																				priceMax=Price}}}),
+	sendPacketSize(Sock, Send_Packet),
+	Size = receivePacketSize(Sock),
+	{ok, Recv} = receivePacketGeneral(Sock, Size, 'ResponseAfterRecv'),
+	Reply = element(2, Recv),
+	Send2Client = protoReqRecv:encode_msg(#'Reply'{
+																				reply = {rAR, #'ResponseAfterRecv'{
+																				rep = Reply}}}),
+	sendPacketSize(CSock, Send2Client).
 
-sell(Company, Qtt, Price) -> true.
+sell(Company, Qtt, Price, CSock) ->
+	%NEEDS TO GET INFO ABOUT EXCHANGE ON DIRECTORY
+	{ok, Sock} = gen_tcp:connect("localhost", 12347, [binary,{active,false}]),
+	Send_Packet = protoReqRecv:encode_msg(#'General'{
+																				general={sell,#'Sell'{
+																				companySell=Company,
+																				qttSell=Qtt,
+																				priceMin=Price}}}),
+	sendPacketSize(Sock, Send_Packet),
+	Size = receivePacketSize(Sock),
+	{ok, Recv} = receivePacketGeneral(Sock, Size, 'ResponseAfterRecv'),
+	Reply = element(2, Recv),
+	Send2Client = protoReqRecv:encode_msg(#'Reply'{
+																				reply = {rAR, #'ResponseAfterRecv'{
+																				rep = Reply}}}),
+	sendPacketSize(CSock, Send2Client).
+
+%%%------------ Just aux functions ---------------------%%%
 
 sendPacketSize(Sock, Send_Packet) ->
 	Tam = byte_size(Send_Packet),
