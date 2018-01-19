@@ -6,6 +6,7 @@ import directory.representations.Saying;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.*;
 
 @Path("/companies")
@@ -19,7 +20,22 @@ public class CompaniesResource {
 
     @GET
     public List<Company> listCompanies() {
-        return new ArrayList<Company>(companies.values());
+        synchronized (companies) {
+            return new ArrayList<Company>(companies.values());
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newCompany(Company company) {
+        synchronized (companies) {
+            if (companies.get(company.getName()) == null) {
+                companies.put(company.getName(), company);
+                return Response.ok().build();
+            }
+        }
+        // Conflict - resource already exists
+        return Response.status(409).build();
     }
 
 }

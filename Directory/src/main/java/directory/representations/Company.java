@@ -14,7 +14,6 @@ public class Company {
     private float maximumValue;
     private int exchangeId;
 
-
     @JsonCreator
     public Company(@JsonProperty("name") String name,
                    @JsonProperty("openingValue") float openingValue,
@@ -31,6 +30,16 @@ public class Company {
         this.exchangeId = exchangeId;
     }
 
+    public void update(Company company) {
+        this.closingValue = company.closingValue;
+        this.openingValue = company.openingValue;
+        this.minimumValue = company.minimumValue;
+        this.maximumValue = company.maximumValue;
+    }
+
+    public int getExchangeId() {
+        return exchangeId;
+    }
     public String getName() { return name; }
 
     public void setName(String name) {
