@@ -64,9 +64,8 @@ buy(Company, Qtt, Price, CSock) ->
 	Size = receivePacketSize(Sock),
 	{ok, Recv} = receivePacketGeneral(Sock, Size, 'ResponseAfterRecv'),
 	Reply = element(2, Recv),
-	Send2Client = protoReqRecv:encode_msg(#'Reply'{
-																				reply = {rAR, #'ResponseAfterRecv'{
-																				rep = Reply}}}),
+	Send2Client = protoReqRecv:encode_msg(#'ResponseAfterRecv'{
+																				rep = Reply}),
 	sendPacketSize(CSock, Send2Client).
 
 sell(Company, Qtt, Price, CSock) ->
@@ -81,9 +80,8 @@ sell(Company, Qtt, Price, CSock) ->
 	Size = receivePacketSize(Sock),
 	{ok, Recv} = receivePacketGeneral(Sock, Size, 'ResponseAfterRecv'),
 	Reply = element(2, Recv),
-	Send2Client = protoReqRecv:encode_msg(#'Reply'{
-																				reply = {rAR, #'ResponseAfterRecv'{
-																				rep = Reply}}}),
+	Send2Client = protoReqRecv:encode_msg(#'ResponseAfterRecv'{
+																				rep = Reply}),
 	sendPacketSize(CSock, Send2Client).
 
 %%%------------ Just aux functions ---------------------%%%

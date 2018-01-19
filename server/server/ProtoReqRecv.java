@@ -37,6 +37,11 @@ public final class ProtoReqRecv {
      * <code>float priceMax = 3;</code>
      */
     float getPriceMax();
+
+    /**
+     * <code>int32 idClientB = 4;</code>
+     */
+    int getIdClientB();
   }
   /**
    * Protobuf type {@code server.Buy}
@@ -54,6 +59,7 @@ public final class ProtoReqRecv {
       companyBuy_ = "";
       qttBuy_ = 0;
       priceMax_ = 0F;
+      idClientB_ = 0;
     }
 
     @java.lang.Override
@@ -98,6 +104,11 @@ public final class ProtoReqRecv {
             case 29: {
 
               priceMax_ = input.readFloat();
+              break;
+            }
+            case 32: {
+
+              idClientB_ = input.readInt32();
               break;
             }
           }
@@ -176,6 +187,15 @@ public final class ProtoReqRecv {
       return priceMax_;
     }
 
+    public static final int IDCLIENTB_FIELD_NUMBER = 4;
+    private int idClientB_;
+    /**
+     * <code>int32 idClientB = 4;</code>
+     */
+    public int getIdClientB() {
+      return idClientB_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -197,6 +217,9 @@ public final class ProtoReqRecv {
       if (priceMax_ != 0F) {
         output.writeFloat(3, priceMax_);
       }
+      if (idClientB_ != 0) {
+        output.writeInt32(4, idClientB_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -215,6 +238,10 @@ public final class ProtoReqRecv {
       if (priceMax_ != 0F) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(3, priceMax_);
+      }
+      if (idClientB_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, idClientB_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -240,6 +267,8 @@ public final class ProtoReqRecv {
           java.lang.Float.floatToIntBits(getPriceMax())
           == java.lang.Float.floatToIntBits(
               other.getPriceMax()));
+      result = result && (getIdClientB()
+          == other.getIdClientB());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -258,6 +287,8 @@ public final class ProtoReqRecv {
       hash = (37 * hash) + PRICEMAX_FIELD_NUMBER;
       hash = (53 * hash) + java.lang.Float.floatToIntBits(
           getPriceMax());
+      hash = (37 * hash) + IDCLIENTB_FIELD_NUMBER;
+      hash = (53 * hash) + getIdClientB();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -393,6 +424,8 @@ public final class ProtoReqRecv {
 
         priceMax_ = 0F;
 
+        idClientB_ = 0;
+
         return this;
       }
 
@@ -418,6 +451,7 @@ public final class ProtoReqRecv {
         result.companyBuy_ = companyBuy_;
         result.qttBuy_ = qttBuy_;
         result.priceMax_ = priceMax_;
+        result.idClientB_ = idClientB_;
         onBuilt();
         return result;
       }
@@ -468,6 +502,9 @@ public final class ProtoReqRecv {
         }
         if (other.getPriceMax() != 0F) {
           setPriceMax(other.getPriceMax());
+        }
+        if (other.getIdClientB() != 0) {
+          setIdClientB(other.getIdClientB());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -616,6 +653,32 @@ public final class ProtoReqRecv {
         onChanged();
         return this;
       }
+
+      private int idClientB_ ;
+      /**
+       * <code>int32 idClientB = 4;</code>
+       */
+      public int getIdClientB() {
+        return idClientB_;
+      }
+      /**
+       * <code>int32 idClientB = 4;</code>
+       */
+      public Builder setIdClientB(int value) {
+        
+        idClientB_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 idClientB = 4;</code>
+       */
+      public Builder clearIdClientB() {
+        
+        idClientB_ = 0;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFieldsProto3(unknownFields);
@@ -688,6 +751,11 @@ public final class ProtoReqRecv {
      * <code>float priceMin = 3;</code>
      */
     float getPriceMin();
+
+    /**
+     * <code>int32 idClientS = 4;</code>
+     */
+    int getIdClientS();
   }
   /**
    * Protobuf type {@code server.Sell}
@@ -705,6 +773,7 @@ public final class ProtoReqRecv {
       companySell_ = "";
       qttSell_ = 0;
       priceMin_ = 0F;
+      idClientS_ = 0;
     }
 
     @java.lang.Override
@@ -749,6 +818,11 @@ public final class ProtoReqRecv {
             case 29: {
 
               priceMin_ = input.readFloat();
+              break;
+            }
+            case 32: {
+
+              idClientS_ = input.readInt32();
               break;
             }
           }
@@ -827,6 +901,15 @@ public final class ProtoReqRecv {
       return priceMin_;
     }
 
+    public static final int IDCLIENTS_FIELD_NUMBER = 4;
+    private int idClientS_;
+    /**
+     * <code>int32 idClientS = 4;</code>
+     */
+    public int getIdClientS() {
+      return idClientS_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -848,6 +931,9 @@ public final class ProtoReqRecv {
       if (priceMin_ != 0F) {
         output.writeFloat(3, priceMin_);
       }
+      if (idClientS_ != 0) {
+        output.writeInt32(4, idClientS_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -866,6 +952,10 @@ public final class ProtoReqRecv {
       if (priceMin_ != 0F) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(3, priceMin_);
+      }
+      if (idClientS_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, idClientS_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -891,6 +981,8 @@ public final class ProtoReqRecv {
           java.lang.Float.floatToIntBits(getPriceMin())
           == java.lang.Float.floatToIntBits(
               other.getPriceMin()));
+      result = result && (getIdClientS()
+          == other.getIdClientS());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -909,6 +1001,8 @@ public final class ProtoReqRecv {
       hash = (37 * hash) + PRICEMIN_FIELD_NUMBER;
       hash = (53 * hash) + java.lang.Float.floatToIntBits(
           getPriceMin());
+      hash = (37 * hash) + IDCLIENTS_FIELD_NUMBER;
+      hash = (53 * hash) + getIdClientS();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1044,6 +1138,8 @@ public final class ProtoReqRecv {
 
         priceMin_ = 0F;
 
+        idClientS_ = 0;
+
         return this;
       }
 
@@ -1069,6 +1165,7 @@ public final class ProtoReqRecv {
         result.companySell_ = companySell_;
         result.qttSell_ = qttSell_;
         result.priceMin_ = priceMin_;
+        result.idClientS_ = idClientS_;
         onBuilt();
         return result;
       }
@@ -1119,6 +1216,9 @@ public final class ProtoReqRecv {
         }
         if (other.getPriceMin() != 0F) {
           setPriceMin(other.getPriceMin());
+        }
+        if (other.getIdClientS() != 0) {
+          setIdClientS(other.getIdClientS());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1264,6 +1364,32 @@ public final class ProtoReqRecv {
       public Builder clearPriceMin() {
         
         priceMin_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private int idClientS_ ;
+      /**
+       * <code>int32 idClientS = 4;</code>
+       */
+      public int getIdClientS() {
+        return idClientS_;
+      }
+      /**
+       * <code>int32 idClientS = 4;</code>
+       */
+      public Builder setIdClientS(int value) {
+        
+        idClientS_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 idClientS = 4;</code>
+       */
+      public Builder clearIdClientS() {
+        
+        idClientS_ = 0;
         onChanged();
         return this;
       }
@@ -1833,1683 +1959,6 @@ public final class ProtoReqRecv {
     }
 
     public server.ProtoReqRecv.ResponseAfterRecv getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface UpdateReplyOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:server.UpdateReply)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string result = 1;</code>
-     */
-    java.lang.String getResult();
-    /**
-     * <code>string result = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getResultBytes();
-
-    /**
-     * <code>string company = 2;</code>
-     */
-    java.lang.String getCompany();
-    /**
-     * <code>string company = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getCompanyBytes();
-
-    /**
-     * <code>int32 quantity = 3;</code>
-     */
-    int getQuantity();
-
-    /**
-     * <code>float price = 4;</code>
-     */
-    float getPrice();
-  }
-  /**
-   * Protobuf type {@code server.UpdateReply}
-   */
-  public  static final class UpdateReply extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:server.UpdateReply)
-      UpdateReplyOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use UpdateReply.newBuilder() to construct.
-    private UpdateReply(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private UpdateReply() {
-      result_ = "";
-      company_ = "";
-      quantity_ = 0;
-      price_ = 0F;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private UpdateReply(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownFieldProto3(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              result_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              company_ = s;
-              break;
-            }
-            case 24: {
-
-              quantity_ = input.readInt32();
-              break;
-            }
-            case 37: {
-
-              price_ = input.readFloat();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return server.ProtoReqRecv.internal_static_server_UpdateReply_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return server.ProtoReqRecv.internal_static_server_UpdateReply_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              server.ProtoReqRecv.UpdateReply.class, server.ProtoReqRecv.UpdateReply.Builder.class);
-    }
-
-    public static final int RESULT_FIELD_NUMBER = 1;
-    private volatile java.lang.Object result_;
-    /**
-     * <code>string result = 1;</code>
-     */
-    public java.lang.String getResult() {
-      java.lang.Object ref = result_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        result_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string result = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getResultBytes() {
-      java.lang.Object ref = result_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        result_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int COMPANY_FIELD_NUMBER = 2;
-    private volatile java.lang.Object company_;
-    /**
-     * <code>string company = 2;</code>
-     */
-    public java.lang.String getCompany() {
-      java.lang.Object ref = company_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        company_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string company = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getCompanyBytes() {
-      java.lang.Object ref = company_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        company_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int QUANTITY_FIELD_NUMBER = 3;
-    private int quantity_;
-    /**
-     * <code>int32 quantity = 3;</code>
-     */
-    public int getQuantity() {
-      return quantity_;
-    }
-
-    public static final int PRICE_FIELD_NUMBER = 4;
-    private float price_;
-    /**
-     * <code>float price = 4;</code>
-     */
-    public float getPrice() {
-      return price_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getResultBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, result_);
-      }
-      if (!getCompanyBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, company_);
-      }
-      if (quantity_ != 0) {
-        output.writeInt32(3, quantity_);
-      }
-      if (price_ != 0F) {
-        output.writeFloat(4, price_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getResultBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, result_);
-      }
-      if (!getCompanyBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, company_);
-      }
-      if (quantity_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, quantity_);
-      }
-      if (price_ != 0F) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(4, price_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof server.ProtoReqRecv.UpdateReply)) {
-        return super.equals(obj);
-      }
-      server.ProtoReqRecv.UpdateReply other = (server.ProtoReqRecv.UpdateReply) obj;
-
-      boolean result = true;
-      result = result && getResult()
-          .equals(other.getResult());
-      result = result && getCompany()
-          .equals(other.getCompany());
-      result = result && (getQuantity()
-          == other.getQuantity());
-      result = result && (
-          java.lang.Float.floatToIntBits(getPrice())
-          == java.lang.Float.floatToIntBits(
-              other.getPrice()));
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + RESULT_FIELD_NUMBER;
-      hash = (53 * hash) + getResult().hashCode();
-      hash = (37 * hash) + COMPANY_FIELD_NUMBER;
-      hash = (53 * hash) + getCompany().hashCode();
-      hash = (37 * hash) + QUANTITY_FIELD_NUMBER;
-      hash = (53 * hash) + getQuantity();
-      hash = (37 * hash) + PRICE_FIELD_NUMBER;
-      hash = (53 * hash) + java.lang.Float.floatToIntBits(
-          getPrice());
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static server.ProtoReqRecv.UpdateReply parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static server.ProtoReqRecv.UpdateReply parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(server.ProtoReqRecv.UpdateReply prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code server.UpdateReply}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:server.UpdateReply)
-        server.ProtoReqRecv.UpdateReplyOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return server.ProtoReqRecv.internal_static_server_UpdateReply_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return server.ProtoReqRecv.internal_static_server_UpdateReply_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                server.ProtoReqRecv.UpdateReply.class, server.ProtoReqRecv.UpdateReply.Builder.class);
-      }
-
-      // Construct using server.ProtoReqRecv.UpdateReply.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        result_ = "";
-
-        company_ = "";
-
-        quantity_ = 0;
-
-        price_ = 0F;
-
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return server.ProtoReqRecv.internal_static_server_UpdateReply_descriptor;
-      }
-
-      public server.ProtoReqRecv.UpdateReply getDefaultInstanceForType() {
-        return server.ProtoReqRecv.UpdateReply.getDefaultInstance();
-      }
-
-      public server.ProtoReqRecv.UpdateReply build() {
-        server.ProtoReqRecv.UpdateReply result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public server.ProtoReqRecv.UpdateReply buildPartial() {
-        server.ProtoReqRecv.UpdateReply result = new server.ProtoReqRecv.UpdateReply(this);
-        result.result_ = result_;
-        result.company_ = company_;
-        result.quantity_ = quantity_;
-        result.price_ = price_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof server.ProtoReqRecv.UpdateReply) {
-          return mergeFrom((server.ProtoReqRecv.UpdateReply)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(server.ProtoReqRecv.UpdateReply other) {
-        if (other == server.ProtoReqRecv.UpdateReply.getDefaultInstance()) return this;
-        if (!other.getResult().isEmpty()) {
-          result_ = other.result_;
-          onChanged();
-        }
-        if (!other.getCompany().isEmpty()) {
-          company_ = other.company_;
-          onChanged();
-        }
-        if (other.getQuantity() != 0) {
-          setQuantity(other.getQuantity());
-        }
-        if (other.getPrice() != 0F) {
-          setPrice(other.getPrice());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        server.ProtoReqRecv.UpdateReply parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (server.ProtoReqRecv.UpdateReply) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object result_ = "";
-      /**
-       * <code>string result = 1;</code>
-       */
-      public java.lang.String getResult() {
-        java.lang.Object ref = result_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          result_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string result = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getResultBytes() {
-        java.lang.Object ref = result_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          result_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string result = 1;</code>
-       */
-      public Builder setResult(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        result_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string result = 1;</code>
-       */
-      public Builder clearResult() {
-        
-        result_ = getDefaultInstance().getResult();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string result = 1;</code>
-       */
-      public Builder setResultBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        result_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object company_ = "";
-      /**
-       * <code>string company = 2;</code>
-       */
-      public java.lang.String getCompany() {
-        java.lang.Object ref = company_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          company_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string company = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getCompanyBytes() {
-        java.lang.Object ref = company_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          company_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string company = 2;</code>
-       */
-      public Builder setCompany(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        company_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string company = 2;</code>
-       */
-      public Builder clearCompany() {
-        
-        company_ = getDefaultInstance().getCompany();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string company = 2;</code>
-       */
-      public Builder setCompanyBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        company_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int quantity_ ;
-      /**
-       * <code>int32 quantity = 3;</code>
-       */
-      public int getQuantity() {
-        return quantity_;
-      }
-      /**
-       * <code>int32 quantity = 3;</code>
-       */
-      public Builder setQuantity(int value) {
-        
-        quantity_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 quantity = 3;</code>
-       */
-      public Builder clearQuantity() {
-        
-        quantity_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private float price_ ;
-      /**
-       * <code>float price = 4;</code>
-       */
-      public float getPrice() {
-        return price_;
-      }
-      /**
-       * <code>float price = 4;</code>
-       */
-      public Builder setPrice(float value) {
-        
-        price_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>float price = 4;</code>
-       */
-      public Builder clearPrice() {
-        
-        price_ = 0F;
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFieldsProto3(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:server.UpdateReply)
-    }
-
-    // @@protoc_insertion_point(class_scope:server.UpdateReply)
-    private static final server.ProtoReqRecv.UpdateReply DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new server.ProtoReqRecv.UpdateReply();
-    }
-
-    public static server.ProtoReqRecv.UpdateReply getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<UpdateReply>
-        PARSER = new com.google.protobuf.AbstractParser<UpdateReply>() {
-      public UpdateReply parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new UpdateReply(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<UpdateReply> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<UpdateReply> getParserForType() {
-      return PARSER;
-    }
-
-    public server.ProtoReqRecv.UpdateReply getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface ReplyOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:server.Reply)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>.server.ResponseAfterRecv rAR = 1;</code>
-     */
-    boolean hasRAR();
-    /**
-     * <code>.server.ResponseAfterRecv rAR = 1;</code>
-     */
-    server.ProtoReqRecv.ResponseAfterRecv getRAR();
-    /**
-     * <code>.server.ResponseAfterRecv rAR = 1;</code>
-     */
-    server.ProtoReqRecv.ResponseAfterRecvOrBuilder getRAROrBuilder();
-
-    /**
-     * <code>.server.UpdateReply uR = 2;</code>
-     */
-    boolean hasUR();
-    /**
-     * <code>.server.UpdateReply uR = 2;</code>
-     */
-    server.ProtoReqRecv.UpdateReply getUR();
-    /**
-     * <code>.server.UpdateReply uR = 2;</code>
-     */
-    server.ProtoReqRecv.UpdateReplyOrBuilder getUROrBuilder();
-
-    public server.ProtoReqRecv.Reply.ReplyCase getReplyCase();
-  }
-  /**
-   * Protobuf type {@code server.Reply}
-   */
-  public  static final class Reply extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:server.Reply)
-      ReplyOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use Reply.newBuilder() to construct.
-    private Reply(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private Reply() {
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private Reply(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownFieldProto3(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              server.ProtoReqRecv.ResponseAfterRecv.Builder subBuilder = null;
-              if (replyCase_ == 1) {
-                subBuilder = ((server.ProtoReqRecv.ResponseAfterRecv) reply_).toBuilder();
-              }
-              reply_ =
-                  input.readMessage(server.ProtoReqRecv.ResponseAfterRecv.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom((server.ProtoReqRecv.ResponseAfterRecv) reply_);
-                reply_ = subBuilder.buildPartial();
-              }
-              replyCase_ = 1;
-              break;
-            }
-            case 18: {
-              server.ProtoReqRecv.UpdateReply.Builder subBuilder = null;
-              if (replyCase_ == 2) {
-                subBuilder = ((server.ProtoReqRecv.UpdateReply) reply_).toBuilder();
-              }
-              reply_ =
-                  input.readMessage(server.ProtoReqRecv.UpdateReply.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom((server.ProtoReqRecv.UpdateReply) reply_);
-                reply_ = subBuilder.buildPartial();
-              }
-              replyCase_ = 2;
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return server.ProtoReqRecv.internal_static_server_Reply_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return server.ProtoReqRecv.internal_static_server_Reply_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              server.ProtoReqRecv.Reply.class, server.ProtoReqRecv.Reply.Builder.class);
-    }
-
-    private int replyCase_ = 0;
-    private java.lang.Object reply_;
-    public enum ReplyCase
-        implements com.google.protobuf.Internal.EnumLite {
-      RAR(1),
-      UR(2),
-      REPLY_NOT_SET(0);
-      private final int value;
-      private ReplyCase(int value) {
-        this.value = value;
-      }
-      /**
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
-      public static ReplyCase valueOf(int value) {
-        return forNumber(value);
-      }
-
-      public static ReplyCase forNumber(int value) {
-        switch (value) {
-          case 1: return RAR;
-          case 2: return UR;
-          case 0: return REPLY_NOT_SET;
-          default: return null;
-        }
-      }
-      public int getNumber() {
-        return this.value;
-      }
-    };
-
-    public ReplyCase
-    getReplyCase() {
-      return ReplyCase.forNumber(
-          replyCase_);
-    }
-
-    public static final int RAR_FIELD_NUMBER = 1;
-    /**
-     * <code>.server.ResponseAfterRecv rAR = 1;</code>
-     */
-    public boolean hasRAR() {
-      return replyCase_ == 1;
-    }
-    /**
-     * <code>.server.ResponseAfterRecv rAR = 1;</code>
-     */
-    public server.ProtoReqRecv.ResponseAfterRecv getRAR() {
-      if (replyCase_ == 1) {
-         return (server.ProtoReqRecv.ResponseAfterRecv) reply_;
-      }
-      return server.ProtoReqRecv.ResponseAfterRecv.getDefaultInstance();
-    }
-    /**
-     * <code>.server.ResponseAfterRecv rAR = 1;</code>
-     */
-    public server.ProtoReqRecv.ResponseAfterRecvOrBuilder getRAROrBuilder() {
-      if (replyCase_ == 1) {
-         return (server.ProtoReqRecv.ResponseAfterRecv) reply_;
-      }
-      return server.ProtoReqRecv.ResponseAfterRecv.getDefaultInstance();
-    }
-
-    public static final int UR_FIELD_NUMBER = 2;
-    /**
-     * <code>.server.UpdateReply uR = 2;</code>
-     */
-    public boolean hasUR() {
-      return replyCase_ == 2;
-    }
-    /**
-     * <code>.server.UpdateReply uR = 2;</code>
-     */
-    public server.ProtoReqRecv.UpdateReply getUR() {
-      if (replyCase_ == 2) {
-         return (server.ProtoReqRecv.UpdateReply) reply_;
-      }
-      return server.ProtoReqRecv.UpdateReply.getDefaultInstance();
-    }
-    /**
-     * <code>.server.UpdateReply uR = 2;</code>
-     */
-    public server.ProtoReqRecv.UpdateReplyOrBuilder getUROrBuilder() {
-      if (replyCase_ == 2) {
-         return (server.ProtoReqRecv.UpdateReply) reply_;
-      }
-      return server.ProtoReqRecv.UpdateReply.getDefaultInstance();
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (replyCase_ == 1) {
-        output.writeMessage(1, (server.ProtoReqRecv.ResponseAfterRecv) reply_);
-      }
-      if (replyCase_ == 2) {
-        output.writeMessage(2, (server.ProtoReqRecv.UpdateReply) reply_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (replyCase_ == 1) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, (server.ProtoReqRecv.ResponseAfterRecv) reply_);
-      }
-      if (replyCase_ == 2) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, (server.ProtoReqRecv.UpdateReply) reply_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof server.ProtoReqRecv.Reply)) {
-        return super.equals(obj);
-      }
-      server.ProtoReqRecv.Reply other = (server.ProtoReqRecv.Reply) obj;
-
-      boolean result = true;
-      result = result && getReplyCase().equals(
-          other.getReplyCase());
-      if (!result) return false;
-      switch (replyCase_) {
-        case 1:
-          result = result && getRAR()
-              .equals(other.getRAR());
-          break;
-        case 2:
-          result = result && getUR()
-              .equals(other.getUR());
-          break;
-        case 0:
-        default:
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      switch (replyCase_) {
-        case 1:
-          hash = (37 * hash) + RAR_FIELD_NUMBER;
-          hash = (53 * hash) + getRAR().hashCode();
-          break;
-        case 2:
-          hash = (37 * hash) + UR_FIELD_NUMBER;
-          hash = (53 * hash) + getUR().hashCode();
-          break;
-        case 0:
-        default:
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static server.ProtoReqRecv.Reply parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.Reply parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static server.ProtoReqRecv.Reply parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static server.ProtoReqRecv.Reply parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(server.ProtoReqRecv.Reply prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code server.Reply}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:server.Reply)
-        server.ProtoReqRecv.ReplyOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return server.ProtoReqRecv.internal_static_server_Reply_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return server.ProtoReqRecv.internal_static_server_Reply_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                server.ProtoReqRecv.Reply.class, server.ProtoReqRecv.Reply.Builder.class);
-      }
-
-      // Construct using server.ProtoReqRecv.Reply.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        replyCase_ = 0;
-        reply_ = null;
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return server.ProtoReqRecv.internal_static_server_Reply_descriptor;
-      }
-
-      public server.ProtoReqRecv.Reply getDefaultInstanceForType() {
-        return server.ProtoReqRecv.Reply.getDefaultInstance();
-      }
-
-      public server.ProtoReqRecv.Reply build() {
-        server.ProtoReqRecv.Reply result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public server.ProtoReqRecv.Reply buildPartial() {
-        server.ProtoReqRecv.Reply result = new server.ProtoReqRecv.Reply(this);
-        if (replyCase_ == 1) {
-          if (rARBuilder_ == null) {
-            result.reply_ = reply_;
-          } else {
-            result.reply_ = rARBuilder_.build();
-          }
-        }
-        if (replyCase_ == 2) {
-          if (uRBuilder_ == null) {
-            result.reply_ = reply_;
-          } else {
-            result.reply_ = uRBuilder_.build();
-          }
-        }
-        result.replyCase_ = replyCase_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof server.ProtoReqRecv.Reply) {
-          return mergeFrom((server.ProtoReqRecv.Reply)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(server.ProtoReqRecv.Reply other) {
-        if (other == server.ProtoReqRecv.Reply.getDefaultInstance()) return this;
-        switch (other.getReplyCase()) {
-          case RAR: {
-            mergeRAR(other.getRAR());
-            break;
-          }
-          case UR: {
-            mergeUR(other.getUR());
-            break;
-          }
-          case REPLY_NOT_SET: {
-            break;
-          }
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        server.ProtoReqRecv.Reply parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (server.ProtoReqRecv.Reply) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int replyCase_ = 0;
-      private java.lang.Object reply_;
-      public ReplyCase
-          getReplyCase() {
-        return ReplyCase.forNumber(
-            replyCase_);
-      }
-
-      public Builder clearReply() {
-        replyCase_ = 0;
-        reply_ = null;
-        onChanged();
-        return this;
-      }
-
-
-      private com.google.protobuf.SingleFieldBuilderV3<
-          server.ProtoReqRecv.ResponseAfterRecv, server.ProtoReqRecv.ResponseAfterRecv.Builder, server.ProtoReqRecv.ResponseAfterRecvOrBuilder> rARBuilder_;
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      public boolean hasRAR() {
-        return replyCase_ == 1;
-      }
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      public server.ProtoReqRecv.ResponseAfterRecv getRAR() {
-        if (rARBuilder_ == null) {
-          if (replyCase_ == 1) {
-            return (server.ProtoReqRecv.ResponseAfterRecv) reply_;
-          }
-          return server.ProtoReqRecv.ResponseAfterRecv.getDefaultInstance();
-        } else {
-          if (replyCase_ == 1) {
-            return rARBuilder_.getMessage();
-          }
-          return server.ProtoReqRecv.ResponseAfterRecv.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      public Builder setRAR(server.ProtoReqRecv.ResponseAfterRecv value) {
-        if (rARBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          reply_ = value;
-          onChanged();
-        } else {
-          rARBuilder_.setMessage(value);
-        }
-        replyCase_ = 1;
-        return this;
-      }
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      public Builder setRAR(
-          server.ProtoReqRecv.ResponseAfterRecv.Builder builderForValue) {
-        if (rARBuilder_ == null) {
-          reply_ = builderForValue.build();
-          onChanged();
-        } else {
-          rARBuilder_.setMessage(builderForValue.build());
-        }
-        replyCase_ = 1;
-        return this;
-      }
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      public Builder mergeRAR(server.ProtoReqRecv.ResponseAfterRecv value) {
-        if (rARBuilder_ == null) {
-          if (replyCase_ == 1 &&
-              reply_ != server.ProtoReqRecv.ResponseAfterRecv.getDefaultInstance()) {
-            reply_ = server.ProtoReqRecv.ResponseAfterRecv.newBuilder((server.ProtoReqRecv.ResponseAfterRecv) reply_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            reply_ = value;
-          }
-          onChanged();
-        } else {
-          if (replyCase_ == 1) {
-            rARBuilder_.mergeFrom(value);
-          }
-          rARBuilder_.setMessage(value);
-        }
-        replyCase_ = 1;
-        return this;
-      }
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      public Builder clearRAR() {
-        if (rARBuilder_ == null) {
-          if (replyCase_ == 1) {
-            replyCase_ = 0;
-            reply_ = null;
-            onChanged();
-          }
-        } else {
-          if (replyCase_ == 1) {
-            replyCase_ = 0;
-            reply_ = null;
-          }
-          rARBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      public server.ProtoReqRecv.ResponseAfterRecv.Builder getRARBuilder() {
-        return getRARFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      public server.ProtoReqRecv.ResponseAfterRecvOrBuilder getRAROrBuilder() {
-        if ((replyCase_ == 1) && (rARBuilder_ != null)) {
-          return rARBuilder_.getMessageOrBuilder();
-        } else {
-          if (replyCase_ == 1) {
-            return (server.ProtoReqRecv.ResponseAfterRecv) reply_;
-          }
-          return server.ProtoReqRecv.ResponseAfterRecv.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.server.ResponseAfterRecv rAR = 1;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          server.ProtoReqRecv.ResponseAfterRecv, server.ProtoReqRecv.ResponseAfterRecv.Builder, server.ProtoReqRecv.ResponseAfterRecvOrBuilder> 
-          getRARFieldBuilder() {
-        if (rARBuilder_ == null) {
-          if (!(replyCase_ == 1)) {
-            reply_ = server.ProtoReqRecv.ResponseAfterRecv.getDefaultInstance();
-          }
-          rARBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              server.ProtoReqRecv.ResponseAfterRecv, server.ProtoReqRecv.ResponseAfterRecv.Builder, server.ProtoReqRecv.ResponseAfterRecvOrBuilder>(
-                  (server.ProtoReqRecv.ResponseAfterRecv) reply_,
-                  getParentForChildren(),
-                  isClean());
-          reply_ = null;
-        }
-        replyCase_ = 1;
-        onChanged();;
-        return rARBuilder_;
-      }
-
-      private com.google.protobuf.SingleFieldBuilderV3<
-          server.ProtoReqRecv.UpdateReply, server.ProtoReqRecv.UpdateReply.Builder, server.ProtoReqRecv.UpdateReplyOrBuilder> uRBuilder_;
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      public boolean hasUR() {
-        return replyCase_ == 2;
-      }
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      public server.ProtoReqRecv.UpdateReply getUR() {
-        if (uRBuilder_ == null) {
-          if (replyCase_ == 2) {
-            return (server.ProtoReqRecv.UpdateReply) reply_;
-          }
-          return server.ProtoReqRecv.UpdateReply.getDefaultInstance();
-        } else {
-          if (replyCase_ == 2) {
-            return uRBuilder_.getMessage();
-          }
-          return server.ProtoReqRecv.UpdateReply.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      public Builder setUR(server.ProtoReqRecv.UpdateReply value) {
-        if (uRBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          reply_ = value;
-          onChanged();
-        } else {
-          uRBuilder_.setMessage(value);
-        }
-        replyCase_ = 2;
-        return this;
-      }
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      public Builder setUR(
-          server.ProtoReqRecv.UpdateReply.Builder builderForValue) {
-        if (uRBuilder_ == null) {
-          reply_ = builderForValue.build();
-          onChanged();
-        } else {
-          uRBuilder_.setMessage(builderForValue.build());
-        }
-        replyCase_ = 2;
-        return this;
-      }
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      public Builder mergeUR(server.ProtoReqRecv.UpdateReply value) {
-        if (uRBuilder_ == null) {
-          if (replyCase_ == 2 &&
-              reply_ != server.ProtoReqRecv.UpdateReply.getDefaultInstance()) {
-            reply_ = server.ProtoReqRecv.UpdateReply.newBuilder((server.ProtoReqRecv.UpdateReply) reply_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            reply_ = value;
-          }
-          onChanged();
-        } else {
-          if (replyCase_ == 2) {
-            uRBuilder_.mergeFrom(value);
-          }
-          uRBuilder_.setMessage(value);
-        }
-        replyCase_ = 2;
-        return this;
-      }
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      public Builder clearUR() {
-        if (uRBuilder_ == null) {
-          if (replyCase_ == 2) {
-            replyCase_ = 0;
-            reply_ = null;
-            onChanged();
-          }
-        } else {
-          if (replyCase_ == 2) {
-            replyCase_ = 0;
-            reply_ = null;
-          }
-          uRBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      public server.ProtoReqRecv.UpdateReply.Builder getURBuilder() {
-        return getURFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      public server.ProtoReqRecv.UpdateReplyOrBuilder getUROrBuilder() {
-        if ((replyCase_ == 2) && (uRBuilder_ != null)) {
-          return uRBuilder_.getMessageOrBuilder();
-        } else {
-          if (replyCase_ == 2) {
-            return (server.ProtoReqRecv.UpdateReply) reply_;
-          }
-          return server.ProtoReqRecv.UpdateReply.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>.server.UpdateReply uR = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          server.ProtoReqRecv.UpdateReply, server.ProtoReqRecv.UpdateReply.Builder, server.ProtoReqRecv.UpdateReplyOrBuilder> 
-          getURFieldBuilder() {
-        if (uRBuilder_ == null) {
-          if (!(replyCase_ == 2)) {
-            reply_ = server.ProtoReqRecv.UpdateReply.getDefaultInstance();
-          }
-          uRBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              server.ProtoReqRecv.UpdateReply, server.ProtoReqRecv.UpdateReply.Builder, server.ProtoReqRecv.UpdateReplyOrBuilder>(
-                  (server.ProtoReqRecv.UpdateReply) reply_,
-                  getParentForChildren(),
-                  isClean());
-          reply_ = null;
-        }
-        replyCase_ = 2;
-        onChanged();;
-        return uRBuilder_;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFieldsProto3(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:server.Reply)
-    }
-
-    // @@protoc_insertion_point(class_scope:server.Reply)
-    private static final server.ProtoReqRecv.Reply DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new server.ProtoReqRecv.Reply();
-    }
-
-    public static server.ProtoReqRecv.Reply getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<Reply>
-        PARSER = new com.google.protobuf.AbstractParser<Reply>() {
-      public Reply parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new Reply(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<Reply> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Reply> getParserForType() {
-      return PARSER;
-    }
-
-    public server.ProtoReqRecv.Reply getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4420,16 +2869,6 @@ public final class ProtoReqRecv {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_server_ResponseAfterRecv_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_server_UpdateReply_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_server_UpdateReply_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_server_Reply_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_server_Reply_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_server_General_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -4443,18 +2882,15 @@ public final class ProtoReqRecv {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\033protobuf/protoReqRecv.proto\022\006server\";\n" +
+      "\n\033protobuf/protoReqRecv.proto\022\006server\"N\n" +
       "\003Buy\022\022\n\ncompanyBuy\030\001 \001(\t\022\016\n\006qttBuy\030\002 \001(\005" +
-      "\022\020\n\010priceMax\030\003 \001(\002\">\n\004Sell\022\023\n\013companySel" +
-      "l\030\001 \001(\t\022\017\n\007qttSell\030\002 \001(\005\022\020\n\010priceMin\030\003 \001" +
-      "(\002\" \n\021ResponseAfterRecv\022\013\n\003rep\030\001 \001(\t\"O\n\013" +
-      "UpdateReply\022\016\n\006result\030\001 \001(\t\022\017\n\007company\030\002" +
-      " \001(\t\022\020\n\010quantity\030\003 \001(\005\022\r\n\005price\030\004 \001(\002\"]\n" +
-      "\005Reply\022(\n\003rAR\030\001 \001(\0132\031.server.ResponseAft" +
-      "erRecvH\000\022!\n\002uR\030\002 \001(\0132\023.server.UpdateRepl" +
-      "yH\000B\007\n\005reply\"N\n\007General\022\032\n\003buy\030\001 \001(\0132\013.s",
-      "erver.BuyH\000\022\034\n\004sell\030\002 \001(\0132\014.server.SellH" +
-      "\000B\t\n\007generalb\006proto3"
+      "\022\020\n\010priceMax\030\003 \001(\002\022\021\n\tidClientB\030\004 \001(\005\"Q\n" +
+      "\004Sell\022\023\n\013companySell\030\001 \001(\t\022\017\n\007qttSell\030\002 " +
+      "\001(\005\022\020\n\010priceMin\030\003 \001(\002\022\021\n\tidClientS\030\004 \001(\005" +
+      "\" \n\021ResponseAfterRecv\022\013\n\003rep\030\001 \001(\t\"N\n\007Ge" +
+      "neral\022\032\n\003buy\030\001 \001(\0132\013.server.BuyH\000\022\034\n\004sel" +
+      "l\030\002 \001(\0132\014.server.SellH\000B\t\n\007generalb\006prot" +
+      "o3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4473,33 +2909,21 @@ public final class ProtoReqRecv {
     internal_static_server_Buy_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_server_Buy_descriptor,
-        new java.lang.String[] { "CompanyBuy", "QttBuy", "PriceMax", });
+        new java.lang.String[] { "CompanyBuy", "QttBuy", "PriceMax", "IdClientB", });
     internal_static_server_Sell_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_server_Sell_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_server_Sell_descriptor,
-        new java.lang.String[] { "CompanySell", "QttSell", "PriceMin", });
+        new java.lang.String[] { "CompanySell", "QttSell", "PriceMin", "IdClientS", });
     internal_static_server_ResponseAfterRecv_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_server_ResponseAfterRecv_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_server_ResponseAfterRecv_descriptor,
         new java.lang.String[] { "Rep", });
-    internal_static_server_UpdateReply_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_server_UpdateReply_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_server_UpdateReply_descriptor,
-        new java.lang.String[] { "Result", "Company", "Quantity", "Price", });
-    internal_static_server_Reply_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_server_Reply_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_server_Reply_descriptor,
-        new java.lang.String[] { "RAR", "UR", "Reply", });
     internal_static_server_General_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_server_General_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_server_General_descriptor,

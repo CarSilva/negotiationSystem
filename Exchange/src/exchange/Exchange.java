@@ -5,6 +5,7 @@ import httpDirectory.Json;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.zeromq.ZMQ;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,27 +21,33 @@ public class Exchange {
 
     public Exchange(int exchangeId){
         this.shares = new HashMap<>();
-        json = new Json();
+        Share s = new Share("iota", 2.4,0.1,0.2,2.4);
+        shares.put("iota", s);
+        /*json = new Json();
         http = new DirectoryAccess();
         String query = "companies";
-        fillShares(query);
+        fillShares(query);*/
     }
 
 
-    public boolean buy_request(String share_name, int quantity, float price) {
+    public synchronized boolean buy_request(String share_name, int quantity,
+                                            float price, int idClient, ZMQ.Socket pub) {
         boolean existsShare = false;
         Share share = shares.get(share_name);
         if(share != null)
             existsShare = true;
-        // procura por share_name (key) mas pode-se alterar
-        // e procurar também por shares da companhia x
-        share.add_buy_request(quantity, price);
+        share.add_buy_request(quantity, price, pub, idClient);
         return existsShare;
     }
 
-    public void sell_request(String share_name, int quantity, float price) {
+    public synchronized boolean sell_request(String share_name, int quantity,
+                                             float price, int idClient, ZMQ.Socket pub) {
+        boolean existsShare = false;
         Share share = shares.get(share_name);
-        share.add_sell_request(quantity, price);
+        if(share != null)
+            existsShare = true;
+        share.add_sell_request(quantity, price, pub, idClient);
+        return existsShare;
     }
 
     public void fillShares(String query){
@@ -90,6 +97,15 @@ public class Exchange {
         class RequestBuy {
             int quantity;
             float price;
+            ZMQ.Socket pub;
+            int idClient;
+
+            RequestBuy(int quantity, float price, ZMQ.Socket pub, int idClient) {
+                this.quantity = quantity;
+                this.price = price;
+                this.pub = pub;
+                this.idClient = idClient;
+            }
 
             RequestBuy(int quantity, float price) {
                 this.quantity = quantity;
@@ -100,40 +116,49 @@ public class Exchange {
         class RequestSell{
             int quantity;
             float price;
+            ZMQ.Socket pub;
+            int idClient;
 
             RequestSell(int quantity, float price) {
                 this.quantity = quantity;
                 this.price = price;
             }
+
+            RequestSell(int quantity, float price, ZMQ.Socket pub, int idClient) {
+                this.quantity = quantity;
+                this.price = price;
+                this.pub = pub;
+                this.idClient = idClient;
+            }
         }
 
-        void add_buy_request(int quantity, float price) {
+       synchronized void add_buy_request(int quantity, float price,
+                                         ZMQ.Socket pub, int idClient) {
 
-            RequestBuy buy = new RequestBuy(quantity, price);
+            RequestBuy buy = new RequestBuy(quantity, price, pub, idClient);
 
             if (sell_requests.isEmpty())
                 buy_requests.add(buy);
 
             else {
-                //Request sell = sell_requests.remove();
                 trade(buy);
             }
         }
 
-        void add_sell_request(int quantity, float price) {
+        synchronized void add_sell_request(int quantity, float price,
+                                           ZMQ.Socket pub, int idClient) {
 
-            RequestSell sell = new RequestSell(quantity, price);
+            RequestSell sell = new RequestSell(quantity, price, pub, idClient);
 
             if (buy_requests.isEmpty())
                 sell_requests.add(sell);
 
             else {
-                //Request buy = buy_requests.remove();
                 trade(sell);
             }
         }
 
-        void trade(RequestBuy reqBuy) {
+       synchronized void trade(RequestBuy reqBuy) {
 
             for(RequestSell sell : sell_requests){
                 if(sell.price <= reqBuy.price) {
@@ -141,15 +166,23 @@ public class Exchange {
                     if (sell.quantity < reqBuy.quantity) {
                         int remaining = reqBuy.quantity - sell.quantity;
                         reqBuy.quantity = remaining;
+                        sell.pub.send(sell.idClient+" "+company_name
+                                        +" "+tradePrice +" "+ sell.quantity);
                         //Say nothing to the buyer --> informs seller
                     }else if(sell.quantity > reqBuy.quantity){
                         int remaining = sell.quantity - reqBuy.quantity;
                         sell.quantity = remaining;
+                        reqBuy.pub.send(reqBuy.idClient+" "+company_name
+                                +" "+tradePrice +" "+ reqBuy.quantity);
                         break;
                         //Say nothing to the seller --> informs buyer
                     }else {
                         sell_requests.remove(sell);
                         buy_requests.remove(reqBuy);
+                        reqBuy.pub.send(reqBuy.idClient+" "+company_name
+                                +" "+tradePrice +" "+ reqBuy.quantity);
+                        sell.pub.send(sell.idClient+" "+company_name
+                                +" "+tradePrice +" "+ sell.quantity);
                         //Informs seller and buyer
                         break;
                     }
@@ -158,7 +191,7 @@ public class Exchange {
         }
 
 
-        void trade(RequestSell reqSell) {
+        synchronized void trade(RequestSell reqSell) {
 
             for(RequestBuy buy : buy_requests){
                 if(buy.price >= reqSell.price) {
@@ -166,15 +199,23 @@ public class Exchange {
                     if (buy.quantity < reqSell.quantity) {
                         int remaining = reqSell.quantity - buy.quantity;
                         reqSell.quantity = remaining;
+                        buy.pub.send(buy.idClient+" "+company_name
+                                +" "+tradePrice +" "+ buy.quantity);
                         //Say nothing to the seller --> informs buyer
                     }else if(buy.quantity > reqSell.quantity){
                         int remaining = buy.quantity - reqSell.quantity;
                         buy.quantity = remaining;
+                        reqSell.pub.send(reqSell.idClient+" "+company_name
+                                +" "+tradePrice +" "+ reqSell.quantity);
                         break;
                         //Say nothing to the buyer --> informs seller
                     }else {
                         sell_requests.remove(reqSell);
                         buy_requests.remove(buy);
+                        buy.pub.send(buy.idClient+" "+company_name
+                                +" "+tradePrice +" "+ buy.quantity);
+                        reqSell.pub.send(reqSell.idClient+" "+company_name
+                                +" "+tradePrice +" "+ reqSell.quantity);
                         //Informs seller and buyer
                         break;
                     }

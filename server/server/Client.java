@@ -1,10 +1,13 @@
 package server;
 
-import server.ProtoAuth.Auth;
+
 import server.ProtoAuth.ResponseAuth;
+import server.ProtoAuth.Auth;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+
+import org.zeromq.ZMQ;
 
 import java.io.*;
 import java.net.*;
@@ -20,6 +23,7 @@ public class Client {
         InputStream is = s.getInputStream();
         OutputStream os = s.getOutputStream();
         boolean bool = auth(is, os);
+        int idClient = Integer.parseInt(args[2]);
         if(!bool){
           System.out.println("Something went wrong. Please try again");
         }
@@ -29,10 +33,14 @@ public class Client {
             System.out.println("Something went wrong. Please try again");
           }
         }
-          Thread handleReq = new HandleReq(is, os);
-          handleReq.start();
-          Thread handleRcv = new HandleRcv(is, os);
-          handleRcv.start();
+
+        ZMQ.Context context = ZMQ.context(1);
+        ZMQ.Socket sub = context.socket(ZMQ.SUB);
+        sub.connect("tcp://localhost:12349");
+        Thread handleReq = new HandleReq(is, os, sub, idClient);
+        handleReq.start();
+        Thread handleRcv = new HandleRcv(sub);
+        handleRcv.start();
     }
 
     public static boolean auth(InputStream is, OutputStream os){

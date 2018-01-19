@@ -27,5 +27,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="json-simple-1.1" level="project" />
+    <orderEntry type="library" name="jeromq-0.4.3-SNAPSHOT" level="project" />
   </component>
 </module>

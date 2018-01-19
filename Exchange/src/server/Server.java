@@ -2,7 +2,8 @@
 package server;
 
 import exchange.Exchange;
-import exchange.ProtoReqRecv;
+import org.zeromq.ZMQ;
+import protocolBuffers.ProtoReqRecv;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.net.Socket;
 
 public class Server {
     public static void main(String[] args) {
+
         try {
             int port = java.lang.Integer.parseInt(args[0]);
             ServerSocket srv = new ServerSocket(port);
@@ -43,30 +45,38 @@ class ClientHandler extends Thread {
 
     public void run() {
         try {
+            ZMQ.Context context = ZMQ.context(1);
+            ZMQ.Socket pub = context.socket(ZMQ.PUB);
+            pub.connect("tcp://localhost:12348");
+            //create ZMQ Socket publisher here
             while (true) {
                 Object reply = null;
                 int tam = cis.read();
-                    byte[] packetRead = new byte[tam];
+                byte[] packetRead = new byte[tam];
                 cis.read(packetRead, 0, tam);
                 ProtoReqRecv.General general =  ProtoReqRecv.General
                                                 .parseFrom(packetRead);
                 if(general.hasBuy())
                     reply = general.getBuy();
                 else if(general.hasSell())
-                        reply = general.getSell();
+                    reply = general.getSell();
                 if(reply instanceof ProtoReqRecv.Buy){
                     ProtoReqRecv.Buy buy = (ProtoReqRecv.Buy) reply;
                     boolean result = exchange.buy_request(buy.getCompanyBuy(),
                                                         buy.getQttBuy(),
-                                                        buy.getPriceMax());
-                    ProtoReqRecv.ResponseAfterRecv rep = createReply(result);
+                                                        buy.getPriceMax(),
+                                                        buy.getIdClientB(),
+                                                        pub);
+                    ProtoReqRecv.ResponseAfterRecv rep = createReply(result, buy.getCompanyBuy());
                     sendPacket(rep);
                 }else if(reply instanceof ProtoReqRecv.Sell){
                     ProtoReqRecv.Sell sell = (ProtoReqRecv.Sell) reply;
-                    boolean result = exchange.buy_request(sell.getCompanySell(),
+                    boolean result = exchange.sell_request(sell.getCompanySell(),
                                                         sell.getQttSell(),
-                                                        sell.getPriceMin());
-                    ProtoReqRecv.ResponseAfterRecv rep = createReply(result);
+                                                        sell.getPriceMin(),
+                                                        sell.getIdClientS(),
+                                                        pub);
+                    ProtoReqRecv.ResponseAfterRecv rep = createReply(result,sell.getCompanySell());
                     sendPacket(rep);
                 }
 
@@ -87,11 +97,11 @@ class ClientHandler extends Thread {
         }
     }
 
-    public ProtoReqRecv.ResponseAfterRecv createReply(boolean result){
+    public ProtoReqRecv.ResponseAfterRecv createReply(boolean result, String info){
         String reply = "";
         if(result)
-            reply = "Added with success";
-        else reply = "Error, no share founded";
+            reply = "Order added with success on: " + info;
+        else reply = "Error, no share with name " + info + " founded";
         return ProtoReqRecv.ResponseAfterRecv.newBuilder()
                                              .setRep(reply)
                                              .build();

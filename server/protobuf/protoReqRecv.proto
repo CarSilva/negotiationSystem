@@ -6,29 +6,17 @@ message Buy {
   string companyBuy = 1;
   int32 qttBuy = 2;
   float priceMax = 3;
+  int32 idClientB = 4;
 }
 message Sell {
   string companySell = 1;
   int32 qttSell = 2;
   float priceMin = 3;
+  int32 idClientS = 4;
 }
 
 message ResponseAfterRecv{
   string rep = 1;
-}
-
-message UpdateReply{
-  string result = 1;
-  string company = 2;
-  int32 quantity = 3;
-  float price = 4;
-}
-
-message Reply{
-  oneof reply{
-    ResponseAfterRecv rAR = 1;
-    UpdateReply uR = 2;
-  }
 }
 
 message General{

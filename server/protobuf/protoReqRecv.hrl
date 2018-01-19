@@ -12,31 +12,8 @@
 -record('Sell',
         {companySell = []       :: iolist() | undefined, % = 1
          qttSell = 0            :: integer() | undefined, % = 2, 32 bits
-         priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined % = 3
-        }).
--endif.
-
--ifndef('UPDATEREPLY_PB_H').
--define('UPDATEREPLY_PB_H', true).
--record('UpdateReply',
-        {result = []            :: iolist() | undefined, % = 1
-         company = []           :: iolist() | undefined, % = 2
-         quantity = 0           :: integer() | undefined, % = 3, 32 bits
-         price = 0.0            :: float() | integer() | infinity | '-infinity' | nan | undefined % = 4
-        }).
--endif.
-
--ifndef('RESPONSEAFTERRECV_PB_H').
--define('RESPONSEAFTERRECV_PB_H', true).
--record('ResponseAfterRecv',
-        {rep = []               :: iolist() | undefined % = 1
-        }).
--endif.
-
--ifndef('REPLY_PB_H').
--define('REPLY_PB_H', true).
--record('Reply',
-        {reply                  :: {rAR, #'ResponseAfterRecv'{}} | {uR, #'UpdateReply'{}} | undefined % oneof
+         priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
+         idClientS = 0          :: integer() | undefined % = 4, 32 bits
         }).
 -endif.
 
@@ -45,7 +22,8 @@
 -record('Buy',
         {companyBuy = []        :: iolist() | undefined, % = 1
          qttBuy = 0             :: integer() | undefined, % = 2, 32 bits
-         priceMax = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined % = 3
+         priceMax = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
+         idClientB = 0          :: integer() | undefined % = 4, 32 bits
         }).
 -endif.
 
@@ -53,6 +31,13 @@
 -define('GENERAL_PB_H', true).
 -record('General',
         {general                :: {buy, #'Buy'{}} | {sell, #'Sell'{}} | undefined % oneof
+        }).
+-endif.
+
+-ifndef('RESPONSEAFTERRECV_PB_H').
+-define('RESPONSEAFTERRECV_PB_H', true).
+-record('ResponseAfterRecv',
+        {rep = []               :: iolist() | undefined % = 1
         }).
 -endif.
 
