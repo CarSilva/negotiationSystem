@@ -1,4 +1,4 @@
-# Stock Exchange
+# Negotiation System
   Negotiation Stock System implementation --- Distributed System
   
  Developed with
