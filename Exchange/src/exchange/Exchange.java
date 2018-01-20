@@ -1,5 +1,6 @@
 package exchange;
 
+import Interface.Request;
 import httpDirectory.DirectoryAccess;
 import httpDirectory.Json;
 import org.json.simple.JSONArray;
@@ -8,10 +9,7 @@ import org.json.simple.parser.ParseException;
 import org.zeromq.ZMQ;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class Exchange {
 
@@ -90,32 +88,52 @@ public class Exchange {
             this.closingValue = clValue;
             this.minimumValue = minValue;
             this.maximumValue = maxValue;
-            this.buy_requests = new PriorityQueue<>();
-            this.sell_requests = new PriorityQueue<>();
+            Comparator<Request> cmp = new OrderQueue();
+            this.buy_requests = new PriorityQueue<>(11, cmp);
+            this.sell_requests = new PriorityQueue<>(11, cmp);
         }
 
-        class RequestBuy {
+        public class OrderQueue implements Comparator<Request>{
+            @Override
+            public int compare(Request req, Request t1) {
+                if(req.getTimestamp() > t1.getTimestamp())
+                    return 1;
+                if(req.getTimestamp() < t1.getTimestamp())
+                    return -1;
+                return 0;
+            }
+        }
+
+        class RequestBuy implements Request {
             int quantity;
             float price;
+            long timestamp;
             ZMQ.Socket pub;
             String client;
 
-            RequestBuy(int quantity, float price, ZMQ.Socket pub, String client) {
+            RequestBuy(int quantity, float price, ZMQ.Socket pub,
+                       String client, long timestamp) {
                 this.quantity = quantity;
                 this.price = price;
                 this.pub = pub;
                 this.client = client;
+                this.timestamp = timestamp;
             }
 
             RequestBuy(int quantity, float price) {
                 this.quantity = quantity;
                 this.price = price;
             }
+
+            public long getTimestamp() {
+                return timestamp;
+            }
         }
 
-        class RequestSell{
+        class RequestSell implements Request{
             int quantity;
             float price;
+            long timestamp;
             ZMQ.Socket pub;
             String client;
 
@@ -124,18 +142,26 @@ public class Exchange {
                 this.price = price;
             }
 
-            RequestSell(int quantity, float price, ZMQ.Socket pub, String client) {
+            RequestSell(int quantity, float price, ZMQ.Socket pub,
+                        String client, long timestamp) {
                 this.quantity = quantity;
                 this.price = price;
                 this.pub = pub;
                 this.client = client;
+                this.timestamp = timestamp;
+            }
+
+            @Override
+            public long getTimestamp() {
+                return this.timestamp;
             }
         }
 
        synchronized void add_buy_request(int quantity, float price,
                                          ZMQ.Socket pub, String client) {
 
-            RequestBuy buy = new RequestBuy(quantity, price, pub, client);
+            RequestBuy buy = new RequestBuy(quantity, price, pub,
+                                            client, System.currentTimeMillis());
 
             if (sell_requests.isEmpty())
                 buy_requests.add(buy);
@@ -148,7 +174,8 @@ public class Exchange {
         synchronized void add_sell_request(int quantity, float price,
                                            ZMQ.Socket pub, String client) {
 
-            RequestSell sell = new RequestSell(quantity, price, pub, client);
+            RequestSell sell = new RequestSell(quantity, price, pub,
+                                                client, System.currentTimeMillis());
 
             if (buy_requests.isEmpty())
                 sell_requests.add(sell);
@@ -192,7 +219,6 @@ public class Exchange {
 
 
         synchronized void trade(RequestSell reqSell) {
-
             for(RequestBuy buy : buy_requests){
                 if(buy.price >= reqSell.price) {
                     float tradePrice = (buy.price + reqSell.price) / 2;
