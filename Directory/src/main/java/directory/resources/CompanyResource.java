@@ -1,7 +1,9 @@
 package directory.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import directory.representations.Company;
-import directory.representations.ExchangeId;
+import directory.representations.Exchange;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -23,8 +25,9 @@ public class CompanyResource {
         Company company;
         synchronized (companies) {
             company = companies.get(name);
+            if(company != null)
+                return Response.ok(company).build();
         }
-        if(company != null) return Response.ok(company).build();
         // Resource not found
         return Response.status(404).build();
     }
@@ -32,23 +35,32 @@ public class CompanyResource {
     @GET
     @Path("/{name}/exchanges")
     public Response getExchanges(@PathParam("name") String name) {
-        Company company = companies.get(name);
-        if(company != null)
-            return Response.ok(new ExchangeId(company.getExchangeId())).build();
-        // Resource not found
-        else
-            return Response.status(404).build();
+        synchronized (companies) {
+            Company company = companies.get(name);
+            if (company != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                ObjectNode exchange = mapper.createObjectNode();
+                exchange.put("exchangeId", company.getExchangeId());
+                return Response.ok(exchange).build();
+            }
+        }
+        // Not found - 404 - No such resource
+        return Response.status(404).build();
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{name}")
-    public Response updateCompany(Company company, @PathParam("name")String name) {
-        Company localCompany = companies.get(company.getName());
-        if(localCompany != null)
-            localCompany.update(company);
-        else
-            companies.put(company.getName(), company);
+    public Response updateCompany(Company company,
+                                  @PathParam("name") String name) {
+
+        synchronized (companies) {
+            Company localCompany = companies.get(company.getName());
+            if (localCompany != null)
+                localCompany.update(company);
+            else
+                companies.put(company.getName(), company);
+        }
         return Response.ok().build();
     }
 
@@ -59,7 +71,7 @@ public class CompanyResource {
             companies.remove(name);
             return Response.ok().build();
         }
-        // Conflict -- company beeing traded on some exchange
+        // Conflict -- company stocks traded on some exchange
         return Response.status(409).build();
     }
 

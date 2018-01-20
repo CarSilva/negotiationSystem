@@ -7,6 +7,8 @@ import directory.representations.Exchange;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Path("/exchanges")
@@ -15,13 +17,26 @@ public class ExchangesResource {
 
     Map<Integer, Exchange> exchanges;
 
+    public ExchangesResource(Map<Integer, Exchange> exchanges) {
+        this.exchanges = exchanges;
+    }
+
     @GET
-    public Exchange listExchanges() {
-        return new Exchange("host", 1, 2);
+    public List<Exchange> listExchanges() {
+        synchronized (exchanges) {
+            return new ArrayList<Exchange>(exchanges.values());
+        }
     }
 
     @POST
-    public Response newCompany() {
-        return Response.ok().build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newExchange(Exchange exchange) {
+        int id;
+        synchronized (exchanges) {
+            id = exchanges.values().size() + 1;
+            exchanges.put(id, exchange);
+        }
+        exchange.id = id;
+        return Response.ok(exchange).build();
     }
 }
