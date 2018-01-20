@@ -18,4 +18,9 @@ public class Exchange {
         this.host = host;
         this.port = port;
     }
+
+    public void update(Exchange exchange) {
+        this.port = exchange.port;
+        this.host = exchange.host;
+    }
 }

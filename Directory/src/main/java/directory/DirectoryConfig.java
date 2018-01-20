@@ -15,7 +15,7 @@ public class DirectoryConfig extends Configuration {
     public Map<String, Company> companies;
 
     @NotNull
-    public Map<String, Exchange> exchanges;
+    public Map<Integer, Exchange> exchanges;
 
 
 }

@@ -26,8 +26,8 @@ public class DirectoryApp extends Application<DirectoryConfig> {
 
         environment.jersey().register(new CompaniesResource(configuration.companies));
         environment.jersey().register(new CompanyResource(configuration.companies));
-        environment.jersey().register(new ExchangesResource());
-        environment.jersey().register(new ExchangeResource());
+        environment.jersey().register(new ExchangesResource(configuration.exchanges));
+        environment.jersey().register(new ExchangeResource(configuration.exchanges));
         environment.healthChecks().register("directory",
                 new DirectoryHealthCheck(configuration.companies, configuration.exchanges));
     }

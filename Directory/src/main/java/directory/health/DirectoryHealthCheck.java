@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class DirectoryHealthCheck extends HealthCheck {
     private final Map<String, Company> company;
-    private final Map<String, Exchange> exchange;
+    private final Map<Integer, Exchange> exchange;
 
-    public DirectoryHealthCheck(Map<String, Company> company, Map<String,Exchange> exchange) {
+    public DirectoryHealthCheck(Map<String, Company> company, Map<Integer,Exchange> exchange) {
         this.company = company;
         this.exchange = exchange;
     }

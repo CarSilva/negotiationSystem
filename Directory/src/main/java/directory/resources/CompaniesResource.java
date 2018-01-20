@@ -37,5 +37,4 @@ public class CompaniesResource {
         // Conflict - resource already exists
         return Response.status(409).build();
     }
-
 }
