@@ -40,26 +40,29 @@ reqRep(Sock) ->
 						#'General'{general={buy,#'Buy'{
 																companyBuy=Company,
 																qttBuy=Qtt,
-																priceMax=Price}}} ->
-								buy(Company, Qtt, Price, Sock);
+																priceMax=Price,
+																clientB=ClientB}}} ->
+								buy(Company, Qtt, Price, ClientB, Sock);
 						#'General'{general={sell,#'Sell'{
 																companySell=Company,
 																qttSell=Qtt,
-																priceMin=Price}}} ->
-								sell(Company, Qtt, Price, Sock)
+																priceMin=Price,
+																clientS=ClientS}}} ->
+								sell(Company, Qtt, Price, ClientS, Sock)
 				end,
 				reqRep(Sock);
 		{error, Reason} -> io:format("Some error to be fix")
 	end.
 
-buy(Company, Qtt, Price, CSock) ->
+buy(Company, Qtt, Price, ClientB, CSock) ->
 	%NEEDS TO GET INFO ABOUT EXCHANGE ON DIRECTORY
 	{ok, Sock} = gen_tcp:connect("localhost", 12347, [binary,{active,false}]),
 	Send_Packet = protoReqRecv:encode_msg(#'General'{
 																				general={buy,#'Buy'{
 																				companyBuy=Company,
 																				qttBuy=Qtt,
-																				priceMax=Price}}}),
+																				priceMax=Price,
+																				clientB=ClientB}}}),
 	sendPacketSize(Sock, Send_Packet),
 	Size = receivePacketSize(Sock),
 	{ok, Recv} = receivePacketGeneral(Sock, Size, 'ResponseAfterRecv'),
@@ -68,14 +71,15 @@ buy(Company, Qtt, Price, CSock) ->
 																				rep = Reply}),
 	sendPacketSize(CSock, Send2Client).
 
-sell(Company, Qtt, Price, CSock) ->
+sell(Company, Qtt, Price, ClientS, CSock) ->
 	%NEEDS TO GET INFO ABOUT EXCHANGE ON DIRECTORY
 	{ok, Sock} = gen_tcp:connect("localhost", 12347, [binary,{active,false}]),
 	Send_Packet = protoReqRecv:encode_msg(#'General'{
 																				general={sell,#'Sell'{
 																				companySell=Company,
 																				qttSell=Qtt,
-																				priceMin=Price}}}),
+																				priceMin=Price,
+																				clientS=ClientS}}}),
 	sendPacketSize(Sock, Send_Packet),
 	Size = receivePacketSize(Sock),
 	{ok, Recv} = receivePacketGeneral(Sock, Size, 'ResponseAfterRecv'),

@@ -13,7 +13,7 @@
         {companySell = []       :: iolist() | undefined, % = 1
          qttSell = 0            :: integer() | undefined, % = 2, 32 bits
          priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
-         idClientS = 0          :: integer() | undefined % = 4, 32 bits
+         clientS = []           :: iolist() | undefined % = 4
         }).
 -endif.
 
@@ -23,7 +23,7 @@
         {companyBuy = []        :: iolist() | undefined, % = 1
          qttBuy = 0             :: integer() | undefined, % = 2, 32 bits
          priceMax = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
-         idClientB = 0          :: integer() | undefined % = 4, 32 bits
+         clientB = []           :: iolist() | undefined % = 4
         }).
 -endif.
 

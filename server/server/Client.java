@@ -13,7 +13,7 @@ import java.io.*;
 import java.net.*;
 
 public class Client {
-
+    static String user;
     public static void main(String[] args) throws Exception {
         if(args.length < 2)
             System.exit(1);
@@ -23,7 +23,6 @@ public class Client {
         InputStream is = s.getInputStream();
         OutputStream os = s.getOutputStream();
         boolean bool = auth(is, os);
-        int idClient = Integer.parseInt(args[2]);
         if(!bool){
           System.out.println("Something went wrong. Please try again");
         }
@@ -37,7 +36,7 @@ public class Client {
         ZMQ.Context context = ZMQ.context(1);
         ZMQ.Socket sub = context.socket(ZMQ.SUB);
         sub.connect("tcp://localhost:12349");
-        Thread handleReq = new HandleReq(is, os, sub, idClient);
+        Thread handleReq = new HandleReq(is, os, sub, user);
         handleReq.start();
         Thread handleRcv = new HandleRcv(sub);
         handleRcv.start();
@@ -60,6 +59,7 @@ public class Client {
         String username = System.console().readLine();
         System.out.println("Password:");
         String pwd = System.console().readLine();
+        user = username;
         try{
             Auth auth = createAuth(username, pwd, registerOrnot);
             Integer size = auth.getSerializedSize();

@@ -6,13 +6,13 @@ message Buy {
   string companyBuy = 1;
   int32 qttBuy = 2;
   float priceMax = 3;
-  int32 idClientB = 4;
+  string clientB = 4;
 }
 message Sell {
   string companySell = 1;
   int32 qttSell = 2;
   float priceMin = 3;
-  int32 idClientS = 4;
+  string clientS = 4;
 }
 
 message ResponseAfterRecv{

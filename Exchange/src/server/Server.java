@@ -65,7 +65,7 @@ class ClientHandler extends Thread {
                     boolean result = exchange.buy_request(buy.getCompanyBuy(),
                                                         buy.getQttBuy(),
                                                         buy.getPriceMax(),
-                                                        buy.getIdClientB(),
+                                                        buy.getClientB(),
                                                         pub);
                     ProtoReqRecv.ResponseAfterRecv rep = createReply(result, buy.getCompanyBuy());
                     sendPacket(rep);
@@ -74,7 +74,7 @@ class ClientHandler extends Thread {
                     boolean result = exchange.sell_request(sell.getCompanySell(),
                                                         sell.getQttSell(),
                                                         sell.getPriceMin(),
-                                                        sell.getIdClientS(),
+                                                        sell.getClientS(),
                                                         pub);
                     ProtoReqRecv.ResponseAfterRecv rep = createReply(result,sell.getCompanySell());
                     sendPacket(rep);

@@ -12,8 +12,8 @@ public class HandleRcv extends Thread{
       while(true){
         byte[] b = sub.recv();
 			  String s = new String(b);
-        System.out.println(s);
         String[] answer = s.split(" ");
+        System.out.println(answer[1]+answer[2]+answer[3]+answer[4]);
         String unsub = answer[0]+answer[1];
         sub.unsubscribe(unsub.getBytes());
       }

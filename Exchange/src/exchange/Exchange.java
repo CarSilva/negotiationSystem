@@ -31,22 +31,22 @@ public class Exchange {
 
 
     public synchronized boolean buy_request(String share_name, int quantity,
-                                            float price, int idClient, ZMQ.Socket pub) {
+                                            float price, String client, ZMQ.Socket pub) {
         boolean existsShare = false;
         Share share = shares.get(share_name);
         if(share != null)
             existsShare = true;
-        share.add_buy_request(quantity, price, pub, idClient);
+        share.add_buy_request(quantity, price, pub, client);
         return existsShare;
     }
 
     public synchronized boolean sell_request(String share_name, int quantity,
-                                             float price, int idClient, ZMQ.Socket pub) {
+                                             float price, String client, ZMQ.Socket pub) {
         boolean existsShare = false;
         Share share = shares.get(share_name);
         if(share != null)
             existsShare = true;
-        share.add_sell_request(quantity, price, pub, idClient);
+        share.add_sell_request(quantity, price, pub, client);
         return existsShare;
     }
 
@@ -98,13 +98,13 @@ public class Exchange {
             int quantity;
             float price;
             ZMQ.Socket pub;
-            int idClient;
+            String client;
 
-            RequestBuy(int quantity, float price, ZMQ.Socket pub, int idClient) {
+            RequestBuy(int quantity, float price, ZMQ.Socket pub, String client) {
                 this.quantity = quantity;
                 this.price = price;
                 this.pub = pub;
-                this.idClient = idClient;
+                this.client = client;
             }
 
             RequestBuy(int quantity, float price) {
@@ -117,25 +117,25 @@ public class Exchange {
             int quantity;
             float price;
             ZMQ.Socket pub;
-            int idClient;
+            String client;
 
             RequestSell(int quantity, float price) {
                 this.quantity = quantity;
                 this.price = price;
             }
 
-            RequestSell(int quantity, float price, ZMQ.Socket pub, int idClient) {
+            RequestSell(int quantity, float price, ZMQ.Socket pub, String client) {
                 this.quantity = quantity;
                 this.price = price;
                 this.pub = pub;
-                this.idClient = idClient;
+                this.client = client;
             }
         }
 
        synchronized void add_buy_request(int quantity, float price,
-                                         ZMQ.Socket pub, int idClient) {
+                                         ZMQ.Socket pub, String client) {
 
-            RequestBuy buy = new RequestBuy(quantity, price, pub, idClient);
+            RequestBuy buy = new RequestBuy(quantity, price, pub, client);
 
             if (sell_requests.isEmpty())
                 buy_requests.add(buy);
@@ -146,9 +146,9 @@ public class Exchange {
         }
 
         synchronized void add_sell_request(int quantity, float price,
-                                           ZMQ.Socket pub, int idClient) {
+                                           ZMQ.Socket pub, String client) {
 
-            RequestSell sell = new RequestSell(quantity, price, pub, idClient);
+            RequestSell sell = new RequestSell(quantity, price, pub, client);
 
             if (buy_requests.isEmpty())
                 sell_requests.add(sell);
@@ -166,22 +166,22 @@ public class Exchange {
                     if (sell.quantity < reqBuy.quantity) {
                         int remaining = reqBuy.quantity - sell.quantity;
                         reqBuy.quantity = remaining;
-                        sell.pub.send(sell.idClient+" "+company_name
-                                        +" "+tradePrice +" "+ sell.quantity);
+                        sell.pub.send(sell.client+" "+company_name+" Sold "
+                                +" "+tradePrice +" "+ sell.quantity);
                         //Say nothing to the buyer --> informs seller
                     }else if(sell.quantity > reqBuy.quantity){
                         int remaining = sell.quantity - reqBuy.quantity;
                         sell.quantity = remaining;
-                        reqBuy.pub.send(reqBuy.idClient+" "+company_name
+                        reqBuy.pub.send(reqBuy.client+" "+company_name+" Bought "
                                 +" "+tradePrice +" "+ reqBuy.quantity);
                         break;
                         //Say nothing to the seller --> informs buyer
                     }else {
                         sell_requests.remove(sell);
                         buy_requests.remove(reqBuy);
-                        reqBuy.pub.send(reqBuy.idClient+" "+company_name
+                        reqBuy.pub.send(reqBuy.client+" "+company_name+" Bought "
                                 +" "+tradePrice +" "+ reqBuy.quantity);
-                        sell.pub.send(sell.idClient+" "+company_name
+                        sell.pub.send(sell.client+" "+company_name+" Sold "
                                 +" "+tradePrice +" "+ sell.quantity);
                         //Informs seller and buyer
                         break;
@@ -199,22 +199,22 @@ public class Exchange {
                     if (buy.quantity < reqSell.quantity) {
                         int remaining = reqSell.quantity - buy.quantity;
                         reqSell.quantity = remaining;
-                        buy.pub.send(buy.idClient+" "+company_name
+                        buy.pub.send(buy.client+" "+company_name+" Bought "
                                 +" "+tradePrice +" "+ buy.quantity);
                         //Say nothing to the seller --> informs buyer
                     }else if(buy.quantity > reqSell.quantity){
                         int remaining = buy.quantity - reqSell.quantity;
                         buy.quantity = remaining;
-                        reqSell.pub.send(reqSell.idClient+" "+company_name
+                        reqSell.pub.send(reqSell.client+" "+company_name+" Sold "
                                 +" "+tradePrice +" "+ reqSell.quantity);
                         break;
                         //Say nothing to the buyer --> informs seller
                     }else {
                         sell_requests.remove(reqSell);
                         buy_requests.remove(buy);
-                        buy.pub.send(buy.idClient+" "+company_name
+                        buy.pub.send(buy.client+" "+company_name+" Bought "
                                 +" "+tradePrice +" "+ buy.quantity);
-                        reqSell.pub.send(reqSell.idClient+" "+company_name
+                        reqSell.pub.send(reqSell.client+" "+company_name+" Sold"
                                 +" "+tradePrice +" "+ reqSell.quantity);
                         //Informs seller and buyer
                         break;

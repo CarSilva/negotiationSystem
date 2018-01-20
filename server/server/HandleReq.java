@@ -9,14 +9,15 @@ public class HandleReq extends Thread {
     private OutputStream os;
     private Integer size;
     private ZMQ.Socket sub;
-    private int idClient;
+    private String username;
 
-    public HandleReq (InputStream is, OutputStream os, ZMQ.Socket sub, int id){
+    public HandleReq (InputStream is, OutputStream os, ZMQ.Socket sub,
+                      String username){
         this.is = is;
         this.os = os;
         this.size = -1;
         this.sub = sub;
-        this.idClient = idClient;
+        this.username = username;
     }
 
     @Override
@@ -25,7 +26,8 @@ public class HandleReq extends Thread {
           String[] s = System.console().readLine().split(" ");
           switch (s[0]) {
             case "buy" :
-                Buy buy = createBuy(s[1], Integer.parseInt(s[2]), Float.parseFloat(s[3]));
+                Buy buy = createBuy(s[1], Integer.parseInt(s[2]),
+                                    Float.parseFloat(s[3]), username);
                 General generalBuy = createGeneralBuy(buy);
                 try{
                   size = generalBuy.getSerializedSize();
@@ -37,7 +39,8 @@ public class HandleReq extends Thread {
                 }
                 break;
             case "sell" :
-                Sell sell = createSell(s[1], Integer.parseInt(s[2]), Float.parseFloat(s[3]));
+                Sell sell = createSell(s[1], Integer.parseInt(s[2]),
+                                      Float.parseFloat(s[3]), username);
                 General generalSell = createGeneralSell(sell);
                 try{
                   size = generalSell.getSerializedSize();
@@ -51,7 +54,8 @@ public class HandleReq extends Thread {
             default :
                 System.out.println("Not a valid option\tyou can try again");
           }
-          sub.subscribe(idClient+" "+s[1]);
+          String subNoti = username+" "+s[1];
+          sub.subscribe(subNoti.getBytes());
           try{
             int tam = is.read();
             byte[] packetRead = new byte[tam];
@@ -76,20 +80,24 @@ public class HandleReq extends Thread {
                     .build();
     }
 
-    public Buy createBuy(String company, int quantity, float priceMax){
+    public Buy createBuy(String company, int quantity,
+                        float priceMax, String client){
         return Buy.newBuilder()
                   .setCompanyBuy(company)
                   .setQttBuy(quantity)
                   .setPriceMax(priceMax)
+                  .setClientB(client)
                   .build();
 
     }
 
-    public Sell createSell(String company, int quantity, float priceMin){
+    public Sell createSell(String company, int quantity,
+                          float priceMin, String client){
       return Sell.newBuilder()
                 .setCompanySell(company)
                 .setQttSell(quantity)
                 .setPriceMin(priceMin)
+                .setClientS(client)
                 .build();
     }
 

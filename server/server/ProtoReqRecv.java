@@ -39,9 +39,14 @@ public final class ProtoReqRecv {
     float getPriceMax();
 
     /**
-     * <code>int32 idClientB = 4;</code>
+     * <code>string clientB = 4;</code>
      */
-    int getIdClientB();
+    java.lang.String getClientB();
+    /**
+     * <code>string clientB = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getClientBBytes();
   }
   /**
    * Protobuf type {@code server.Buy}
@@ -59,7 +64,7 @@ public final class ProtoReqRecv {
       companyBuy_ = "";
       qttBuy_ = 0;
       priceMax_ = 0F;
-      idClientB_ = 0;
+      clientB_ = "";
     }
 
     @java.lang.Override
@@ -106,9 +111,10 @@ public final class ProtoReqRecv {
               priceMax_ = input.readFloat();
               break;
             }
-            case 32: {
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              idClientB_ = input.readInt32();
+              clientB_ = s;
               break;
             }
           }
@@ -187,13 +193,38 @@ public final class ProtoReqRecv {
       return priceMax_;
     }
 
-    public static final int IDCLIENTB_FIELD_NUMBER = 4;
-    private int idClientB_;
+    public static final int CLIENTB_FIELD_NUMBER = 4;
+    private volatile java.lang.Object clientB_;
     /**
-     * <code>int32 idClientB = 4;</code>
+     * <code>string clientB = 4;</code>
      */
-    public int getIdClientB() {
-      return idClientB_;
+    public java.lang.String getClientB() {
+      java.lang.Object ref = clientB_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        clientB_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string clientB = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getClientBBytes() {
+      java.lang.Object ref = clientB_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        clientB_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -217,8 +248,8 @@ public final class ProtoReqRecv {
       if (priceMax_ != 0F) {
         output.writeFloat(3, priceMax_);
       }
-      if (idClientB_ != 0) {
-        output.writeInt32(4, idClientB_);
+      if (!getClientBBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, clientB_);
       }
       unknownFields.writeTo(output);
     }
@@ -239,9 +270,8 @@ public final class ProtoReqRecv {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(3, priceMax_);
       }
-      if (idClientB_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, idClientB_);
+      if (!getClientBBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, clientB_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -267,8 +297,8 @@ public final class ProtoReqRecv {
           java.lang.Float.floatToIntBits(getPriceMax())
           == java.lang.Float.floatToIntBits(
               other.getPriceMax()));
-      result = result && (getIdClientB()
-          == other.getIdClientB());
+      result = result && getClientB()
+          .equals(other.getClientB());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -287,8 +317,8 @@ public final class ProtoReqRecv {
       hash = (37 * hash) + PRICEMAX_FIELD_NUMBER;
       hash = (53 * hash) + java.lang.Float.floatToIntBits(
           getPriceMax());
-      hash = (37 * hash) + IDCLIENTB_FIELD_NUMBER;
-      hash = (53 * hash) + getIdClientB();
+      hash = (37 * hash) + CLIENTB_FIELD_NUMBER;
+      hash = (53 * hash) + getClientB().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -424,7 +454,7 @@ public final class ProtoReqRecv {
 
         priceMax_ = 0F;
 
-        idClientB_ = 0;
+        clientB_ = "";
 
         return this;
       }
@@ -451,7 +481,7 @@ public final class ProtoReqRecv {
         result.companyBuy_ = companyBuy_;
         result.qttBuy_ = qttBuy_;
         result.priceMax_ = priceMax_;
-        result.idClientB_ = idClientB_;
+        result.clientB_ = clientB_;
         onBuilt();
         return result;
       }
@@ -503,8 +533,9 @@ public final class ProtoReqRecv {
         if (other.getPriceMax() != 0F) {
           setPriceMax(other.getPriceMax());
         }
-        if (other.getIdClientB() != 0) {
-          setIdClientB(other.getIdClientB());
+        if (!other.getClientB().isEmpty()) {
+          clientB_ = other.clientB_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -654,28 +685,71 @@ public final class ProtoReqRecv {
         return this;
       }
 
-      private int idClientB_ ;
+      private java.lang.Object clientB_ = "";
       /**
-       * <code>int32 idClientB = 4;</code>
+       * <code>string clientB = 4;</code>
        */
-      public int getIdClientB() {
-        return idClientB_;
+      public java.lang.String getClientB() {
+        java.lang.Object ref = clientB_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          clientB_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int32 idClientB = 4;</code>
+       * <code>string clientB = 4;</code>
        */
-      public Builder setIdClientB(int value) {
-        
-        idClientB_ = value;
+      public com.google.protobuf.ByteString
+          getClientBBytes() {
+        java.lang.Object ref = clientB_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          clientB_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string clientB = 4;</code>
+       */
+      public Builder setClientB(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        clientB_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 idClientB = 4;</code>
+       * <code>string clientB = 4;</code>
        */
-      public Builder clearIdClientB() {
+      public Builder clearClientB() {
         
-        idClientB_ = 0;
+        clientB_ = getDefaultInstance().getClientB();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string clientB = 4;</code>
+       */
+      public Builder setClientBBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        clientB_ = value;
         onChanged();
         return this;
       }
@@ -753,9 +827,14 @@ public final class ProtoReqRecv {
     float getPriceMin();
 
     /**
-     * <code>int32 idClientS = 4;</code>
+     * <code>string clientS = 4;</code>
      */
-    int getIdClientS();
+    java.lang.String getClientS();
+    /**
+     * <code>string clientS = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getClientSBytes();
   }
   /**
    * Protobuf type {@code server.Sell}
@@ -773,7 +852,7 @@ public final class ProtoReqRecv {
       companySell_ = "";
       qttSell_ = 0;
       priceMin_ = 0F;
-      idClientS_ = 0;
+      clientS_ = "";
     }
 
     @java.lang.Override
@@ -820,9 +899,10 @@ public final class ProtoReqRecv {
               priceMin_ = input.readFloat();
               break;
             }
-            case 32: {
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              idClientS_ = input.readInt32();
+              clientS_ = s;
               break;
             }
           }
@@ -901,13 +981,38 @@ public final class ProtoReqRecv {
       return priceMin_;
     }
 
-    public static final int IDCLIENTS_FIELD_NUMBER = 4;
-    private int idClientS_;
+    public static final int CLIENTS_FIELD_NUMBER = 4;
+    private volatile java.lang.Object clientS_;
     /**
-     * <code>int32 idClientS = 4;</code>
+     * <code>string clientS = 4;</code>
      */
-    public int getIdClientS() {
-      return idClientS_;
+    public java.lang.String getClientS() {
+      java.lang.Object ref = clientS_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        clientS_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string clientS = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getClientSBytes() {
+      java.lang.Object ref = clientS_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        clientS_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -931,8 +1036,8 @@ public final class ProtoReqRecv {
       if (priceMin_ != 0F) {
         output.writeFloat(3, priceMin_);
       }
-      if (idClientS_ != 0) {
-        output.writeInt32(4, idClientS_);
+      if (!getClientSBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, clientS_);
       }
       unknownFields.writeTo(output);
     }
@@ -953,9 +1058,8 @@ public final class ProtoReqRecv {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(3, priceMin_);
       }
-      if (idClientS_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, idClientS_);
+      if (!getClientSBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, clientS_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -981,8 +1085,8 @@ public final class ProtoReqRecv {
           java.lang.Float.floatToIntBits(getPriceMin())
           == java.lang.Float.floatToIntBits(
               other.getPriceMin()));
-      result = result && (getIdClientS()
-          == other.getIdClientS());
+      result = result && getClientS()
+          .equals(other.getClientS());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -1001,8 +1105,8 @@ public final class ProtoReqRecv {
       hash = (37 * hash) + PRICEMIN_FIELD_NUMBER;
       hash = (53 * hash) + java.lang.Float.floatToIntBits(
           getPriceMin());
-      hash = (37 * hash) + IDCLIENTS_FIELD_NUMBER;
-      hash = (53 * hash) + getIdClientS();
+      hash = (37 * hash) + CLIENTS_FIELD_NUMBER;
+      hash = (53 * hash) + getClientS().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1138,7 +1242,7 @@ public final class ProtoReqRecv {
 
         priceMin_ = 0F;
 
-        idClientS_ = 0;
+        clientS_ = "";
 
         return this;
       }
@@ -1165,7 +1269,7 @@ public final class ProtoReqRecv {
         result.companySell_ = companySell_;
         result.qttSell_ = qttSell_;
         result.priceMin_ = priceMin_;
-        result.idClientS_ = idClientS_;
+        result.clientS_ = clientS_;
         onBuilt();
         return result;
       }
@@ -1217,8 +1321,9 @@ public final class ProtoReqRecv {
         if (other.getPriceMin() != 0F) {
           setPriceMin(other.getPriceMin());
         }
-        if (other.getIdClientS() != 0) {
-          setIdClientS(other.getIdClientS());
+        if (!other.getClientS().isEmpty()) {
+          clientS_ = other.clientS_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1368,28 +1473,71 @@ public final class ProtoReqRecv {
         return this;
       }
 
-      private int idClientS_ ;
+      private java.lang.Object clientS_ = "";
       /**
-       * <code>int32 idClientS = 4;</code>
+       * <code>string clientS = 4;</code>
        */
-      public int getIdClientS() {
-        return idClientS_;
+      public java.lang.String getClientS() {
+        java.lang.Object ref = clientS_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          clientS_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int32 idClientS = 4;</code>
+       * <code>string clientS = 4;</code>
        */
-      public Builder setIdClientS(int value) {
-        
-        idClientS_ = value;
+      public com.google.protobuf.ByteString
+          getClientSBytes() {
+        java.lang.Object ref = clientS_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          clientS_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string clientS = 4;</code>
+       */
+      public Builder setClientS(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        clientS_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 idClientS = 4;</code>
+       * <code>string clientS = 4;</code>
        */
-      public Builder clearIdClientS() {
+      public Builder clearClientS() {
         
-        idClientS_ = 0;
+        clientS_ = getDefaultInstance().getClientS();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string clientS = 4;</code>
+       */
+      public Builder setClientSBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        clientS_ = value;
         onChanged();
         return this;
       }
@@ -2882,15 +3030,14 @@ public final class ProtoReqRecv {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\033protobuf/protoReqRecv.proto\022\006server\"N\n" +
+      "\n\033protobuf/protoReqRecv.proto\022\006server\"L\n" +
       "\003Buy\022\022\n\ncompanyBuy\030\001 \001(\t\022\016\n\006qttBuy\030\002 \001(\005" +
-      "\022\020\n\010priceMax\030\003 \001(\002\022\021\n\tidClientB\030\004 \001(\005\"Q\n" +
-      "\004Sell\022\023\n\013companySell\030\001 \001(\t\022\017\n\007qttSell\030\002 " +
-      "\001(\005\022\020\n\010priceMin\030\003 \001(\002\022\021\n\tidClientS\030\004 \001(\005" +
-      "\" \n\021ResponseAfterRecv\022\013\n\003rep\030\001 \001(\t\"N\n\007Ge" +
-      "neral\022\032\n\003buy\030\001 \001(\0132\013.server.BuyH\000\022\034\n\004sel" +
-      "l\030\002 \001(\0132\014.server.SellH\000B\t\n\007generalb\006prot" +
-      "o3"
+      "\022\020\n\010priceMax\030\003 \001(\002\022\017\n\007clientB\030\004 \001(\t\"O\n\004S" +
+      "ell\022\023\n\013companySell\030\001 \001(\t\022\017\n\007qttSell\030\002 \001(" +
+      "\005\022\020\n\010priceMin\030\003 \001(\002\022\017\n\007clientS\030\004 \001(\t\" \n\021" +
+      "ResponseAfterRecv\022\013\n\003rep\030\001 \001(\t\"N\n\007Genera" +
+      "l\022\032\n\003buy\030\001 \001(\0132\013.server.BuyH\000\022\034\n\004sell\030\002 " +
+      "\001(\0132\014.server.SellH\000B\t\n\007generalb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2909,13 +3056,13 @@ public final class ProtoReqRecv {
     internal_static_server_Buy_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_server_Buy_descriptor,
-        new java.lang.String[] { "CompanyBuy", "QttBuy", "PriceMax", "IdClientB", });
+        new java.lang.String[] { "CompanyBuy", "QttBuy", "PriceMax", "ClientB", });
     internal_static_server_Sell_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_server_Sell_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_server_Sell_descriptor,
-        new java.lang.String[] { "CompanySell", "QttSell", "PriceMin", "IdClientS", });
+        new java.lang.String[] { "CompanySell", "QttSell", "PriceMin", "ClientS", });
     internal_static_server_ResponseAfterRecv_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_server_ResponseAfterRecv_fieldAccessorTable = new
