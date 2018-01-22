@@ -51,7 +51,7 @@ public class HandleReq extends Thread {
                   e.printStackTrace();
                 }
                 break;
-            case "list" :
+            /*case "list" :
                 DirectoryAccess http = new DirectoryAccess();
                 try{
                   String response = http.sendRequest("GET", "companies");
@@ -59,7 +59,7 @@ public class HandleReq extends Thread {
                   System.out.println(j.parseToString(response));
                 }catch(IOException e){
                   e.printStackTrace();
-                }
+                }*/
 
             default :
                 System.out.println("Not a valid option\tyou can try again");

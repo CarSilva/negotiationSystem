@@ -61,7 +61,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="apache-httpcomponents-httpclient" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -72,5 +71,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="jeromq-0.4.3-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="json-20171018" level="project" />
   </component>
 </module>
