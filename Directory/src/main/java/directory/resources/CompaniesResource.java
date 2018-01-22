@@ -2,7 +2,6 @@ package directory.resources;
 
 
 import directory.representations.Company;
-import directory.representations.Saying;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

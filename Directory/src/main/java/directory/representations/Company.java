@@ -19,12 +19,17 @@ public class Company {
     private float minimumValueY;
     private float maximumValueY;
 
+
     @JsonCreator
     public Company(@JsonProperty("name") String name,
                    @JsonProperty("openingValue") float openingValue,
                    @JsonProperty("closingValue") float closingValue,
                    @JsonProperty("minimumValue") float minimumValue,
                    @JsonProperty("maximumValue") float maximumValue,
+                   @JsonProperty("openingValueY") float openingValueY,
+                   @JsonProperty("closingValueY") float closingValueY,
+                   @JsonProperty("minimumValueY") float minimumValueY,
+                   @JsonProperty("maximumValueY") float maximumValueY,
                    @JsonProperty("exchangeId") int exchangeId) {
 
         this.name = name;
@@ -32,14 +37,33 @@ public class Company {
         this.closingValue = closingValue;
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
+        this.openingValueY = openingValueY;
+        this.closingValueY = closingValueY;
+        this.minimumValueY = minimumValueY;
+        this.maximumValueY = maximumValueY;
         this.exchangeId = exchangeId;
     }
 
     public void update(Company company) {
-        this.closingValue = company.closingValue;
-        this.openingValue = company.openingValue;
-        this.minimumValue = company.minimumValue;
-        this.maximumValue = company.maximumValue;
+        if (company.maximumValue > 0)
+            this.maximumValue = company.maximumValue;
+        if (company.minimumValue > 0)
+            this.minimumValue = company.minimumValue;
+        if (company.openingValue > 0)
+            this.openingValue = company.openingValue;
+        if (company.closingValue > 0) {
+            this.closingValue = company.closingValue;
+
+            openingValueY = openingValue;
+            closingValueY = closingValue;
+            minimumValueY = minimumValue;
+            maximumValueY = maximumValue;
+
+            openingValue = 0;
+            closingValue = 0;
+            minimumValue = 0;
+            maximumValue = 0;
+        }
     }
 
     public int getExchangeId() {
@@ -81,5 +105,37 @@ public class Company {
 
     public void setMaximumValue(float maximumValue) {
         this.maximumValue = maximumValue;
+    }
+
+    public float getOpeningValueY() {
+        return openingValueY;
+    }
+
+    public void setOpeningValueY(float openingValueY) {
+        this.openingValueY = openingValueY;
+    }
+
+    public float getClosingValueY() {
+        return closingValueY;
+    }
+
+    public void setClosingValueY(float closingValueY) {
+        this.closingValueY = closingValueY;
+    }
+
+    public float getMinimumValueY() {
+        return minimumValueY;
+    }
+
+    public void setMinimumValueY(float minimumValueY) {
+        this.minimumValueY = minimumValueY;
+    }
+
+    public float getMaximumValueY() {
+        return maximumValueY;
+    }
+
+    public void setMaximumValueY(float maximumValueY) {
+        this.maximumValueY = maximumValueY;
     }
 }

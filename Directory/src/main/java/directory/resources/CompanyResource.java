@@ -32,22 +32,6 @@ public class CompanyResource {
         return Response.status(404).build();
     }
 
-    @GET
-    @Path("/{name}/exchanges")
-    public Response getExchanges(@PathParam("name") String name) {
-        synchronized (companies) {
-            Company company = companies.get(name);
-            if (company != null) {
-                ObjectMapper mapper = new ObjectMapper();
-                ObjectNode exchange = mapper.createObjectNode();
-                exchange.put("exchangeId", company.getExchangeId());
-                return Response.ok(exchange).build();
-            }
-        }
-        // Not found - 404 - No such resource
-        return Response.status(404).build();
-    }
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{name}")

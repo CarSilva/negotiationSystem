@@ -35,27 +35,6 @@ public class ExchangeResource {
         return Response.status(404).build();
     }
 
-    @GET
-    @Path("/{id}/companies")
-    public Response companiesExchange(@PathParam("id") int id) {
-
-        synchronized (exchanges) {
-            Exchange ex = exchanges.get(id);
-            if(ex != null) {
-                ObjectMapper mapper = new ObjectMapper();
-                List<ObjectNode> companies =  new ArrayList<ObjectNode>();
-                for(String s : ex.getCompanies()) {
-                    ObjectNode company = mapper.createObjectNode();
-                    company.put("name", s);
-                    companies.add(company);
-                }
-                return Response.ok(companies).build();
-            }
-        }
-        // Resource not found
-        return Response.status(404).build();
-    }
-
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)

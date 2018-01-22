@@ -3,43 +3,94 @@
 companies:
   iota: {
           name: iota,
-          openingValue: 2.54,
-          closingValue: 2.55,
-          minimumValue: 2.13,
-          maximumValue: 2.66,
+          openingValueY: 2.54,
+          closingValueY: 2.55,
+          minimumValueY: 2.13,
+          maximumValueY: 2.66,
           exchangeId: 1
         }
   verge: {
           name: verge,
-          openingValue: 0.22,
-          closingValue: 0.23,
-          minimumValue: 2.13,
-          maximumValue: 0.5,
+          openingValueY: 0.22,
+          closingValueY: 0.23,
+          minimumValueY: 2.13,
+          maximumValueY: 0.5,
           exchangeId: 2
         }
   sonm: {
           name: sonm,
-          openingValue: 0.25,
-          closingValue: 0.27,
-          minimumValue: 0.23,
-          maximumValue: 0.6,
+          openingValueY: 0.25,
+          closingValueY: 0.27,
+          minimumValueY: 0.23,
+          maximumValueY: 0.6,
           exchangeId: 2
         }
   vechain: {
           name: vechain,
-          openingValue: 4.25,
-          closingValue: 5.27,
-          minimumValue: 4.23,
-          maximumValue: 6.6,
+          openingValueY: 4.25,
+          closingValueY: 5.27,
+          minimumValueY: 4.23,
+          maximumValueY: 6.6,
           exchangeId: 1
+        }
+
+  sonae: {
+          name: sonae,
+          openingValueY: 1.25,
+          closingValueY: 1.27,
+          minimumValueY: 1.23,
+          maximumValueY: 1.6,
+          exchangeId: 3
+        }
+
+  jeronimomartins: {
+          name: jeronimomartins,
+          openingValueY: 1.35,
+          closingValueY: 1.37,
+          minimumValueY: 1.33,
+          maximumValueY: 1.5,
+          exchangeId: 3
+        }
+
+  auchan: {
+          name: auchan,
+          openingValueY: 3.25,
+          closingValueY: 3.27,
+          minimumValueY: 3.23,
+          maximumValueY: 3.6,
+          exchangeId: 4
+        }
+
+  intermache: {
+          name: intermache,
+          openingValueY: 1.15,
+          closingValueY: 1.17,
+          minimumValueY: 1.13,
+          maximumValueY: 1.2,
+          exchangeId: 4
+        }
+
+  ferrero: {
+          name: ferrero,
+          openingValueY: 7.25,
+          closingValueY: 7.27,
+          minimumValueY: 7.23,
+          maximumValueY: 7.6,
+          exchangeId: 5
+        }
+
+  nestle: {
+          name: nestle,
+          openingValueY: 15.25,
+          closingValueY: 15.27,
+          minimumValueY: 15.23,
+          maximumValueY: 15.6,
+          exchangeId: 5
         }
 
 exchanges:
   1: { id: 1, host: localhost, port: 12345, companies: [iota, vechain] }
   2: { id: 2, host: localhost, port: 12346, companies: [verge, sonm] }
-  3: { id: 3, host: localhost, port: 12347, companies: []}
-  4: { id: 4, host: localhost, port: 12348, companies: []}
-  5: { id: 5, host: localhost, port: 12349, companies: []}
-  6: { id: 6, host: localhost, port: 12350, companies: []}
-  7: { id: 7, host: localhost, port: 12351, companies: []}
-  8: { id: 8, host: localhost, port: 12352, companies: []}
+  3: { id: 3, host: localhost, port: 12347, companies: [sonae, jeronimomartins]}
+  4: { id: 4, host: localhost, port: 12348, companies: [auchan, intermache]}
+  5: { id: 5, host: localhost, port: 12349, companies: [ferrero, nestle]}
