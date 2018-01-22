@@ -1,5 +1,5 @@
-package server;
-import server.ProtoReqRecv.*;
+package client;
+import protobuf.ProtoReqRecv.*;
 import java.io.*;
 import java.net.*;
 import org.zeromq.ZMQ;
@@ -53,9 +53,13 @@ public class HandleReq extends Thread {
                 break;
             case "list" :
                 DirectoryAccess http = new DirectoryAccess();
-                String response = http.sendRequest("GET", "companies");
-                Json j = new Json();
-                System.out.println(j.parseToString(response));
+                try{
+                  String response = http.sendRequest("GET", "companies");
+                  Json j = new Json();
+                  System.out.println(j.parseToString(response));
+                }catch(IOException e){
+                  e.printStackTrace();
+                }
 
             default :
                 System.out.println("Not a valid option\tyou can try again");

@@ -7,13 +7,10 @@
 
 -define(protoReqRecv_gpb_version, "4.1.1").
 
--ifndef('SELL_PB_H').
--define('SELL_PB_H', true).
--record('Sell',
-        {companySell = []       :: iolist() | undefined, % = 1
-         qttSell = 0            :: integer() | undefined, % = 2, 32 bits
-         priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
-         clientS = []           :: iolist() | undefined % = 4
+-ifndef('RESPONSEAFTERRECV_PB_H').
+-define('RESPONSEAFTERRECV_PB_H', true).
+-record('ResponseAfterRecv',
+        {rep = []               :: iolist() | undefined % = 1
         }).
 -endif.
 
@@ -27,17 +24,20 @@
         }).
 -endif.
 
+-ifndef('SELL_PB_H').
+-define('SELL_PB_H', true).
+-record('Sell',
+        {companySell = []       :: iolist() | undefined, % = 1
+         qttSell = 0            :: integer() | undefined, % = 2, 32 bits
+         priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
+         clientS = []           :: iolist() | undefined % = 4
+        }).
+-endif.
+
 -ifndef('GENERAL_PB_H').
 -define('GENERAL_PB_H', true).
 -record('General',
         {general                :: {buy, #'Buy'{}} | {sell, #'Sell'{}} | undefined % oneof
-        }).
--endif.
-
--ifndef('RESPONSEAFTERRECV_PB_H').
--define('RESPONSEAFTERRECV_PB_H', true).
--record('ResponseAfterRecv',
-        {rep = []               :: iolist() | undefined % = 1
         }).
 -endif.
 

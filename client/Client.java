@@ -1,8 +1,8 @@
-package server;
+package client;
 
 
-import server.ProtoAuth.ResponseAuth;
-import server.ProtoAuth.Auth;
+import protobuf.ProtoAuth.ResponseAuth;
+import protobuf.ProtoAuth.Auth;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;

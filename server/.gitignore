@@ -1,4 +1,0 @@
-*.beam
-server/*.class
-../Exchang/out/*
-../NotificationBroker/*.class

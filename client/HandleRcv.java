@@ -1,4 +1,4 @@
-package server;
+package client;
 import org.zeromq.ZMQ;
 
 public class HandleRcv extends Thread{
@@ -13,7 +13,7 @@ public class HandleRcv extends Thread{
         byte[] b = sub.recv();
 			  String s = new String(b);
         String[] r = s.split(" ");
-        System.out.println(r[1]+" "+r[2]+" "+r[3]+" "r[4]);
+        System.out.println(r[1]+" "+r[2]+" "+r[3]+" "+r[4]);
         String unsub = r[0]+r[1];
         sub.unsubscribe(unsub.getBytes());
       }

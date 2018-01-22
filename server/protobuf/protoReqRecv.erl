@@ -30,17 +30,17 @@
 -export_type([]).
 
 %% message types
--type 'Sell'() :: #'Sell'{}.
--type 'Buy'() :: #'Buy'{}.
--type 'General'() :: #'General'{}.
 -type 'ResponseAfterRecv'() :: #'ResponseAfterRecv'{}.
--export_type(['Sell'/0, 'Buy'/0, 'General'/0, 'ResponseAfterRecv'/0]).
+-type 'Buy'() :: #'Buy'{}.
+-type 'Sell'() :: #'Sell'{}.
+-type 'General'() :: #'General'{}.
+-export_type(['ResponseAfterRecv'/0, 'Buy'/0, 'Sell'/0, 'General'/0]).
 
--spec encode_msg(#'Sell'{} | #'Buy'{} | #'General'{} | #'ResponseAfterRecv'{}) -> binary().
+-spec encode_msg(#'ResponseAfterRecv'{} | #'Buy'{} | #'Sell'{} | #'General'{}) -> binary().
 encode_msg(Msg) -> encode_msg(Msg, []).
 
 
--spec encode_msg(#'Sell'{} | #'Buy'{} | #'General'{} | #'ResponseAfterRecv'{}, list()) -> binary().
+-spec encode_msg(#'ResponseAfterRecv'{} | #'Buy'{} | #'Sell'{} | #'General'{}, list()) -> binary().
 encode_msg(Msg, Opts) ->
     case proplists:get_bool(verify, Opts) of
       true -> verify_msg(Msg, Opts);
@@ -48,22 +48,39 @@ encode_msg(Msg, Opts) ->
     end,
     TrUserData = proplists:get_value(user_data, Opts),
     case Msg of
-      #'Sell'{} -> e_msg_Sell(Msg, TrUserData);
-      #'Buy'{} -> e_msg_Buy(Msg, TrUserData);
-      #'General'{} -> e_msg_General(Msg, TrUserData);
       #'ResponseAfterRecv'{} ->
-	  e_msg_ResponseAfterRecv(Msg, TrUserData)
+	  e_msg_ResponseAfterRecv(Msg, TrUserData);
+      #'Buy'{} -> e_msg_Buy(Msg, TrUserData);
+      #'Sell'{} -> e_msg_Sell(Msg, TrUserData);
+      #'General'{} -> e_msg_General(Msg, TrUserData)
     end.
 
 
 
-e_msg_Sell(Msg, TrUserData) ->
-    e_msg_Sell(Msg, <<>>, TrUserData).
+e_msg_ResponseAfterRecv(Msg, TrUserData) ->
+    e_msg_ResponseAfterRecv(Msg, <<>>, TrUserData).
 
 
-e_msg_Sell(#'Sell'{companySell = F1, qttSell = F2,
-		   priceMin = F3, clientS = F4},
-	   Bin, TrUserData) ->
+e_msg_ResponseAfterRecv(#'ResponseAfterRecv'{rep = F1},
+			Bin, TrUserData) ->
+    if F1 == undefined -> Bin;
+       true ->
+	   begin
+	     TrF1 = id(F1, TrUserData),
+	     case is_empty_string(TrF1) of
+	       true -> Bin;
+	       false -> e_type_string(TrF1, <<Bin/binary, 10>>)
+	     end
+	   end
+    end.
+
+e_msg_Buy(Msg, TrUserData) ->
+    e_msg_Buy(Msg, <<>>, TrUserData).
+
+
+e_msg_Buy(#'Buy'{companyBuy = F1, qttBuy = F2,
+		 priceMax = F3, clientB = F4},
+	  Bin, TrUserData) ->
     B1 = if F1 == undefined -> Bin;
 	    true ->
 		begin
@@ -103,13 +120,13 @@ e_msg_Sell(#'Sell'{companySell = F1, qttSell = F2,
 	   end
     end.
 
-e_msg_Buy(Msg, TrUserData) ->
-    e_msg_Buy(Msg, <<>>, TrUserData).
+e_msg_Sell(Msg, TrUserData) ->
+    e_msg_Sell(Msg, <<>>, TrUserData).
 
 
-e_msg_Buy(#'Buy'{companyBuy = F1, qttBuy = F2,
-		 priceMax = F3, clientB = F4},
-	  Bin, TrUserData) ->
+e_msg_Sell(#'Sell'{companySell = F1, qttSell = F2,
+		   priceMin = F3, clientS = F4},
+	   Bin, TrUserData) ->
     B1 = if F1 == undefined -> Bin;
 	    true ->
 		begin
@@ -169,23 +186,6 @@ e_msg_General(#'General'{general = F1}, Bin,
 	    e_mfield_General_sell(TrOF1, <<Bin/binary, 18>>,
 				  TrUserData)
 	  end
-    end.
-
-e_msg_ResponseAfterRecv(Msg, TrUserData) ->
-    e_msg_ResponseAfterRecv(Msg, <<>>, TrUserData).
-
-
-e_msg_ResponseAfterRecv(#'ResponseAfterRecv'{rep = F1},
-			Bin, TrUserData) ->
-    if F1 == undefined -> Bin;
-       true ->
-	   begin
-	     TrF1 = id(F1, TrUserData),
-	     case is_empty_string(TrF1) of
-	       true -> Bin;
-	       false -> e_type_string(TrF1, <<Bin/binary, 10>>)
-	     end
-	   end
     end.
 
 e_mfield_General_buy(Msg, Bin, TrUserData) ->
@@ -250,13 +250,14 @@ decode_msg(Bin, MsgName) when is_binary(Bin) ->
 decode_msg(Bin, MsgName, Opts) when is_binary(Bin) ->
     TrUserData = proplists:get_value(user_data, Opts),
     case MsgName of
-      'Sell' ->
-	  try d_msg_Sell(Bin, TrUserData) catch
+      'ResponseAfterRecv' ->
+	  try d_msg_ResponseAfterRecv(Bin, TrUserData) catch
 	    Class:Reason ->
 		StackTrace = erlang:get_stacktrace(),
 		error({gpb_error,
 		       {decoding_failure,
-			{Bin, 'Sell', {Class, Reason, StackTrace}}}})
+			{Bin, 'ResponseAfterRecv',
+			 {Class, Reason, StackTrace}}}})
 	  end;
       'Buy' ->
 	  try d_msg_Buy(Bin, TrUserData) catch
@@ -266,6 +267,14 @@ decode_msg(Bin, MsgName, Opts) when is_binary(Bin) ->
 		       {decoding_failure,
 			{Bin, 'Buy', {Class, Reason, StackTrace}}}})
 	  end;
+      'Sell' ->
+	  try d_msg_Sell(Bin, TrUserData) catch
+	    Class:Reason ->
+		StackTrace = erlang:get_stacktrace(),
+		error({gpb_error,
+		       {decoding_failure,
+			{Bin, 'Sell', {Class, Reason, StackTrace}}}})
+	  end;
       'General' ->
 	  try d_msg_General(Bin, TrUserData) catch
 	    Class:Reason ->
@@ -273,196 +282,116 @@ decode_msg(Bin, MsgName, Opts) when is_binary(Bin) ->
 		error({gpb_error,
 		       {decoding_failure,
 			{Bin, 'General', {Class, Reason, StackTrace}}}})
-	  end;
-      'ResponseAfterRecv' ->
-	  try d_msg_ResponseAfterRecv(Bin, TrUserData) catch
-	    Class:Reason ->
-		StackTrace = erlang:get_stacktrace(),
-		error({gpb_error,
-		       {decoding_failure,
-			{Bin, 'ResponseAfterRecv',
-			 {Class, Reason, StackTrace}}}})
 	  end
     end.
 
 
 
-d_msg_Sell(Bin, TrUserData) ->
-    dfp_read_field_def_Sell(Bin, 0, 0, id([], TrUserData),
-			    id(0, TrUserData), id(0.0, TrUserData),
-			    id([], TrUserData), TrUserData).
+d_msg_ResponseAfterRecv(Bin, TrUserData) ->
+    dfp_read_field_def_ResponseAfterRecv(Bin, 0, 0,
+					 id([], TrUserData), TrUserData).
 
-dfp_read_field_def_Sell(<<10, Rest/binary>>, Z1, Z2,
-			F@_1, F@_2, F@_3, F@_4, TrUserData) ->
-    d_field_Sell_companySell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			     F@_4, TrUserData);
-dfp_read_field_def_Sell(<<16, Rest/binary>>, Z1, Z2,
-			F@_1, F@_2, F@_3, F@_4, TrUserData) ->
-    d_field_Sell_qttSell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			 F@_4, TrUserData);
-dfp_read_field_def_Sell(<<29, Rest/binary>>, Z1, Z2,
-			F@_1, F@_2, F@_3, F@_4, TrUserData) ->
-    d_field_Sell_priceMin(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			  F@_4, TrUserData);
-dfp_read_field_def_Sell(<<34, Rest/binary>>, Z1, Z2,
-			F@_1, F@_2, F@_3, F@_4, TrUserData) ->
-    d_field_Sell_clientS(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			 F@_4, TrUserData);
-dfp_read_field_def_Sell(<<>>, 0, 0, F@_1, F@_2, F@_3,
-			F@_4, _) ->
-    #'Sell'{companySell = F@_1, qttSell = F@_2,
-	    priceMin = F@_3, clientS = F@_4};
-dfp_read_field_def_Sell(Other, Z1, Z2, F@_1, F@_2, F@_3,
-			F@_4, TrUserData) ->
-    dg_read_field_def_Sell(Other, Z1, Z2, F@_1, F@_2, F@_3,
-			   F@_4, TrUserData).
+dfp_read_field_def_ResponseAfterRecv(<<10,
+				       Rest/binary>>,
+				     Z1, Z2, F@_1, TrUserData) ->
+    d_field_ResponseAfterRecv_rep(Rest, Z1, Z2, F@_1,
+				  TrUserData);
+dfp_read_field_def_ResponseAfterRecv(<<>>, 0, 0, F@_1,
+				     _) ->
+    #'ResponseAfterRecv'{rep = F@_1};
+dfp_read_field_def_ResponseAfterRecv(Other, Z1, Z2,
+				     F@_1, TrUserData) ->
+    dg_read_field_def_ResponseAfterRecv(Other, Z1, Z2, F@_1,
+					TrUserData).
 
-dg_read_field_def_Sell(<<1:1, X:7, Rest/binary>>, N,
-		       Acc, F@_1, F@_2, F@_3, F@_4, TrUserData)
+dg_read_field_def_ResponseAfterRecv(<<1:1, X:7,
+				      Rest/binary>>,
+				    N, Acc, F@_1, TrUserData)
     when N < 32 - 7 ->
-    dg_read_field_def_Sell(Rest, N + 7, X bsl N + Acc, F@_1,
-			   F@_2, F@_3, F@_4, TrUserData);
-dg_read_field_def_Sell(<<0:1, X:7, Rest/binary>>, N,
-		       Acc, F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    dg_read_field_def_ResponseAfterRecv(Rest, N + 7,
+					X bsl N + Acc, F@_1, TrUserData);
+dg_read_field_def_ResponseAfterRecv(<<0:1, X:7,
+				      Rest/binary>>,
+				    N, Acc, F@_1, TrUserData) ->
     Key = X bsl N + Acc,
     case Key of
       10 ->
-	  d_field_Sell_companySell(Rest, 0, 0, F@_1, F@_2, F@_3,
-				   F@_4, TrUserData);
-      16 ->
-	  d_field_Sell_qttSell(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-			       TrUserData);
-      29 ->
-	  d_field_Sell_priceMin(Rest, 0, 0, F@_1, F@_2, F@_3,
-				F@_4, TrUserData);
-      34 ->
-	  d_field_Sell_clientS(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-			       TrUserData);
+	  d_field_ResponseAfterRecv_rep(Rest, 0, 0, F@_1,
+					TrUserData);
       _ ->
 	  case Key band 7 of
 	    0 ->
-		skip_varint_Sell(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-				 TrUserData);
+		skip_varint_ResponseAfterRecv(Rest, 0, 0, F@_1,
+					      TrUserData);
 	    1 ->
-		skip_64_Sell(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-			     TrUserData);
+		skip_64_ResponseAfterRecv(Rest, 0, 0, F@_1, TrUserData);
 	    2 ->
-		skip_length_delimited_Sell(Rest, 0, 0, F@_1, F@_2, F@_3,
-					   F@_4, TrUserData);
+		skip_length_delimited_ResponseAfterRecv(Rest, 0, 0,
+							F@_1, TrUserData);
 	    3 ->
-		skip_group_Sell(Rest, Key bsr 3, 0, F@_1, F@_2, F@_3,
-				F@_4, TrUserData);
+		skip_group_ResponseAfterRecv(Rest, Key bsr 3, 0, F@_1,
+					     TrUserData);
 	    5 ->
-		skip_32_Sell(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-			     TrUserData)
+		skip_32_ResponseAfterRecv(Rest, 0, 0, F@_1, TrUserData)
 	  end
     end;
-dg_read_field_def_Sell(<<>>, 0, 0, F@_1, F@_2, F@_3,
-		       F@_4, _) ->
-    #'Sell'{companySell = F@_1, qttSell = F@_2,
-	    priceMin = F@_3, clientS = F@_4}.
+dg_read_field_def_ResponseAfterRecv(<<>>, 0, 0, F@_1,
+				    _) ->
+    #'ResponseAfterRecv'{rep = F@_1}.
 
-d_field_Sell_companySell(<<1:1, X:7, Rest/binary>>, N,
-			 Acc, F@_1, F@_2, F@_3, F@_4, TrUserData)
+d_field_ResponseAfterRecv_rep(<<1:1, X:7, Rest/binary>>,
+			      N, Acc, F@_1, TrUserData)
     when N < 57 ->
-    d_field_Sell_companySell(Rest, N + 7, X bsl N + Acc,
-			     F@_1, F@_2, F@_3, F@_4, TrUserData);
-d_field_Sell_companySell(<<0:1, X:7, Rest/binary>>, N,
-			 Acc, _, F@_2, F@_3, F@_4, TrUserData) ->
+    d_field_ResponseAfterRecv_rep(Rest, N + 7,
+				  X bsl N + Acc, F@_1, TrUserData);
+d_field_ResponseAfterRecv_rep(<<0:1, X:7, Rest/binary>>,
+			      N, Acc, _, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
 			   {unicode:characters_to_list(Utf8, unicode), Rest2}
 			 end,
-    dfp_read_field_def_Sell(RestF, 0, 0, NewFValue, F@_2,
-			    F@_3, F@_4, TrUserData).
+    dfp_read_field_def_ResponseAfterRecv(RestF, 0, 0,
+					 NewFValue, TrUserData).
 
-d_field_Sell_qttSell(<<1:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, F@_2, F@_3, F@_4, TrUserData)
+skip_varint_ResponseAfterRecv(<<1:1, _:7, Rest/binary>>,
+			      Z1, Z2, F@_1, TrUserData) ->
+    skip_varint_ResponseAfterRecv(Rest, Z1, Z2, F@_1,
+				  TrUserData);
+skip_varint_ResponseAfterRecv(<<0:1, _:7, Rest/binary>>,
+			      Z1, Z2, F@_1, TrUserData) ->
+    dfp_read_field_def_ResponseAfterRecv(Rest, Z1, Z2, F@_1,
+					 TrUserData).
+
+skip_length_delimited_ResponseAfterRecv(<<1:1, X:7,
+					  Rest/binary>>,
+					N, Acc, F@_1, TrUserData)
     when N < 57 ->
-    d_field_Sell_qttSell(Rest, N + 7, X bsl N + Acc, F@_1,
-			 F@_2, F@_3, F@_4, TrUserData);
-d_field_Sell_qttSell(<<0:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, _, F@_3, F@_4, TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    Res
-			  end,
-			  Rest},
-    dfp_read_field_def_Sell(RestF, 0, 0, F@_1, NewFValue,
-			    F@_3, F@_4, TrUserData).
-
-d_field_Sell_priceMin(<<0:16, 128, 127, Rest/binary>>,
-		      Z1, Z2, F@_1, F@_2, _, F@_4, TrUserData) ->
-    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2,
-			    infinity, F@_4, TrUserData);
-d_field_Sell_priceMin(<<0:16, 128, 255, Rest/binary>>,
-		      Z1, Z2, F@_1, F@_2, _, F@_4, TrUserData) ->
-    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2,
-			    '-infinity', F@_4, TrUserData);
-d_field_Sell_priceMin(<<_:16, 1:1, _:7, _:1, 127:7,
-			Rest/binary>>,
-		      Z1, Z2, F@_1, F@_2, _, F@_4, TrUserData) ->
-    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, nan,
-			    F@_4, TrUserData);
-d_field_Sell_priceMin(<<Value:32/little-float,
-			Rest/binary>>,
-		      Z1, Z2, F@_1, F@_2, _, F@_4, TrUserData) ->
-    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, Value,
-			    F@_4, TrUserData).
-
-d_field_Sell_clientS(<<1:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, F@_2, F@_3, F@_4, TrUserData)
-    when N < 57 ->
-    d_field_Sell_clientS(Rest, N + 7, X bsl N + Acc, F@_1,
-			 F@_2, F@_3, F@_4, TrUserData);
-d_field_Sell_clientS(<<0:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, F@_2, F@_3, _, TrUserData) ->
-    {NewFValue, RestF} = begin
-			   Len = X bsl N + Acc,
-			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
-			   {unicode:characters_to_list(Utf8, unicode), Rest2}
-			 end,
-    dfp_read_field_def_Sell(RestF, 0, 0, F@_1, F@_2, F@_3,
-			    NewFValue, TrUserData).
-
-skip_varint_Sell(<<1:1, _:7, Rest/binary>>, Z1, Z2,
-		 F@_1, F@_2, F@_3, F@_4, TrUserData) ->
-    skip_varint_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3, F@_4,
-		     TrUserData);
-skip_varint_Sell(<<0:1, _:7, Rest/binary>>, Z1, Z2,
-		 F@_1, F@_2, F@_3, F@_4, TrUserData) ->
-    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			    F@_4, TrUserData).
-
-skip_length_delimited_Sell(<<1:1, X:7, Rest/binary>>, N,
-			   Acc, F@_1, F@_2, F@_3, F@_4, TrUserData)
-    when N < 57 ->
-    skip_length_delimited_Sell(Rest, N + 7, X bsl N + Acc,
-			       F@_1, F@_2, F@_3, F@_4, TrUserData);
-skip_length_delimited_Sell(<<0:1, X:7, Rest/binary>>, N,
-			   Acc, F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    skip_length_delimited_ResponseAfterRecv(Rest, N + 7,
+					    X bsl N + Acc, F@_1, TrUserData);
+skip_length_delimited_ResponseAfterRecv(<<0:1, X:7,
+					  Rest/binary>>,
+					N, Acc, F@_1, TrUserData) ->
     Length = X bsl N + Acc,
     <<_:Length/binary, Rest2/binary>> = Rest,
-    dfp_read_field_def_Sell(Rest2, 0, 0, F@_1, F@_2, F@_3,
-			    F@_4, TrUserData).
+    dfp_read_field_def_ResponseAfterRecv(Rest2, 0, 0, F@_1,
+					 TrUserData).
 
-skip_group_Sell(Bin, FNum, Z2, F@_1, F@_2, F@_3, F@_4,
-		TrUserData) ->
+skip_group_ResponseAfterRecv(Bin, FNum, Z2, F@_1,
+			     TrUserData) ->
     {_, Rest} = read_group(Bin, FNum),
-    dfp_read_field_def_Sell(Rest, 0, Z2, F@_1, F@_2, F@_3,
-			    F@_4, TrUserData).
+    dfp_read_field_def_ResponseAfterRecv(Rest, 0, Z2, F@_1,
+					 TrUserData).
 
-skip_32_Sell(<<_:32, Rest/binary>>, Z1, Z2, F@_1, F@_2,
-	     F@_3, F@_4, TrUserData) ->
-    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			    F@_4, TrUserData).
+skip_32_ResponseAfterRecv(<<_:32, Rest/binary>>, Z1, Z2,
+			  F@_1, TrUserData) ->
+    dfp_read_field_def_ResponseAfterRecv(Rest, Z1, Z2, F@_1,
+					 TrUserData).
 
-skip_64_Sell(<<_:64, Rest/binary>>, Z1, Z2, F@_1, F@_2,
-	     F@_3, F@_4, TrUserData) ->
-    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			    F@_4, TrUserData).
+skip_64_ResponseAfterRecv(<<_:64, Rest/binary>>, Z1, Z2,
+			  F@_1, TrUserData) ->
+    dfp_read_field_def_ResponseAfterRecv(Rest, Z1, Z2, F@_1,
+					 TrUserData).
 
 d_msg_Buy(Bin, TrUserData) ->
     dfp_read_field_def_Buy(Bin, 0, 0, id([], TrUserData),
@@ -641,6 +570,183 @@ skip_64_Buy(<<_:64, Rest/binary>>, Z1, Z2, F@_1, F@_2,
     dfp_read_field_def_Buy(Rest, Z1, Z2, F@_1, F@_2, F@_3,
 			   F@_4, TrUserData).
 
+d_msg_Sell(Bin, TrUserData) ->
+    dfp_read_field_def_Sell(Bin, 0, 0, id([], TrUserData),
+			    id(0, TrUserData), id(0.0, TrUserData),
+			    id([], TrUserData), TrUserData).
+
+dfp_read_field_def_Sell(<<10, Rest/binary>>, Z1, Z2,
+			F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    d_field_Sell_companySell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			     F@_4, TrUserData);
+dfp_read_field_def_Sell(<<16, Rest/binary>>, Z1, Z2,
+			F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    d_field_Sell_qttSell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			 F@_4, TrUserData);
+dfp_read_field_def_Sell(<<29, Rest/binary>>, Z1, Z2,
+			F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    d_field_Sell_priceMin(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			  F@_4, TrUserData);
+dfp_read_field_def_Sell(<<34, Rest/binary>>, Z1, Z2,
+			F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    d_field_Sell_clientS(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			 F@_4, TrUserData);
+dfp_read_field_def_Sell(<<>>, 0, 0, F@_1, F@_2, F@_3,
+			F@_4, _) ->
+    #'Sell'{companySell = F@_1, qttSell = F@_2,
+	    priceMin = F@_3, clientS = F@_4};
+dfp_read_field_def_Sell(Other, Z1, Z2, F@_1, F@_2, F@_3,
+			F@_4, TrUserData) ->
+    dg_read_field_def_Sell(Other, Z1, Z2, F@_1, F@_2, F@_3,
+			   F@_4, TrUserData).
+
+dg_read_field_def_Sell(<<1:1, X:7, Rest/binary>>, N,
+		       Acc, F@_1, F@_2, F@_3, F@_4, TrUserData)
+    when N < 32 - 7 ->
+    dg_read_field_def_Sell(Rest, N + 7, X bsl N + Acc, F@_1,
+			   F@_2, F@_3, F@_4, TrUserData);
+dg_read_field_def_Sell(<<0:1, X:7, Rest/binary>>, N,
+		       Acc, F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    Key = X bsl N + Acc,
+    case Key of
+      10 ->
+	  d_field_Sell_companySell(Rest, 0, 0, F@_1, F@_2, F@_3,
+				   F@_4, TrUserData);
+      16 ->
+	  d_field_Sell_qttSell(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+			       TrUserData);
+      29 ->
+	  d_field_Sell_priceMin(Rest, 0, 0, F@_1, F@_2, F@_3,
+				F@_4, TrUserData);
+      34 ->
+	  d_field_Sell_clientS(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+			       TrUserData);
+      _ ->
+	  case Key band 7 of
+	    0 ->
+		skip_varint_Sell(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+				 TrUserData);
+	    1 ->
+		skip_64_Sell(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+			     TrUserData);
+	    2 ->
+		skip_length_delimited_Sell(Rest, 0, 0, F@_1, F@_2, F@_3,
+					   F@_4, TrUserData);
+	    3 ->
+		skip_group_Sell(Rest, Key bsr 3, 0, F@_1, F@_2, F@_3,
+				F@_4, TrUserData);
+	    5 ->
+		skip_32_Sell(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+			     TrUserData)
+	  end
+    end;
+dg_read_field_def_Sell(<<>>, 0, 0, F@_1, F@_2, F@_3,
+		       F@_4, _) ->
+    #'Sell'{companySell = F@_1, qttSell = F@_2,
+	    priceMin = F@_3, clientS = F@_4}.
+
+d_field_Sell_companySell(<<1:1, X:7, Rest/binary>>, N,
+			 Acc, F@_1, F@_2, F@_3, F@_4, TrUserData)
+    when N < 57 ->
+    d_field_Sell_companySell(Rest, N + 7, X bsl N + Acc,
+			     F@_1, F@_2, F@_3, F@_4, TrUserData);
+d_field_Sell_companySell(<<0:1, X:7, Rest/binary>>, N,
+			 Acc, _, F@_2, F@_3, F@_4, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
+			   {unicode:characters_to_list(Utf8, unicode), Rest2}
+			 end,
+    dfp_read_field_def_Sell(RestF, 0, 0, NewFValue, F@_2,
+			    F@_3, F@_4, TrUserData).
+
+d_field_Sell_qttSell(<<1:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, F@_2, F@_3, F@_4, TrUserData)
+    when N < 57 ->
+    d_field_Sell_qttSell(Rest, N + 7, X bsl N + Acc, F@_1,
+			 F@_2, F@_3, F@_4, TrUserData);
+d_field_Sell_qttSell(<<0:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, _, F@_3, F@_4, TrUserData) ->
+    {NewFValue, RestF} = {begin
+			    <<Res:32/signed-native>> = <<(X bsl N +
+							    Acc):32/unsigned-native>>,
+			    Res
+			  end,
+			  Rest},
+    dfp_read_field_def_Sell(RestF, 0, 0, F@_1, NewFValue,
+			    F@_3, F@_4, TrUserData).
+
+d_field_Sell_priceMin(<<0:16, 128, 127, Rest/binary>>,
+		      Z1, Z2, F@_1, F@_2, _, F@_4, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2,
+			    infinity, F@_4, TrUserData);
+d_field_Sell_priceMin(<<0:16, 128, 255, Rest/binary>>,
+		      Z1, Z2, F@_1, F@_2, _, F@_4, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2,
+			    '-infinity', F@_4, TrUserData);
+d_field_Sell_priceMin(<<_:16, 1:1, _:7, _:1, 127:7,
+			Rest/binary>>,
+		      Z1, Z2, F@_1, F@_2, _, F@_4, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, nan,
+			    F@_4, TrUserData);
+d_field_Sell_priceMin(<<Value:32/little-float,
+			Rest/binary>>,
+		      Z1, Z2, F@_1, F@_2, _, F@_4, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, Value,
+			    F@_4, TrUserData).
+
+d_field_Sell_clientS(<<1:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, F@_2, F@_3, F@_4, TrUserData)
+    when N < 57 ->
+    d_field_Sell_clientS(Rest, N + 7, X bsl N + Acc, F@_1,
+			 F@_2, F@_3, F@_4, TrUserData);
+d_field_Sell_clientS(<<0:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, F@_2, F@_3, _, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
+			   {unicode:characters_to_list(Utf8, unicode), Rest2}
+			 end,
+    dfp_read_field_def_Sell(RestF, 0, 0, F@_1, F@_2, F@_3,
+			    NewFValue, TrUserData).
+
+skip_varint_Sell(<<1:1, _:7, Rest/binary>>, Z1, Z2,
+		 F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    skip_varint_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3, F@_4,
+		     TrUserData);
+skip_varint_Sell(<<0:1, _:7, Rest/binary>>, Z1, Z2,
+		 F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			    F@_4, TrUserData).
+
+skip_length_delimited_Sell(<<1:1, X:7, Rest/binary>>, N,
+			   Acc, F@_1, F@_2, F@_3, F@_4, TrUserData)
+    when N < 57 ->
+    skip_length_delimited_Sell(Rest, N + 7, X bsl N + Acc,
+			       F@_1, F@_2, F@_3, F@_4, TrUserData);
+skip_length_delimited_Sell(<<0:1, X:7, Rest/binary>>, N,
+			   Acc, F@_1, F@_2, F@_3, F@_4, TrUserData) ->
+    Length = X bsl N + Acc,
+    <<_:Length/binary, Rest2/binary>> = Rest,
+    dfp_read_field_def_Sell(Rest2, 0, 0, F@_1, F@_2, F@_3,
+			    F@_4, TrUserData).
+
+skip_group_Sell(Bin, FNum, Z2, F@_1, F@_2, F@_3, F@_4,
+		TrUserData) ->
+    {_, Rest} = read_group(Bin, FNum),
+    dfp_read_field_def_Sell(Rest, 0, Z2, F@_1, F@_2, F@_3,
+			    F@_4, TrUserData).
+
+skip_32_Sell(<<_:32, Rest/binary>>, Z1, Z2, F@_1, F@_2,
+	     F@_3, F@_4, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			    F@_4, TrUserData).
+
+skip_64_Sell(<<_:64, Rest/binary>>, Z1, Z2, F@_1, F@_2,
+	     F@_3, F@_4, TrUserData) ->
+    dfp_read_field_def_Sell(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			    F@_4, TrUserData).
+
 d_msg_General(Bin, TrUserData) ->
     dfp_read_field_def_General(Bin, 0, 0,
 			       id(undefined, TrUserData), TrUserData).
@@ -767,112 +873,6 @@ skip_64_General(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
     dfp_read_field_def_General(Rest, Z1, Z2, F@_1,
 			       TrUserData).
 
-d_msg_ResponseAfterRecv(Bin, TrUserData) ->
-    dfp_read_field_def_ResponseAfterRecv(Bin, 0, 0,
-					 id([], TrUserData), TrUserData).
-
-dfp_read_field_def_ResponseAfterRecv(<<10,
-				       Rest/binary>>,
-				     Z1, Z2, F@_1, TrUserData) ->
-    d_field_ResponseAfterRecv_rep(Rest, Z1, Z2, F@_1,
-				  TrUserData);
-dfp_read_field_def_ResponseAfterRecv(<<>>, 0, 0, F@_1,
-				     _) ->
-    #'ResponseAfterRecv'{rep = F@_1};
-dfp_read_field_def_ResponseAfterRecv(Other, Z1, Z2,
-				     F@_1, TrUserData) ->
-    dg_read_field_def_ResponseAfterRecv(Other, Z1, Z2, F@_1,
-					TrUserData).
-
-dg_read_field_def_ResponseAfterRecv(<<1:1, X:7,
-				      Rest/binary>>,
-				    N, Acc, F@_1, TrUserData)
-    when N < 32 - 7 ->
-    dg_read_field_def_ResponseAfterRecv(Rest, N + 7,
-					X bsl N + Acc, F@_1, TrUserData);
-dg_read_field_def_ResponseAfterRecv(<<0:1, X:7,
-				      Rest/binary>>,
-				    N, Acc, F@_1, TrUserData) ->
-    Key = X bsl N + Acc,
-    case Key of
-      10 ->
-	  d_field_ResponseAfterRecv_rep(Rest, 0, 0, F@_1,
-					TrUserData);
-      _ ->
-	  case Key band 7 of
-	    0 ->
-		skip_varint_ResponseAfterRecv(Rest, 0, 0, F@_1,
-					      TrUserData);
-	    1 ->
-		skip_64_ResponseAfterRecv(Rest, 0, 0, F@_1, TrUserData);
-	    2 ->
-		skip_length_delimited_ResponseAfterRecv(Rest, 0, 0,
-							F@_1, TrUserData);
-	    3 ->
-		skip_group_ResponseAfterRecv(Rest, Key bsr 3, 0, F@_1,
-					     TrUserData);
-	    5 ->
-		skip_32_ResponseAfterRecv(Rest, 0, 0, F@_1, TrUserData)
-	  end
-    end;
-dg_read_field_def_ResponseAfterRecv(<<>>, 0, 0, F@_1,
-				    _) ->
-    #'ResponseAfterRecv'{rep = F@_1}.
-
-d_field_ResponseAfterRecv_rep(<<1:1, X:7, Rest/binary>>,
-			      N, Acc, F@_1, TrUserData)
-    when N < 57 ->
-    d_field_ResponseAfterRecv_rep(Rest, N + 7,
-				  X bsl N + Acc, F@_1, TrUserData);
-d_field_ResponseAfterRecv_rep(<<0:1, X:7, Rest/binary>>,
-			      N, Acc, _, TrUserData) ->
-    {NewFValue, RestF} = begin
-			   Len = X bsl N + Acc,
-			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
-			   {unicode:characters_to_list(Utf8, unicode), Rest2}
-			 end,
-    dfp_read_field_def_ResponseAfterRecv(RestF, 0, 0,
-					 NewFValue, TrUserData).
-
-skip_varint_ResponseAfterRecv(<<1:1, _:7, Rest/binary>>,
-			      Z1, Z2, F@_1, TrUserData) ->
-    skip_varint_ResponseAfterRecv(Rest, Z1, Z2, F@_1,
-				  TrUserData);
-skip_varint_ResponseAfterRecv(<<0:1, _:7, Rest/binary>>,
-			      Z1, Z2, F@_1, TrUserData) ->
-    dfp_read_field_def_ResponseAfterRecv(Rest, Z1, Z2, F@_1,
-					 TrUserData).
-
-skip_length_delimited_ResponseAfterRecv(<<1:1, X:7,
-					  Rest/binary>>,
-					N, Acc, F@_1, TrUserData)
-    when N < 57 ->
-    skip_length_delimited_ResponseAfterRecv(Rest, N + 7,
-					    X bsl N + Acc, F@_1, TrUserData);
-skip_length_delimited_ResponseAfterRecv(<<0:1, X:7,
-					  Rest/binary>>,
-					N, Acc, F@_1, TrUserData) ->
-    Length = X bsl N + Acc,
-    <<_:Length/binary, Rest2/binary>> = Rest,
-    dfp_read_field_def_ResponseAfterRecv(Rest2, 0, 0, F@_1,
-					 TrUserData).
-
-skip_group_ResponseAfterRecv(Bin, FNum, Z2, F@_1,
-			     TrUserData) ->
-    {_, Rest} = read_group(Bin, FNum),
-    dfp_read_field_def_ResponseAfterRecv(Rest, 0, Z2, F@_1,
-					 TrUserData).
-
-skip_32_ResponseAfterRecv(<<_:32, Rest/binary>>, Z1, Z2,
-			  F@_1, TrUserData) ->
-    dfp_read_field_def_ResponseAfterRecv(Rest, Z1, Z2, F@_1,
-					 TrUserData).
-
-skip_64_ResponseAfterRecv(<<_:64, Rest/binary>>, Z1, Z2,
-			  F@_1, TrUserData) ->
-    dfp_read_field_def_ResponseAfterRecv(Rest, Z1, Z2, F@_1,
-					 TrUserData).
-
 read_group(Bin, FieldNum) ->
     {NumBytes, EndTagLen} = read_gr_b(Bin, 0, 0, 0, 0, FieldNum),
     <<Group:NumBytes/binary, _:EndTagLen/binary, Rest/binary>> = Bin,
@@ -937,13 +937,43 @@ merge_msgs(Prev, New, Opts)
     when element(1, Prev) =:= element(1, New) ->
     TrUserData = proplists:get_value(user_data, Opts),
     case Prev of
-      #'Sell'{} -> merge_msg_Sell(Prev, New, TrUserData);
-      #'Buy'{} -> merge_msg_Buy(Prev, New, TrUserData);
-      #'General'{} ->
-	  merge_msg_General(Prev, New, TrUserData);
       #'ResponseAfterRecv'{} ->
-	  merge_msg_ResponseAfterRecv(Prev, New, TrUserData)
+	  merge_msg_ResponseAfterRecv(Prev, New, TrUserData);
+      #'Buy'{} -> merge_msg_Buy(Prev, New, TrUserData);
+      #'Sell'{} -> merge_msg_Sell(Prev, New, TrUserData);
+      #'General'{} -> merge_msg_General(Prev, New, TrUserData)
     end.
+
+merge_msg_ResponseAfterRecv(#'ResponseAfterRecv'{rep =
+						     PFrep},
+			    #'ResponseAfterRecv'{rep = NFrep}, _) ->
+    #'ResponseAfterRecv'{rep =
+			     if NFrep =:= undefined -> PFrep;
+				true -> NFrep
+			     end}.
+
+merge_msg_Buy(#'Buy'{companyBuy = PFcompanyBuy,
+		     qttBuy = PFqttBuy, priceMax = PFpriceMax,
+		     clientB = PFclientB},
+	      #'Buy'{companyBuy = NFcompanyBuy, qttBuy = NFqttBuy,
+		     priceMax = NFpriceMax, clientB = NFclientB},
+	      _) ->
+    #'Buy'{companyBuy =
+	       if NFcompanyBuy =:= undefined -> PFcompanyBuy;
+		  true -> NFcompanyBuy
+	       end,
+	   qttBuy =
+	       if NFqttBuy =:= undefined -> PFqttBuy;
+		  true -> NFqttBuy
+	       end,
+	   priceMax =
+	       if NFpriceMax =:= undefined -> PFpriceMax;
+		  true -> NFpriceMax
+	       end,
+	   clientB =
+	       if NFclientB =:= undefined -> PFclientB;
+		  true -> NFclientB
+	       end}.
 
 merge_msg_Sell(#'Sell'{companySell = PFcompanySell,
 		       qttSell = PFqttSell, priceMin = PFpriceMin,
@@ -969,29 +999,6 @@ merge_msg_Sell(#'Sell'{companySell = PFcompanySell,
 		   true -> NFclientS
 		end}.
 
-merge_msg_Buy(#'Buy'{companyBuy = PFcompanyBuy,
-		     qttBuy = PFqttBuy, priceMax = PFpriceMax,
-		     clientB = PFclientB},
-	      #'Buy'{companyBuy = NFcompanyBuy, qttBuy = NFqttBuy,
-		     priceMax = NFpriceMax, clientB = NFclientB},
-	      _) ->
-    #'Buy'{companyBuy =
-	       if NFcompanyBuy =:= undefined -> PFcompanyBuy;
-		  true -> NFcompanyBuy
-	       end,
-	   qttBuy =
-	       if NFqttBuy =:= undefined -> PFqttBuy;
-		  true -> NFqttBuy
-	       end,
-	   priceMax =
-	       if NFpriceMax =:= undefined -> PFpriceMax;
-		  true -> NFpriceMax
-	       end,
-	   clientB =
-	       if NFclientB =:= undefined -> PFclientB;
-		  true -> NFclientB
-	       end}.
-
 merge_msg_General(#'General'{general = PFgeneral},
 		  #'General'{general = NFgeneral}, TrUserData) ->
     #'General'{general =
@@ -1006,50 +1013,30 @@ merge_msg_General(#'General'{general = PFgeneral},
 		     _ -> NFgeneral
 		   end}.
 
-merge_msg_ResponseAfterRecv(#'ResponseAfterRecv'{rep =
-						     PFrep},
-			    #'ResponseAfterRecv'{rep = NFrep}, _) ->
-    #'ResponseAfterRecv'{rep =
-			     if NFrep =:= undefined -> PFrep;
-				true -> NFrep
-			     end}.
-
 
 verify_msg(Msg) -> verify_msg(Msg, []).
 
 verify_msg(Msg, Opts) ->
     TrUserData = proplists:get_value(user_data, Opts),
     case Msg of
-      #'Sell'{} -> v_msg_Sell(Msg, ['Sell'], TrUserData);
-      #'Buy'{} -> v_msg_Buy(Msg, ['Buy'], TrUserData);
-      #'General'{} ->
-	  v_msg_General(Msg, ['General'], TrUserData);
       #'ResponseAfterRecv'{} ->
 	  v_msg_ResponseAfterRecv(Msg, ['ResponseAfterRecv'],
 				  TrUserData);
+      #'Buy'{} -> v_msg_Buy(Msg, ['Buy'], TrUserData);
+      #'Sell'{} -> v_msg_Sell(Msg, ['Sell'], TrUserData);
+      #'General'{} ->
+	  v_msg_General(Msg, ['General'], TrUserData);
       _ -> mk_type_error(not_a_known_message, Msg, [])
     end.
 
 
--dialyzer({nowarn_function,v_msg_Sell/3}).
-v_msg_Sell(#'Sell'{companySell = F1, qttSell = F2,
-		   priceMin = F3, clientS = F4},
-	   Path, _) ->
+-dialyzer({nowarn_function,v_msg_ResponseAfterRecv/3}).
+v_msg_ResponseAfterRecv(#'ResponseAfterRecv'{rep = F1},
+			Path, _) ->
     if F1 == undefined -> ok;
-       true -> v_type_string(F1, [companySell | Path])
+       true -> v_type_string(F1, [rep | Path])
     end,
-    if F2 == undefined -> ok;
-       true -> v_type_int32(F2, [qttSell | Path])
-    end,
-    if F3 == undefined -> ok;
-       true -> v_type_float(F3, [priceMin | Path])
-    end,
-    if F4 == undefined -> ok;
-       true -> v_type_string(F4, [clientS | Path])
-    end,
-    ok;
-v_msg_Sell(X, Path, _TrUserData) ->
-    mk_type_error({expected_msg, 'Sell'}, X, Path).
+    ok.
 
 -dialyzer({nowarn_function,v_msg_Buy/3}).
 v_msg_Buy(#'Buy'{companyBuy = F1, qttBuy = F2,
@@ -1071,6 +1058,26 @@ v_msg_Buy(#'Buy'{companyBuy = F1, qttBuy = F2,
 v_msg_Buy(X, Path, _TrUserData) ->
     mk_type_error({expected_msg, 'Buy'}, X, Path).
 
+-dialyzer({nowarn_function,v_msg_Sell/3}).
+v_msg_Sell(#'Sell'{companySell = F1, qttSell = F2,
+		   priceMin = F3, clientS = F4},
+	   Path, _) ->
+    if F1 == undefined -> ok;
+       true -> v_type_string(F1, [companySell | Path])
+    end,
+    if F2 == undefined -> ok;
+       true -> v_type_int32(F2, [qttSell | Path])
+    end,
+    if F3 == undefined -> ok;
+       true -> v_type_float(F3, [priceMin | Path])
+    end,
+    if F4 == undefined -> ok;
+       true -> v_type_string(F4, [clientS | Path])
+    end,
+    ok;
+v_msg_Sell(X, Path, _TrUserData) ->
+    mk_type_error({expected_msg, 'Sell'}, X, Path).
+
 -dialyzer({nowarn_function,v_msg_General/3}).
 v_msg_General(#'General'{general = F1}, Path,
 	      TrUserData) ->
@@ -1081,14 +1088,6 @@ v_msg_General(#'General'{general = F1}, Path,
       {sell, OF1} ->
 	  v_msg_Sell(OF1, [sell, general | Path], TrUserData);
       _ -> mk_type_error(invalid_oneof, F1, [general | Path])
-    end,
-    ok.
-
--dialyzer({nowarn_function,v_msg_ResponseAfterRecv/3}).
-v_msg_ResponseAfterRecv(#'ResponseAfterRecv'{rep = F1},
-			Path, _) ->
-    if F1 == undefined -> ok;
-       true -> v_type_string(F1, [rep | Path])
     end,
     ok.
 
@@ -1144,15 +1143,9 @@ id(X, _TrUserData) -> X.
 
 
 get_msg_defs() ->
-    [{{msg, 'Sell'},
-      [#field{name = companySell, fnum = 1, rnum = 2,
-	      type = string, occurrence = optional, opts = []},
-       #field{name = qttSell, fnum = 2, rnum = 3, type = int32,
-	      occurrence = optional, opts = []},
-       #field{name = priceMin, fnum = 3, rnum = 4,
-	      type = float, occurrence = optional, opts = []},
-       #field{name = clientS, fnum = 4, rnum = 5,
-	      type = string, occurrence = optional, opts = []}]},
+    [{{msg, 'ResponseAfterRecv'},
+      [#field{name = rep, fnum = 1, rnum = 2, type = string,
+	      occurrence = optional, opts = []}]},
      {{msg, 'Buy'},
       [#field{name = companyBuy, fnum = 1, rnum = 2,
 	      type = string, occurrence = optional, opts = []},
@@ -1162,6 +1155,15 @@ get_msg_defs() ->
 	      type = float, occurrence = optional, opts = []},
        #field{name = clientB, fnum = 4, rnum = 5,
 	      type = string, occurrence = optional, opts = []}]},
+     {{msg, 'Sell'},
+      [#field{name = companySell, fnum = 1, rnum = 2,
+	      type = string, occurrence = optional, opts = []},
+       #field{name = qttSell, fnum = 2, rnum = 3, type = int32,
+	      occurrence = optional, opts = []},
+       #field{name = priceMin, fnum = 3, rnum = 4,
+	      type = float, occurrence = optional, opts = []},
+       #field{name = clientS, fnum = 4, rnum = 5,
+	      type = string, occurrence = optional, opts = []}]},
      {{msg, 'General'},
       [#gpb_oneof{name = general, rnum = 2,
 		  fields =
@@ -1170,21 +1172,18 @@ get_msg_defs() ->
 			      opts = []},
 		       #field{name = sell, fnum = 2, rnum = 2,
 			      type = {msg, 'Sell'}, occurrence = optional,
-			      opts = []}]}]},
-     {{msg, 'ResponseAfterRecv'},
-      [#field{name = rep, fnum = 1, rnum = 2, type = string,
-	      occurrence = optional, opts = []}]}].
+			      opts = []}]}]}].
 
 
 get_msg_names() ->
-    ['Sell', 'Buy', 'General', 'ResponseAfterRecv'].
+    ['ResponseAfterRecv', 'Buy', 'Sell', 'General'].
 
 
 get_group_names() -> [].
 
 
 get_msg_or_group_names() ->
-    ['Sell', 'Buy', 'General', 'ResponseAfterRecv'].
+    ['ResponseAfterRecv', 'Buy', 'Sell', 'General'].
 
 
 get_enum_names() -> [].
@@ -1202,15 +1201,9 @@ fetch_enum_def(EnumName) ->
     erlang:error({no_such_enum, EnumName}).
 
 
-find_msg_def('Sell') ->
-    [#field{name = companySell, fnum = 1, rnum = 2,
-	    type = string, occurrence = optional, opts = []},
-     #field{name = qttSell, fnum = 2, rnum = 3, type = int32,
-	    occurrence = optional, opts = []},
-     #field{name = priceMin, fnum = 3, rnum = 4,
-	    type = float, occurrence = optional, opts = []},
-     #field{name = clientS, fnum = 4, rnum = 5,
-	    type = string, occurrence = optional, opts = []}];
+find_msg_def('ResponseAfterRecv') ->
+    [#field{name = rep, fnum = 1, rnum = 2, type = string,
+	    occurrence = optional, opts = []}];
 find_msg_def('Buy') ->
     [#field{name = companyBuy, fnum = 1, rnum = 2,
 	    type = string, occurrence = optional, opts = []},
@@ -1219,6 +1212,15 @@ find_msg_def('Buy') ->
      #field{name = priceMax, fnum = 3, rnum = 4,
 	    type = float, occurrence = optional, opts = []},
      #field{name = clientB, fnum = 4, rnum = 5,
+	    type = string, occurrence = optional, opts = []}];
+find_msg_def('Sell') ->
+    [#field{name = companySell, fnum = 1, rnum = 2,
+	    type = string, occurrence = optional, opts = []},
+     #field{name = qttSell, fnum = 2, rnum = 3, type = int32,
+	    occurrence = optional, opts = []},
+     #field{name = priceMin, fnum = 3, rnum = 4,
+	    type = float, occurrence = optional, opts = []},
+     #field{name = clientS, fnum = 4, rnum = 5,
 	    type = string, occurrence = optional, opts = []}];
 find_msg_def('General') ->
     [#gpb_oneof{name = general, rnum = 2,
@@ -1229,9 +1231,6 @@ find_msg_def('General') ->
 		     #field{name = sell, fnum = 2, rnum = 2,
 			    type = {msg, 'Sell'}, occurrence = optional,
 			    opts = []}]}];
-find_msg_def('ResponseAfterRecv') ->
-    [#field{name = rep, fnum = 1, rnum = 2, type = string,
-	    occurrence = optional, opts = []}];
 find_msg_def(_) -> error.
 
 
@@ -1267,7 +1266,7 @@ fetch_rpc_def(ServiceName, RpcName) ->
     erlang:error({no_such_rpc, ServiceName, RpcName}).
 
 
-get_package_name() -> server.
+get_package_name() -> protobuf.
 
 
 
