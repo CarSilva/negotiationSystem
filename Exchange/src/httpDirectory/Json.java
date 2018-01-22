@@ -5,14 +5,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.util.Map;
-
 
 public class Json {
 
     public Json(){}
 
-    public JSONObject createJson(String[] args){
+    public String createJsonTotal(String[] args){
         JSONObject obj = new JSONObject();
 
         obj.put("name", args[0]);
@@ -20,7 +18,31 @@ public class Json {
         obj.put("closingValue", args[2]);
         obj.put("minimumValue", args[3]);
         obj.put("maximumalue", args[4]);
-        return obj;
+        return obj.toString();
+    }
+
+    public String createJsonMin(String[] args){
+        JSONObject obj = new JSONObject();
+
+        obj.put("name", args[0]);
+        obj.put("minimumValue", args[1]);
+        return obj.toString();
+    }
+
+    public String createJsonMax(String[] args){
+        JSONObject obj = new JSONObject();
+
+        obj.put("name", args[0]);
+        obj.put("maximumValue", args[1]);
+        return obj.toString();
+    }
+
+    public String createJsonOpening(String[] args){
+        JSONObject obj = new JSONObject();
+
+        obj.put("name", args[0]);
+        obj.put("openingValue", args[1]);
+        return obj.toString();
     }
 
     public JSONObject parseJson(String json){
