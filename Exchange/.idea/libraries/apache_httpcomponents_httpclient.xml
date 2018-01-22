@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="apache-httpcomponents-httpclient">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/apache-httpcomponents-httpclient.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
