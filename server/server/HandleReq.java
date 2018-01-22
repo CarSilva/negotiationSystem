@@ -51,6 +51,12 @@ public class HandleReq extends Thread {
                   e.printStackTrace();
                 }
                 break;
+            case "list" :
+                DirectoryAccess http = new DirectoryAccess();
+                String response = http.sendRequest("GET", "companies");
+                Json j = new Json();
+                System.out.println(j.parseToString(response));
+
             default :
                 System.out.println("Not a valid option\tyou can try again");
           }
