@@ -1,5 +1,7 @@
 package directory.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import directory.representations.Company;
 import directory.representations.Exchange;
 
@@ -28,19 +30,31 @@ public class ExchangeResource {
             Exchange exchange = exchanges.get(id);
             if (exchange != null)
                 return Response.ok(exchange).build();
-            else
-                // 404 - Not found, no such resource
-                return Response.status(404).build();
         }
+        // 404 - Not found, no such resource
+        return Response.status(404).build();
     }
 
-    /** NOT DONE, DON'T FORGET **/
     @GET
     @Path("/{id}/companies")
-    public List<Company> companiesExchange(@PathParam("id") int id) {
-        return new ArrayList<Company>();
+    public Response companiesExchange(@PathParam("id") int id) {
+
+        synchronized (exchanges) {
+            Exchange ex = exchanges.get(id);
+            if(ex != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                List<ObjectNode> companies =  new ArrayList<ObjectNode>();
+                for(String s : ex.getCompanies()) {
+                    ObjectNode company = mapper.createObjectNode();
+                    company.put("name", s);
+                    companies.add(company);
+                }
+                return Response.ok(companies).build();
+            }
+        }
+        // Resource not found
+        return Response.status(404).build();
     }
-    /** NOT DONE, DON'T FORGET **/
 
     @PUT
     @Path("/{id}")

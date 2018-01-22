@@ -35,11 +35,11 @@ companies:
         }
 
 exchanges:
-  1: { id: 1, host: localhost, port: 12345 }
-  2: { id: 2, host: localhost, port: 12346 }
-  3: { id: 3, host: localhost, port: 12347 }
-  4: { id: 4, host: localhost, port: 12348 }
-  5: { id: 5, host: localhost, port: 12349 }
-  6: { id: 6, host: localhost, port: 12350 }
-  7: { id: 7, host: localhost, port: 12351 }
-  8: { id: 8, host: localhost, port: 12352 }
+  1: { id: 1, host: localhost, port: 12345, companies: [iota, vechain] }
+  2: { id: 2, host: localhost, port: 12346, companies: [verge, sonm] }
+  3: { id: 3, host: localhost, port: 12347, companies: []}
+  4: { id: 4, host: localhost, port: 12348, companies: []}
+  5: { id: 5, host: localhost, port: 12349, companies: []}
+  6: { id: 6, host: localhost, port: 12350, companies: []}
+  7: { id: 7, host: localhost, port: 12351, companies: []}
+  8: { id: 8, host: localhost, port: 12352, companies: []}

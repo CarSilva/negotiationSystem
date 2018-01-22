@@ -8,11 +8,16 @@ public class Company {
 
     @NotEmpty
     private String name;
+    private int exchangeId;
     private float openingValue;
     private float closingValue;
     private float minimumValue;
     private float maximumValue;
-    private int exchangeId;
+    // Yesterday values
+    private float openingValueY;
+    private float closingValueY;
+    private float minimumValueY;
+    private float maximumValueY;
 
     @JsonCreator
     public Company(@JsonProperty("name") String name,
