@@ -1,7 +1,9 @@
 package httpCommunication;
 
+
 import org.json.JSONObject;
 import org.json.JSONArray;
+
 
 
 public class Json {
@@ -45,8 +47,8 @@ public class Json {
     }
 
     public String parseArray(String js){
-        JSONObject o = new JSONObject(js);
-        JSONArray ja = (JSONArray) o.get("");
+        JSONObject o = new JSONObject("{list:"+js+"}");
+        JSONArray ja = (JSONArray) o.get("list");
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < ja.length();i++){
             JSONObject entry = (JSONObject) ja.get(i);

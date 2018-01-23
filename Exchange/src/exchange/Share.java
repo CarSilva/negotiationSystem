@@ -119,6 +119,7 @@ public class Share {
                 if (sell.quantity < reqBuy.quantity) {
                     int remaining = reqBuy.quantity - sell.quantity;
                     reqBuy.quantity = remaining;
+                    System.out.println("sobrou buy + avisar :" +sell.client+" "+company_name);
                     sell.pub.send(sell.client+" "+company_name+" Sold "
                             +" "+tradePrice +" "+ sell.quantity);
                     sell_requests.remove(sell);
@@ -127,11 +128,13 @@ public class Share {
                 }else if(sell.quantity > reqBuy.quantity){
                     int remaining = sell.quantity - reqBuy.quantity;
                     sell.quantity = remaining;
+                    System.out.println("sobrou sell + avisar :" +reqBuy.client+" "+company_name);
                     reqBuy.pub.send(reqBuy.client+" "+company_name+" Bought "
                             +" "+tradePrice +" "+ reqBuy.quantity);
                     break;
                     //Say nothing to the seller --> informs buyer
                 }else {
+                    System.out.println("n sobrou + avisar :" +reqBuy.client+sell.client+" "+company_name);
                     reqBuy.pub.send(reqBuy.client+" "+company_name+" Bought "
                             +" "+tradePrice +" "+ reqBuy.quantity);
                     sell.pub.send(sell.client+" "+company_name+" Sold "
@@ -165,6 +168,7 @@ public class Share {
                 if (buy.quantity < reqSell.quantity) {
                     int remaining = reqSell.quantity - buy.quantity;
                     reqSell.quantity = remaining;
+                    System.out.println("sobrou sell + avisar :" +buy.client+" "+company_name);
                     buy.pub.send(buy.client+" "+company_name+" Bought "
                             +" "+tradePrice +" "+ buy.quantity);
                     buy_requests.remove(buy);
@@ -173,11 +177,13 @@ public class Share {
                 }else if(buy.quantity > reqSell.quantity){
                     int remaining = buy.quantity - reqSell.quantity;
                     buy.quantity = remaining;
+                    System.out.println("sobrou buy + avisar :" +reqSell.client+" "+company_name);
                     reqSell.pub.send(reqSell.client+" "+company_name+" Sold "
                             +" "+tradePrice +" "+ reqSell.quantity  );
                     break;
                     //Say nothing to the buyer --> informs seller
                 }else {
+                    System.out.println("n sobrou + avisar :" +buy.client+reqSell.client+" "+company_name);
                     buy.pub.send(buy.client+" "+company_name+" Bought "
                             +" "+tradePrice +" "+ buy.quantity);
                     reqSell.pub.send(reqSell.client+" "+company_name+" Sold"

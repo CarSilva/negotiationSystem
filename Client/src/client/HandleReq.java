@@ -1,6 +1,7 @@
 package client;
 
 import httpCommunication.DirectoryAccess;
+import httpCommunication.Json;
 import org.zeromq.ZMQ;
 
 import protobuf.ProtoReqRecv.*;
@@ -51,6 +52,7 @@ public class HandleReq extends Thread {
                         e.printStackTrace();
                     }
                     receiveReply();
+                    sub(s[1]);
                     break;
                 case "sell" :
                     Sell sell = createSell(s[1], Integer.parseInt(s[2]),
@@ -65,6 +67,7 @@ public class HandleReq extends Thread {
                         e.printStackTrace();
                     }
                     receiveReply();
+                    sub(s[1]);
                     break;
                 case "subscribe" :
                     int nSubs = subscriptions.size() + s.length;
@@ -90,24 +93,27 @@ public class HandleReq extends Thread {
                     }
                     System.out.println("All subscriptions unsubscribed");
                     break;
-            /*case "list" :
+            case "list" :
                 try{
-                  String response = http.sendRequest("GET", "companies");
+                  String response = http.sendRequest("companies", "GET");
                   Json js = new Json();
                   System.out.println(js.parseArray(response));
                 }catch(IOException e){
                   e.printStackTrace();
                 }
                 break;
-                */
+
                 default :
                     System.out.println("Not a valid option\tyou can try again");
             }
-            String subNoti = username+" "+s[1];
-            sub.subscribe(subNoti.getBytes());
+
         }
     }
 
+    public void sub(String s){
+        String subNoti = username + " " + s;
+        sub.subscribe(subNoti.getBytes());
+    }
     public void receiveReply(){
         try{
             int tam = is.read();

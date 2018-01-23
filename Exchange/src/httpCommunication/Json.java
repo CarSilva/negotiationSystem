@@ -46,7 +46,7 @@ public class Json {
     }
 
     public String parseArray(String js){
-        JSONObject o = new JSONObject(js);
+        JSONObject o = new JSONObject("{"+js+"}");
         JSONArray ja = (JSONArray) o.get("");
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < ja.length();i++){

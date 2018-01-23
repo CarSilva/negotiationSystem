@@ -34,7 +34,7 @@ public class DirectoryAccess {
     }
 
     public String sendPutRequest(String request, String json) throws IOException {
-        URL url = new URL("http://192.168.43.195:8080/" + request);
+        URL url = new URL("http://192.168.43.220:8080/" + request);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("PUT");
         con.setRequestProperty("Content-Type", "application/json");
