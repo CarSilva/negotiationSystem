@@ -118,20 +118,23 @@ public class Share {
                 if (sell.quantity < reqBuy.quantity) {
                     int remaining = reqBuy.quantity - sell.quantity;
                     reqBuy.quantity = remaining;
+                    reqBuy.pub.send(company_name+" "+sell.client+" Sold"
+                            +" "+tradePrice +" "+ sell.quantity);
                     sell_requests.remove(sell);
                     buy_requests.add(reqBuy);
                     //Say nothing to the buyer --> informs seller
                 }else if(sell.quantity > reqBuy.quantity){
                     int remaining = sell.quantity - reqBuy.quantity;
                     sell.quantity = remaining;
-                    reqBuy.pub.send(company_name+" "+reqBuy.client+" Bought "
+                    reqBuy.pub.send(company_name+" "+reqBuy.client+" Bought"
                             +" "+tradePrice +" "+ reqBuy.quantity);
                     break;
                     //Say nothing to the seller --> informs buyer
                 }else {
-                    reqBuy.pub.send(company_name+" "+reqBuy.client+" Bought "
+                    System.out.println(company_name+sell.client+reqBuy.client);
+                    reqBuy.pub.send(company_name+" "+reqBuy.client+" Bought"
                             +" "+tradePrice +" "+ reqBuy.quantity);
-                    reqBuy.pub.send(company_name+" "+sell.client+" Sold "
+                    reqBuy.pub.send(company_name+" "+sell.client+" Sold"
                             +" "+tradePrice +" "+ sell.quantity);
                     sell_requests.remove(sell);
                     //Informs seller and buyer
@@ -161,7 +164,7 @@ public class Share {
                 if (buy.quantity < reqSell.quantity) {
                     int remaining = reqSell.quantity - buy.quantity;
                     reqSell.quantity = remaining;
-                    reqSell.pub.send(company_name+" "+buy.client+" Bought "
+                    reqSell.pub.send(company_name+" "+buy.client+" Bought"
                             +" "+tradePrice +" "+ buy.quantity);
                     buy_requests.remove(buy);
                     sell_requests.add(reqSell);
@@ -169,12 +172,13 @@ public class Share {
                 }else if(buy.quantity > reqSell.quantity){
                     int remaining = buy.quantity - reqSell.quantity;
                     buy.quantity = remaining;
-                    reqSell.pub.send(company_name+" "+reqSell.client+" Sold "
-                            +" "+tradePrice +" "+ reqSell.quantity  );
+                    reqSell.pub.send(company_name+" "+reqSell.client+" Sold"
+                            +" "+tradePrice +" "+ reqSell.quantity);
                     break;
                     //Say nothing to the buyer --> informs seller
                 }else {
-                    reqSell.pub.send(company_name+" "+buy.client+" Bought "
+                    System.out.println(company_name+buy.client+reqSell.client);
+                    reqSell.pub.send(company_name+" "+buy.client+" Bought"
                             +" "+tradePrice +" "+ buy.quantity);
                     reqSell.pub.send(company_name+" "+reqSell.client+" Sold"
                             +" "+tradePrice +" "+ reqSell.quantity);

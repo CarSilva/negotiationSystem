@@ -131,8 +131,8 @@ public class HandleReq extends Thread {
         }
     }
 
-
     public void sub(String s) {
+        System.out.println("subscribed " + s + " " + username);
         String subNoti = s + " " + username;
         sub.subscribe(subNoti.getBytes());
     }
@@ -141,7 +141,8 @@ public class HandleReq extends Thread {
             int tam = is.read();
             byte[] packetRead = new byte[tam];
             is.read(packetRead, 0, tam);
-            ResponseAfterRecv reply =  ResponseAfterRecv.parseFrom(packetRead);
+            ResponseAfterRecv reply =
+                    ResponseAfterRecv.parseFrom(packetRead);
             System.out.println(reply.getRep());
         }catch(IOException e){
             e.printStackTrace();
