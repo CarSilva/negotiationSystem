@@ -10,48 +10,61 @@ server(Port) ->
 
 acceptor(LSock) ->
 	{ok, Sock} = gen_tcp:accept(LSock),
-  	spawn(fun() -> acceptor(LSock) end),
-		login(Sock).
+	spawn(fun() -> acceptor(LSock) end),
+	login(Sock).
 
 login(Sock) ->
-	Size = receivePacketSize(Sock),
-	case receivePacketAuth(Sock, Size) of
-		{ok, Recv} ->
-				Username = element(2, Recv),
-				Password = element(3, Recv),
-				Type = element(4, Recv),
-				case Type of
-					"registo" -> R = client_login:create_account(Username, Password);
-					"login" ->	R = client_login:login(Username, Password)
-				end,
-				Send_Packet = protoAuth:encode_msg(#'ResponseAuth'{
-																						statusResponse=atom_to_list(R)}),
-				sendPacketSize(Sock, Send_Packet),
-				reqRep(Sock);
-		{error, Reason} -> Reason
+	case receivePacketSize(Sock) of
+		{ok, Size} ->
+			case receivePacketAuth(Sock, Size) of
+				{ok, Recv} ->
+						Username = element(2, Recv),
+						Password = element(3, Recv),
+						Type = element(4, Recv),
+						case Type of
+							"registo" -> R = client_login:create_account(Username, Password);
+							"login" ->	R = client_login:login(Username, Password)
+						end,
+						Send_Packet = protoAuth:encode_msg(#'ResponseAuth'{
+																								statusResponse=atom_to_list(R)}),
+
+						sendPacketSize(Sock, Send_Packet),
+						case atom_to_list(R) of
+							"invalid" -> login(Sock);
+							"user_exists"-> login(Sock);
+							"ok" -> true
+						end,
+						reqRep(Sock);
+					ok -> io:format("Socket closed~n",[])
+			end;
+		ok -> io:format("Socket closed~n",[])
 	end.
 
 
 reqRep(Sock) ->
-	Size = receivePacketSize(Sock),
-	case receivePacketGeneral(Sock, Size, 'General') of
-		{ok, Recv} ->
-				case Recv of
-						#'General'{general={buy,#'Buy'{
-																companyBuy=Company,
-																qttBuy=Qtt,
-																priceMax=Price,
-																clientB=ClientB}}} ->
-								buy(Company, Qtt, Price, ClientB, Sock);
-						#'General'{general={sell,#'Sell'{
-																companySell=Company,
-																qttSell=Qtt,
-																priceMin=Price,
-																clientS=ClientS}}} ->
-								sell(Company, Qtt, Price, ClientS, Sock)
-				end,
-				reqRep(Sock);
-		{error, Reason} -> io:format("Some error to be fix")
+	case receivePacketSize(Sock) of
+		{ok, Size} ->
+			case receivePacketGeneral(Sock, Size, 'General') of
+				{ok, Recv} ->
+						case Recv of
+							#'General'{general={sell,#'Sell'{
+																	companySell=Company,
+																	qttSell=Qtt,
+																	priceMin=Price,
+																	clientS=ClientS}}} ->
+									sell(Company, Qtt, Price, ClientS, Sock);
+							#'General'{general={buy,#'Buy'{
+																	companyBuy=Company,
+																	qttBuy=Qtt,
+																	priceMax=Price,
+																	clientB=ClientB}}} ->
+									buy(Company, Qtt, Price, ClientB, Sock)
+
+						end,
+						reqRep(Sock);
+					ok -> io:format("Socket closed~n",[])
+			end;
+		ok -> io:format("Socket closed~n",[])
 	end.
 
 buy(Company, Qtt, Price, ClientB, CSock) ->
@@ -64,12 +77,16 @@ buy(Company, Qtt, Price, ClientB, CSock) ->
 																				priceMax=Price,
 																				clientB=ClientB}}}),
 	sendPacketSize(Sock, Send_Packet),
-	Size = receivePacketSize(Sock),
-	{ok, Recv} = receivePacketGeneral(Sock, Size, 'ResponseAfterRecv'),
-	Reply = element(2, Recv),
-	Send2Client = protoReqRecv:encode_msg(#'ResponseAfterRecv'{
-																				rep = Reply}),
-	sendPacketSize(CSock, Send2Client).
+	case receivePacketSize(Sock) of
+		{ok, Size} -> case receivePacketGeneral(Sock, Size, 'ResponseAfterRecv') of
+									    {ok, Recv} -> Reply = element(2, Recv),
+														Send2Client = protoReqRecv:encode_msg(#'ResponseAfterRecv'{
+																									rep = Reply}),
+														sendPacketSize(CSock, Send2Client);
+							ok -> io:format("Socket Closed~n",[])
+						end;
+		ok -> io:format("Socket Closed~n",[])
+	end.
 
 sell(Company, Qtt, Price, ClientS, CSock) ->
 	%NEEDS TO GET INFO ABOUT EXCHANGE ON DIRECTORY
@@ -81,12 +98,16 @@ sell(Company, Qtt, Price, ClientS, CSock) ->
 																				priceMin=Price,
 																				clientS=ClientS}}}),
 	sendPacketSize(Sock, Send_Packet),
-	Size = receivePacketSize(Sock),
-	{ok, Recv} = receivePacketGeneral(Sock, Size, 'ResponseAfterRecv'),
-	Reply = element(2, Recv),
-	Send2Client = protoReqRecv:encode_msg(#'ResponseAfterRecv'{
-																				rep = Reply}),
-	sendPacketSize(CSock, Send2Client).
+	case receivePacketSize(Sock) of
+		{ok, Size} -> case receivePacketGeneral(Sock, Size, 'ResponseAfterRecv') of
+									    {ok, Recv} -> Reply = element(2, Recv),
+														Send2Client = protoReqRecv:encode_msg(#'ResponseAfterRecv'{
+																									rep = Reply}),
+														sendPacketSize(CSock, Send2Client);
+							ok -> io:format("Socket Closed~n",[])
+						end;
+		ok -> io:format("Socket Closed~n",[])
+	end.
 
 %%%------------ Just aux functions ---------------------%%%
 
@@ -99,20 +120,20 @@ receivePacketGeneral(Sock, Size, Field) ->
 	case gen_tcp:recv(Sock, Size) of
 		{ok, Packet} ->
 				Recv = protoReqRecv:decode_msg(Packet, Field),
-				{ok, Recv };
-		{error, Reason} -> {error, Reason}
-end.
+				{ok, Recv};
+		{error, closed} ->  gen_tcp:close(Sock)
+	end.
 
 receivePacketAuth(Sock, Size) ->
 	case gen_tcp:recv(Sock, Size) of
 		{ok, Packet} ->
 				Recv = protoAuth:decode_msg(Packet, 'Auth'),
 				{ok, Recv };
-		{error, Reason} -> {error, Reason}
+		{error, closed} -> gen_tcp:close(Sock)
 	end.
 
 receivePacketSize(Sock) ->
 	case gen_tcp:recv(Sock, 1) of
-		{ok, <<Tam>>} -> Tam;
-		{error, Reason}  -> Reason
+		{ok, <<Tam>>} -> {ok, Tam};
+		{error, closed} -> gen_tcp:close(Sock)
 	end.

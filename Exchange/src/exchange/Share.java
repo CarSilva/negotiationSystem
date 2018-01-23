@@ -111,33 +111,27 @@ public class Share {
                 if(tradePrice < minimumValue){
                     minimumValue = tradePrice;
                     //sendMinorInfoDirectory("MIN", minimumValue);
-                }
-                if(tradePrice > maximumValue) {
+                }else if(tradePrice > maximumValue) {
                     maximumValue = tradePrice;
                     //sendMinorInfoDirectory("MAX", maximumValue);
                 }
                 if (sell.quantity < reqBuy.quantity) {
                     int remaining = reqBuy.quantity - sell.quantity;
                     reqBuy.quantity = remaining;
-                    System.out.println("sobrou buy + avisar :" +sell.client+" "+company_name);
-                    sell.pub.send(sell.client+" "+company_name+" Sold "
-                            +" "+tradePrice +" "+ sell.quantity);
                     sell_requests.remove(sell);
                     buy_requests.add(reqBuy);
                     //Say nothing to the buyer --> informs seller
                 }else if(sell.quantity > reqBuy.quantity){
                     int remaining = sell.quantity - reqBuy.quantity;
                     sell.quantity = remaining;
-                    System.out.println("sobrou sell + avisar :" +reqBuy.client+" "+company_name);
-                    reqBuy.pub.send(reqBuy.client+" "+company_name+" Bought "
+                    reqBuy.pub.send(company_name+" "+reqBuy.client+" Bought "
                             +" "+tradePrice +" "+ reqBuy.quantity);
                     break;
                     //Say nothing to the seller --> informs buyer
                 }else {
-                    System.out.println("n sobrou + avisar :" +reqBuy.client+sell.client+" "+company_name);
-                    reqBuy.pub.send(reqBuy.client+" "+company_name+" Bought "
+                    reqBuy.pub.send(company_name+" "+reqBuy.client+" Bought "
                             +" "+tradePrice +" "+ reqBuy.quantity);
-                    sell.pub.send(sell.client+" "+company_name+" Sold "
+                    reqBuy.pub.send(company_name+" "+sell.client+" Sold "
                             +" "+tradePrice +" "+ sell.quantity);
                     sell_requests.remove(sell);
                     //Informs seller and buyer
@@ -160,16 +154,14 @@ public class Share {
                 if(tradePrice < this.minimumValue) {
                     this.minimumValue = tradePrice;
                     //sendMinorInfoDirectory("MIN", this.minimumValue);
-                }
-                if(tradePrice > this.maximumValue) {
+                }else if(tradePrice > this.maximumValue) {
                     this.maximumValue = tradePrice;
                     //sendMinorInfoDirectory("MAX", this.maximumValue);
                 }
                 if (buy.quantity < reqSell.quantity) {
                     int remaining = reqSell.quantity - buy.quantity;
                     reqSell.quantity = remaining;
-                    System.out.println("sobrou sell + avisar :" +buy.client+" "+company_name);
-                    buy.pub.send(buy.client+" "+company_name+" Bought "
+                    reqSell.pub.send(company_name+" "+buy.client+" Bought "
                             +" "+tradePrice +" "+ buy.quantity);
                     buy_requests.remove(buy);
                     sell_requests.add(reqSell);
@@ -177,16 +169,14 @@ public class Share {
                 }else if(buy.quantity > reqSell.quantity){
                     int remaining = buy.quantity - reqSell.quantity;
                     buy.quantity = remaining;
-                    System.out.println("sobrou buy + avisar :" +reqSell.client+" "+company_name);
-                    reqSell.pub.send(reqSell.client+" "+company_name+" Sold "
+                    reqSell.pub.send(company_name+" "+reqSell.client+" Sold "
                             +" "+tradePrice +" "+ reqSell.quantity  );
                     break;
                     //Say nothing to the buyer --> informs seller
                 }else {
-                    System.out.println("n sobrou + avisar :" +buy.client+reqSell.client+" "+company_name);
-                    buy.pub.send(buy.client+" "+company_name+" Bought "
+                    reqSell.pub.send(company_name+" "+buy.client+" Bought "
                             +" "+tradePrice +" "+ buy.quantity);
-                    reqSell.pub.send(reqSell.client+" "+company_name+" Sold"
+                    reqSell.pub.send(company_name+" "+reqSell.client+" Sold"
                             +" "+tradePrice +" "+ reqSell.quantity);
                     buy_requests.remove(buy);
                     //Informs seller and buyer

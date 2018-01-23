@@ -28,7 +28,7 @@ public class Client {
                 System.out.println("Something went wrong. Please try again");
             }
         }
-
+        System.out.println("Logged in");
         ZMQ.Context context = ZMQ.context(1);
         ZMQ.Socket sub = context.socket(ZMQ.SUB);
         sub.connect("tcp://localhost:12349");

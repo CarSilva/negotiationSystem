@@ -4,6 +4,8 @@ import httpCommunication.DirectoryAccess;
 import httpCommunication.Json;
 import org.zeromq.ZMQ;
 
+import protobuf.ProtoAuth;
+import protobuf.ProtoAuth.Auth;
 import protobuf.ProtoReqRecv.*;
 
 import java.io.IOException;
@@ -12,6 +14,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import static client.Client.createAuth;
 
 public class HandleReq extends Thread {
     private InputStream is;
@@ -39,6 +43,23 @@ public class HandleReq extends Thread {
         while(true){
             String[] s = sc.nextLine().split(" ");
             switch (s[0]) {
+                case "logout":
+                    Auth auth = createAuth(username,"","logout");
+                    int tam = 0;
+                    try{
+                        size = auth.getSerializedSize();
+                        os.write(size.byteValue());
+                        auth.writeTo(os);
+                        os.flush();
+                        tam = is.read();
+                        byte[] read = new byte[tam];
+                        is.read(read, 0, tam);
+                        ProtoAuth.ResponseAuth rA = ProtoAuth.ResponseAuth.parseFrom(read);
+                        System.out.println(rA.getStatusResponse());
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }
+                    break;
                 case "buy" :
                     Buy buy = createBuy(s[1], Integer.parseInt(s[2]),
                             Float.parseFloat(s[3]), username);
@@ -110,11 +131,12 @@ public class HandleReq extends Thread {
         }
     }
 
-    public void sub(String s){
-        String subNoti = username + " " + s;
+
+    public void sub(String s) {
+        String subNoti = s + " " + username;
         sub.subscribe(subNoti.getBytes());
     }
-    public void receiveReply(){
+    public void receiveReply() {
         try{
             int tam = is.read();
             byte[] packetRead = new byte[tam];
@@ -126,20 +148,20 @@ public class HandleReq extends Thread {
         }
     }
 
-    public General createGeneralBuy(Buy buy){
+    public General createGeneralBuy(Buy buy) {
         return General.newBuilder()
                 .setBuy(buy)
                 .build();
     }
 
-    public General createGeneralSell(Sell sell){
+    public General createGeneralSell(Sell sell) {
         return General.newBuilder()
                 .setSell(sell)
                 .build();
     }
 
     public Buy createBuy(String company, int quantity,
-                         float priceMax, String client){
+                         float priceMax, String client) {
         return Buy.newBuilder()
                 .setCompanyBuy(company)
                 .setQttBuy(quantity)
@@ -150,7 +172,7 @@ public class HandleReq extends Thread {
     }
 
     public Sell createSell(String company, int quantity,
-                           float priceMin, String client){
+                           float priceMin, String client) {
         return Sell.newBuilder()
                 .setCompanySell(company)
                 .setQttSell(quantity)
