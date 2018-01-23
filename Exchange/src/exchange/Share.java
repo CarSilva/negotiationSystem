@@ -1,8 +1,8 @@
 package exchange;
 
 import Interface.Request;
-import httpDirectory.DirectoryAccess;
-import httpDirectory.Json;
+import httpCommunication.DirectoryAccess;
+import httpCommunication.Json;
 import org.zeromq.ZMQ;
 
 import java.io.IOException;
@@ -22,6 +22,26 @@ public class Share {
     Queue<RequestSell> sell_requests;
     Json json;
     DirectoryAccess http;
+
+    public String getCompany_name() {
+        return company_name;
+    }
+
+    public double getOpeningValue() {
+        return openingValue;
+    }
+
+    public double getClosingValue() {
+        return closingValue;
+    }
+
+    public double getMinimumValue() {
+        return minimumValue;
+    }
+
+    public double getMaximumValue() {
+        return maximumValue;
+    }
 
     public Share(String company_name){
         this.company_name = company_name;
@@ -86,15 +106,15 @@ public class Share {
                 this.numberOfTrades++;
                 if(this.numberOfTrades == 1){
                     this.openingValue = tradePrice;
-                    sendMinorInfoDirectory("OPEN", this.openingValue);
+                    //sendMinorInfoDirectory("OPEN", this.openingValue);
                 }
                 if(tradePrice < minimumValue){
                     minimumValue = tradePrice;
-                    sendMinorInfoDirectory("MIN", minimumValue);
+                    //sendMinorInfoDirectory("MIN", minimumValue);
                 }
                 if(tradePrice > maximumValue) {
                     maximumValue = tradePrice;
-                    sendMinorInfoDirectory("MAX", maximumValue);
+                    //sendMinorInfoDirectory("MAX", maximumValue);
                 }
                 if (sell.quantity < reqBuy.quantity) {
                     int remaining = reqBuy.quantity - sell.quantity;
@@ -131,15 +151,15 @@ public class Share {
                 this.numberOfTrades++;
                 if(this.numberOfTrades == 1){
                     this.openingValue = tradePrice;
-                    sendMinorInfoDirectory("OPEN", this.openingValue);
+                    //sendMinorInfoDirectory("OPEN", this.openingValue);
                 }
                 if(tradePrice < this.minimumValue) {
                     this.minimumValue = tradePrice;
-                    sendMinorInfoDirectory("MIN", this.minimumValue);
+                    //sendMinorInfoDirectory("MIN", this.minimumValue);
                 }
                 if(tradePrice > this.maximumValue) {
                     this.maximumValue = tradePrice;
-                    sendMinorInfoDirectory("MAX", this.maximumValue);
+                    //sendMinorInfoDirectory("MAX", this.maximumValue);
                 }
                 if (buy.quantity < reqSell.quantity) {
                     int remaining = reqSell.quantity - buy.quantity;
@@ -249,7 +269,6 @@ public class Share {
             this.client = client;
             this.timestamp = timestamp;
         }
-
 
         public long getTimestamp() {
             return this.timestamp;

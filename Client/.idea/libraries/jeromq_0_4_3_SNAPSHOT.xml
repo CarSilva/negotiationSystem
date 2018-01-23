@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="jeromq-0.4.3-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../libraries/jeromq-0.4.3-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../libraries/json-20171018.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../libraries/protobuf-java-3.4.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

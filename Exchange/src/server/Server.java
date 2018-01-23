@@ -1,6 +1,7 @@
 
 package server;
 
+import Controling_time.WorkingTime;
 import exchange.Exchange;
 import org.zeromq.ZMQ;
 import protocolBuffers.ProtoReqRecv;
@@ -19,6 +20,9 @@ public class Server {
             int port = java.lang.Integer.parseInt(args[0]);
             ServerSocket srv = new ServerSocket(port);
             Exchange exchange = new Exchange(Integer.parseInt(args[1]));
+            boolean working = false;
+            /*WorkingTime wTime = new WorkingTime(exchange, working);
+            wTime.scheduleOpenAndClose();*/
             while (true) {
                 Socket cli = srv.accept();
                 InputStream cis = cli.getInputStream();

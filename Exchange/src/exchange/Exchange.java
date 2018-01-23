@@ -1,7 +1,7 @@
 package exchange;
 
-import httpDirectory.DirectoryAccess;
-import httpDirectory.Json;
+import httpCommunication.DirectoryAccess;
+import httpCommunication.Json;
 import org.zeromq.ZMQ;
 
 import java.util.*;
@@ -12,16 +12,22 @@ public class Exchange {
     DirectoryAccess http;
     Json json;
 
+
+
     public Exchange(int exchangeId){
         this.shares = new HashMap<>();
         Share s = new Share("iota");
         shares.put("iota", s);
         /*json = new Json();
         http = new DirectoryAccess();
+
         String query = "companies";
         fillShares(query);*/
     }
 
+    public Map<String, Share> getShares() {
+        return this.shares;
+    }
 
     public synchronized boolean buy_request(String share_name, int quantity,
                                             float price, String client, ZMQ.Socket pub) {
