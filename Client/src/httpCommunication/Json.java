@@ -50,18 +50,32 @@ public class Json {
         JSONObject o = new JSONObject("{list:"+js+"}");
         JSONArray ja = (JSONArray) o.get("list");
         StringBuilder sb = new StringBuilder();
+
         for(int i = 0; i < ja.length();i++){
             JSONObject entry = (JSONObject) ja.get(i);
             String name = (String) entry.get("name");
+
             double openingValue = (double) entry.get("openingValue");
             double closingValue = (double) entry.get("closingValue");
             double minimumValue = (double) entry.get("minimumValue");
             double maximumValue = (double) entry.get("maximumValue");
-            sb.append("Company:").append(name).append(" ");
-            sb.append("OpeningValue:").append(openingValue).append(" ");
-            sb.append("ClosingValue:").append(closingValue).append(" ");
-            sb.append("MinimumValue:").append(minimumValue).append(" ");
-            sb.append("MaximumValue:").append(maximumValue).append(" ");
+
+            double openingValueY = (double) entry.get("openingValueY");
+            double closingValueY = (double) entry.get("closingValueY");
+            double minimumValueY = (double) entry.get("minimumValueY");
+            double maximumValueY = (double) entry.get("maximumValueY");
+
+            sb.append("Company: ").append(name).append("\n");
+
+            sb.append("OpeningValue: ").append(openingValue).append("\t");
+            sb.append("ClosingValue: ").append(closingValue).append("\t");
+            sb.append("MinimumValue: ").append(minimumValue).append("\t");
+            sb.append("MaximumValue: ").append(maximumValue).append("\n");
+
+            sb.append("OpeningValueY: ").append(openingValueY).append("\t");
+            sb.append("ClosingValueY: ").append(closingValueY).append("\t");
+            sb.append("MinimumValueY: ").append(minimumValueY).append("\t");
+            sb.append("MaximumValueY: ").append(maximumValueY).append("\t");
             sb.append("\n\n");
         }
         return sb.toString();
