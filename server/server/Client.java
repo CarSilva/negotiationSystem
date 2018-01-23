@@ -1,6 +1,7 @@
 package server;
 
-import server.ProtoAuthOrder.Auth;
+import server.ProtoAuth.Auth;
+import server.ProtoAuth.ResponseAuth;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
@@ -10,47 +11,71 @@ import java.net.*;
 
 public class Client {
 
-  public static void main(String[] args) {
-    try{
-    if(args.length<2)
-      System.exit(1);
-    String host = args[0];
-    int port = Integer.parseInt(args[1]);
-    Socket s = new Socket(host, port);
-    InputStream is = s.getInputStream();
-    OutputStream os = s.getOutputStream();
-    System.out.println("Username:");
-    String username = System.console().readLine();
-    System.out.println("Password:");
-    String pwd = System.console().readLine();
-    Auth auth = createAuth(username, pwd);
-    byte[] ba = auth.toByteArray();
-    auth.writeTo(os);
-    os.flush();
-    /*
-    while (true) {
-      System.out.println("Len: " + ba.length);
-      cos.writeUInt32NoTag(ba.length);
-      System.out.println("Wrote Len");
-      cos.writeRawBytes(ba);
-      System.out.println("Wrote " + ba.length + " bytes");
-      cos.flush();
-      Thread.sleep(3000);
-    }*/
-    //os.close();
-    //s.shutdownOutput();
-    }catch(Exception e){
-      e.printStackTrace();
-      System.exit(0);
+    public static void main(String[] args) throws Exception {
+        if(args.length < 2)
+            System.exit(1);
+        String host = args[0];
+        int port = Integer.parseInt(args[1]);
+        Socket s = new Socket(host, port);
+        InputStream is = s.getInputStream();
+        OutputStream os = s.getOutputStream();
+        boolean bool = auth(is, os);
+        if(!bool){
+          System.out.println("Something went wrong. Please try again");
+        }
+        while(!bool){
+          bool = auth(is,os);
+          if(!bool){
+            System.out.println("Something went wrong. Please try again");
+          }
+        }
+          Thread handleReq = new HandleReq(is, os);
+          handleReq.start();
+          Thread handleRcv = new HandleRcv(is, os);
+          handleRcv.start();
     }
-  }
 
-  static Auth createAuth(String username, String pwd) {
-    return
-      Auth.newBuilder()
-      .setName(username)
-      .setPassword(pwd)
-      .build();
-  }
+    public static boolean auth(InputStream is, OutputStream os){
+        boolean result = false;
+        System.out.println("Login/Registo?");
+        String registerOrnot = null;
+        String choice = System.console().readLine();
+        if(choice.equals("login"))
+            registerOrnot = choice;
+        else if(choice.equals("registo"))
+            registerOrnot = choice;
+        else {
+            System.out.println("Error");
+            System.exit(1);
+        }
+        System.out.println("Username:");
+        String username = System.console().readLine();
+        System.out.println("Password:");
+        String pwd = System.console().readLine();
+        try{
+            Auth auth = createAuth(username, pwd, registerOrnot);
+            Integer size = auth.getSerializedSize();
+            os.write(size.byteValue());
+            auth.writeTo(os);
+            os.flush();
+            int tam = is.read();
+            byte[] read = new byte[tam];
+            is.read(read, 0, tam);
+            ResponseAuth rA = ResponseAuth.parseFrom(read);
+            if(rA.getStatusResponse().equals("ok"))
+              result = true;
+            else result = false;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
 
+    static Auth createAuth(String username, String pwd, String register) {
+        return Auth.newBuilder()
+                        .setName(username)
+                        .setPassword(pwd)
+                        .setRegister(register)
+                        .build();
+    }
 }
