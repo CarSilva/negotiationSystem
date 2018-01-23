@@ -121,6 +121,8 @@ public class Share {
                     reqBuy.quantity = remaining;
                     sell.pub.send(sell.client+" "+company_name+" Sold "
                             +" "+tradePrice +" "+ sell.quantity);
+                    sell_requests.remove(sell);
+                    buy_requests.add(reqBuy);
                     //Say nothing to the buyer --> informs seller
                 }else if(sell.quantity > reqBuy.quantity){
                     int remaining = sell.quantity - reqBuy.quantity;
@@ -130,12 +132,11 @@ public class Share {
                     break;
                     //Say nothing to the seller --> informs buyer
                 }else {
-                    sell_requests.remove(sell);
-                    buy_requests.remove(reqBuy);
                     reqBuy.pub.send(reqBuy.client+" "+company_name+" Bought "
                             +" "+tradePrice +" "+ reqBuy.quantity);
                     sell.pub.send(sell.client+" "+company_name+" Sold "
                             +" "+tradePrice +" "+ sell.quantity);
+                    sell_requests.remove(sell);
                     //Informs seller and buyer
                     break;
                 }
@@ -166,21 +167,22 @@ public class Share {
                     reqSell.quantity = remaining;
                     buy.pub.send(buy.client+" "+company_name+" Bought "
                             +" "+tradePrice +" "+ buy.quantity);
+                    buy_requests.remove(buy);
+                    sell_requests.add(reqSell);
                     //Say nothing to the seller --> informs buyer
                 }else if(buy.quantity > reqSell.quantity){
                     int remaining = buy.quantity - reqSell.quantity;
                     buy.quantity = remaining;
                     reqSell.pub.send(reqSell.client+" "+company_name+" Sold "
-                            +" "+tradePrice +" "+ reqSell.quantity);
+                            +" "+tradePrice +" "+ reqSell.quantity  );
                     break;
                     //Say nothing to the buyer --> informs seller
                 }else {
-                    sell_requests.remove(reqSell);
-                    buy_requests.remove(buy);
                     buy.pub.send(buy.client+" "+company_name+" Bought "
                             +" "+tradePrice +" "+ buy.quantity);
                     reqSell.pub.send(reqSell.client+" "+company_name+" Sold"
                             +" "+tradePrice +" "+ reqSell.quantity);
+                    buy_requests.remove(buy);
                     //Informs seller and buyer
                     break;
                 }

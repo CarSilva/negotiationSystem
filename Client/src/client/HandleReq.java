@@ -50,6 +50,7 @@ public class HandleReq extends Thread {
                     }catch(IOException e){
                         e.printStackTrace();
                     }
+                    receiveReply();
                     break;
                 case "sell" :
                     Sell sell = createSell(s[1], Integer.parseInt(s[2]),
@@ -63,6 +64,7 @@ public class HandleReq extends Thread {
                     }catch(IOException e){
                         e.printStackTrace();
                     }
+                    receiveReply();
                     break;
                 case "subscribe" :
                     int nSubs = subscriptions.size() + s.length;
@@ -103,15 +105,18 @@ public class HandleReq extends Thread {
             }
             String subNoti = username+" "+s[1];
             sub.subscribe(subNoti.getBytes());
-            try{
-                int tam = is.read();
-                byte[] packetRead = new byte[tam];
-                is.read(packetRead, 0, tam);
-                ResponseAfterRecv reply =  ResponseAfterRecv.parseFrom(packetRead);
-                System.out.println(reply.getRep());
-            }catch(IOException e){
-                e.printStackTrace();
-            }
+        }
+    }
+
+    public void receiveReply(){
+        try{
+            int tam = is.read();
+            byte[] packetRead = new byte[tam];
+            is.read(packetRead, 0, tam);
+            ResponseAfterRecv reply =  ResponseAfterRecv.parseFrom(packetRead);
+            System.out.println(reply.getRep());
+        }catch(IOException e){
+            e.printStackTrace();
         }
     }
 
