@@ -30,6 +30,33 @@ public class Json {
         return obj.toString();
     }
 
+    public String getHost(String js) {
+        JSONObject o = new JSONObject("{list:"+js+"}");
+        JSONArray ja = (JSONArray) o.get("list");
+        StringBuilder sb = new StringBuilder();
+        JSONObject entry = (JSONObject) ja.get(0);
+        String host = (String) entry.get("host");
+        return host;
+    }
+
+    public int getPort(js) {
+        JSONObject o = new JSONObject("{list:"+js+"}");
+        JSONArray ja = (JSONArray) o.get("list");
+        StringBuilder sb = new StringBuilder();
+        JSONObject entry = (JSONObject) ja.get(0);
+        int port = Integer.parseInt(entry.get("port"));
+        return port;
+    }
+
+    public int getExchangeId(String args) {
+        JSONObject o = new JSONObject("{list:"+js+"}");
+        JSONArray ja = (JSONArray) o.get("list");
+        StringBuilder sb = new StringBuilder();
+        JSONObject entry = (JSONObject) ja.get(0);
+        int port = Integer.parseInt(entry.get("exchangeId"));
+        return port;
+    }
+
     public String createJsonMax(String[] args){
         JSONObject obj = new JSONObject();
 
