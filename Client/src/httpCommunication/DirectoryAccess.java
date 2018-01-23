@@ -13,11 +13,14 @@ public class DirectoryAccess {
 
     }
 
-    public String sendRequest(String request, String type)throws IOException {
+    public String sendRequest(String request, String type) throws IOException {
         URL url = new URL("http://192.168.43.220:8080/" + request);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(type);
         con.setRequestProperty("Content-Type", "application/json");
+        int responseCode = con.getResponseCode();
+        if(responseCode >= 400)
+            return "Error:" + responseCode;
 
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));

@@ -38,7 +38,7 @@ public class Client {
         handleRcv.start();
     }
 
-    public static boolean auth(InputStream is, OutputStream os){
+    public static boolean auth(InputStream is, OutputStream os) {
         Scanner sc = new Scanner(System.in);
         boolean result = false;
         System.out.println("Login/Registo?");

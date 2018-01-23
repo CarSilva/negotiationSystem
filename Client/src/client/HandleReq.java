@@ -61,6 +61,13 @@ public class HandleReq extends Thread {
                     }
                     break;
                 case "buy" :
+                    int exId = getExchange(s[1]);
+                    if(exId == -1) {
+                        System.out.println("No such company");
+                        continue;
+                    }
+                    String host = "";
+                    int port = 0;
                     Buy buy = createBuy(s[1], Integer.parseInt(s[2]),
                             Float.parseFloat(s[3]), username);
                     General generalBuy = createGeneralBuy(buy);
@@ -76,6 +83,13 @@ public class HandleReq extends Thread {
                     sub(s[1]);
                     break;
                 case "sell" :
+                    int exId = getExchange(s[1]);
+                    if(exId == -1) {
+                        System.out.println("No such company");
+                        continue;
+                    }
+                    String host = "";
+                    int port = 0;
                     Sell sell = createSell(s[1], Integer.parseInt(s[2]),
                             Float.parseFloat(s[3]), username);
                     General generalSell = createGeneralSell(sell);
@@ -114,15 +128,15 @@ public class HandleReq extends Thread {
                     }
                     System.out.println("All subscriptions unsubscribed");
                     break;
-            case "list" :
-                try{
-                  String response = http.sendRequest("companies", "GET");
-                  Json js = new Json();
-                  System.out.println(js.parseArray(response));
-                }catch(IOException e){
-                  e.printStackTrace();
-                }
-                break;
+                case "list" :
+                    try{
+                      String response = http.sendRequest("companies", "GET");
+                      Json js = new Json();
+                      System.out.println(js.parseArray(response));
+                    }catch(IOException e){
+                      e.printStackTrace();
+                    }
+                    break;
 
                 default :
                     System.out.println("Not a valid option\tyou can try again");
@@ -132,11 +146,11 @@ public class HandleReq extends Thread {
     }
 
 
-    public void sub(String s) {
+    private void sub(String s) {
         String subNoti = s + " " + username;
         sub.subscribe(subNoti.getBytes());
     }
-    public void receiveReply() {
+    private void receiveReply() {
         try{
             int tam = is.read();
             byte[] packetRead = new byte[tam];
@@ -148,19 +162,19 @@ public class HandleReq extends Thread {
         }
     }
 
-    public General createGeneralBuy(Buy buy) {
+    private General createGeneralBuy(Buy buy) {
         return General.newBuilder()
                 .setBuy(buy)
                 .build();
     }
 
-    public General createGeneralSell(Sell sell) {
+    private General createGeneralSell(Sell sell) {
         return General.newBuilder()
                 .setSell(sell)
                 .build();
     }
 
-    public Buy createBuy(String company, int quantity,
+    private Buy createBuy(String company, int quantity,
                          float priceMax, String client) {
         return Buy.newBuilder()
                 .setCompanyBuy(company)
@@ -168,10 +182,9 @@ public class HandleReq extends Thread {
                 .setPriceMax(priceMax)
                 .setClientB(client)
                 .build();
-
     }
 
-    public Sell createSell(String company, int quantity,
+    private Sell createSell(String company, int quantity,
                            float priceMin, String client) {
         return Sell.newBuilder()
                 .setCompanySell(company)
@@ -180,4 +193,33 @@ public class HandleReq extends Thread {
                 .setClientS(client)
                 .build();
     }
+
+    private int getExchange(String company) {
+        try {
+            Json js = new Json();
+            String response = http.sendRequest("company/"+company, "GET");
+            if(response.contains("Error"))
+                return -1;
+            int id = js.getExchangeId(response);
+            return id;
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Tuple<String, Integer> getExchangeInfo(int exchangeId) {
+        try {
+            Json js = new Json();
+            String response = http.sendRequest("exchange/"+exchangeId, "GET");
+            if(response.contains("Error"))
+                return new Tuple<>("error", -1);
+            String host = js.getHost(response);
+            int port = js.getPort(response);
+            return new Tuple<>(host, port);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

@@ -2,17 +2,22 @@ syntax = "proto3";
 
 package protobuf;
 
+
 message Buy {
   string companyBuy = 1;
   int32 qttBuy = 2;
   float priceMax = 3;
   string clientB = 4;
+  string host = 5;
+  int32 port = 6;
 }
 message Sell {
   string companySell = 1;
   int32 qttSell = 2;
   float priceMin = 3;
   string clientS = 4;
+  string host = 5;
+  int32 port = 6;
 }
 
 message ResponseAfterRecv{
