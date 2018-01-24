@@ -1,7 +1,13 @@
 package httpCommunication;
 
+import exchange.Share;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class Json {
@@ -45,25 +51,15 @@ public class Json {
         return obj.toString();
     }
 
-    public String parseArray(String js){
-        JSONObject o = new JSONObject("{"+js+"}");
-        JSONArray ja = (JSONArray) o.get("");
-        StringBuilder sb = new StringBuilder();
+    public List<String> parseArray(String js){
+        JSONObject o = new JSONObject(js);
+        JSONArray ja = (JSONArray) o.get("companies");
+        List<String> list = new ArrayList<>();
         for(int i = 0; i < ja.length();i++){
-            JSONObject entry = (JSONObject) ja.get(i);
-            String name = (String) entry.get("name");
-            double openingValue = (double) entry.get("openingValue");
-            double closingValue = (double) entry.get("closingValue");
-            double minimumValue = (double) entry.get("minimumValue");
-            double maximumValue = (double) entry.get("maximumValue");
-            sb.append("Company:").append(name).append(" ");
-            sb.append("OpeningValue:").append(openingValue).append(" ");
-            sb.append("ClosingValue:").append(closingValue).append(" ");
-            sb.append("MinimumValue:").append(minimumValue).append(" ");
-            sb.append("MaximumValue:").append(maximumValue).append(" ");
-            sb.append("\n\n");
+            String name = (String) ja.get(i);
+            list.add(name);
         }
-        return sb.toString();
+        return list;
     }
 }
 

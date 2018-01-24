@@ -12,23 +12,24 @@ import java.util.concurrent.TimeUnit;
 public class WorkingTime {
 
     private static final LocalTime openingTime = LocalTime.of(9, 0); // 9:00
-    private static final LocalTime closingTime = LocalTime.of(17, 0); // 17:00
+    private static final LocalTime closingTime = LocalTime.of(17, 41); // 17:00
 
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private Exchange exchange;
-    private boolean working;
+    private int port;
 
-    public WorkingTime(Exchange exchange, boolean working){
+    public WorkingTime(Exchange exchange, int port){
         this.exchange = exchange;
-        this.working = working;
+        this.port = port;
+
     }
 
 
 
     public void scheduleOpenAndClose() {
-        ExchangeOpen openExch = new ExchangeOpen(working);
-        ExchangeClose closeExch = new ExchangeClose(working, exchange);
+        ExchangeOpen openExch = new ExchangeOpen(exchange, port);
+        ExchangeClose closeExch = new ExchangeClose(openExch, exchange);
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime fstScheduledOpen = now.with(openingTime);
@@ -36,7 +37,6 @@ public class WorkingTime {
 
         if (now.isAfter(fstScheduledOpen)) {
             fstScheduledOpen = fstScheduledOpen.plusDays(1);
-
 
             if (now.isBefore(fstScheduledClose)) {
                 scheduler.execute(openExch);

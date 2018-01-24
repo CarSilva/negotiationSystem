@@ -7,20 +7,10 @@
 
 -define(protoReqRecv_gpb_version, "4.1.1").
 
--ifndef('RESPONSEAFTERRECV_PB_H').
--define('RESPONSEAFTERRECV_PB_H', true).
--record('ResponseAfterRecv',
-        {rep = []               :: iolist() | undefined % = 1
-        }).
--endif.
-
--ifndef('BUY_PB_H').
--define('BUY_PB_H', true).
--record('Buy',
-        {companyBuy = []        :: iolist() | undefined, % = 1
-         qttBuy = 0             :: integer() | undefined, % = 2, 32 bits
-         priceMax = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
-         clientB = []           :: iolist() | undefined % = 4
+-ifndef('LOGOUT_PB_H').
+-define('LOGOUT_PB_H', true).
+-record('Logout',
+        {username = []          :: iolist() | undefined % = 1
         }).
 -endif.
 
@@ -30,14 +20,35 @@
         {companySell = []       :: iolist() | undefined, % = 1
          qttSell = 0            :: integer() | undefined, % = 2, 32 bits
          priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
-         clientS = []           :: iolist() | undefined % = 4
+         clientS = []           :: iolist() | undefined, % = 4
+         host = []              :: iolist() | undefined, % = 5
+         port = 0               :: integer() | undefined % = 6, 32 bits
+        }).
+-endif.
+
+-ifndef('BUY_PB_H').
+-define('BUY_PB_H', true).
+-record('Buy',
+        {companyBuy = []        :: iolist() | undefined, % = 1
+         qttBuy = 0             :: integer() | undefined, % = 2, 32 bits
+         priceMax = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
+         clientB = []           :: iolist() | undefined, % = 4
+         host = []              :: iolist() | undefined, % = 5
+         port = 0               :: integer() | undefined % = 6, 32 bits
         }).
 -endif.
 
 -ifndef('GENERAL_PB_H').
 -define('GENERAL_PB_H', true).
 -record('General',
-        {general                :: {buy, #'Buy'{}} | {sell, #'Sell'{}} | undefined % oneof
+        {general                :: {buy, #'Buy'{}} | {sell, #'Sell'{}} | {logout, #'Logout'{}} | undefined % oneof
+        }).
+-endif.
+
+-ifndef('RESPONSEAFTERRECV_PB_H').
+-define('RESPONSEAFTERRECV_PB_H', true).
+-record('ResponseAfterRecv',
+        {rep = []               :: iolist() | undefined % = 1
         }).
 -endif.
 

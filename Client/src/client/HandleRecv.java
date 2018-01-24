@@ -10,15 +10,20 @@ public class HandleRecv extends Thread {
 
     @Override
     public void run(){
-        while(true){
+        sub.subscribe("/ns".getBytes());
+        sub.subscribe("/rs".getBytes());
+        while(true) {
             byte[] b = sub.recv();
             String s = new String(b);
             String[] r = s.split(" ");
-            System.out.println(s);
-            //System.out.println(r[0]+" "+r[2]+" "+r[3]+" "+r[4]);
-            String unsub = r[0]+" "+r[1];
-            System.out.println("unsubscribed " + r[0] + " " + r[1]);
-            sub.unsubscribe(unsub.getBytes());
+            if (r[0].equals("/ns"))
+                sub.subscribe(s.substring(4).getBytes());
+            else if (r[0].equals("/rs"))
+                sub.unsubscribe(s.substring(4).getBytes());
+            else {
+                sub.unsubscribe((r[0] + r[1]).getBytes());
+                System.out.println(r[2] + " " + r[0] + " ~> " + "trade price: " + r[3] + "; trade quantity: " + r[4]);
+            }
         }
     }
 }

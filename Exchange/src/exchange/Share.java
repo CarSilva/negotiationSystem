@@ -18,6 +18,7 @@ public class Share {
     double minimumValue;
     double maximumValue;
     int numberOfTrades;
+    ZMQ.Socket pub;
     Queue<RequestBuy> buy_requests;
     Queue<RequestSell> sell_requests;
     Json json;
@@ -50,12 +51,16 @@ public class Share {
         this.minimumValue = Integer.MAX_VALUE;
         this.maximumValue = -1;
         this.numberOfTrades = 0;
+        ZMQ.Context context = ZMQ.context(1);
+        this.pub = context.socket(ZMQ.PUB);
+        pub.connect("tcp://localhost:12348");
         Comparator<Request> cmp = new OrderQueue();
         this.buy_requests = new PriorityQueue<>(11, cmp);
         this.sell_requests = new PriorityQueue<>(11, cmp);
         json = new Json();
         http = new DirectoryAccess();
     }
+
 
     class OrderQueue implements Comparator<Request>{
         @Override
@@ -70,10 +75,9 @@ public class Share {
 
 
 
-    synchronized void add_buy_request(int quantity, float price,
-                                      ZMQ.Socket pub, String client) {
+    void add_buy_request(int quantity, float price, String client) {
 
-        RequestBuy buy = new RequestBuy(quantity, price, pub,
+        RequestBuy buy = new RequestBuy(quantity, price,
                 client, System.currentTimeMillis());
 
         if (sell_requests.isEmpty())
@@ -84,10 +88,9 @@ public class Share {
         }
     }
 
-    synchronized void add_sell_request(int quantity, float price,
-                                       ZMQ.Socket pub, String client) {
+    void add_sell_request(int quantity, float price, String client) {
 
-        RequestSell sell = new RequestSell(quantity, price, pub,
+        RequestSell sell = new RequestSell(quantity, price,
                 client, System.currentTimeMillis());
 
         if (buy_requests.isEmpty())
@@ -98,95 +101,152 @@ public class Share {
         }
     }
 
-    synchronized void trade(RequestBuy reqBuy) {
-
+   synchronized void trade(RequestBuy reqBuy) {
+        boolean add = false;
         for(RequestSell sell : sell_requests){
             if(sell.price <= reqBuy.price) {
                 float tradePrice = (sell.price + reqBuy.price) / 2;
                 this.numberOfTrades++;
                 if(this.numberOfTrades == 1){
                     this.openingValue = tradePrice;
-                    //sendMinorInfoDirectory("OPEN", this.openingValue);
+                    sendMinorInfoDirectory("OPEN", this.openingValue);
                 }
                 if(tradePrice < minimumValue){
                     minimumValue = tradePrice;
-                    //sendMinorInfoDirectory("MIN", minimumValue);
+                    sendMinorInfoDirectory("MIN", minimumValue);
                 }else if(tradePrice > maximumValue) {
                     maximumValue = tradePrice;
-                    //sendMinorInfoDirectory("MAX", maximumValue);
+                    sendMinorInfoDirectory("MAX", maximumValue);
                 }
                 if (sell.quantity < reqBuy.quantity) {
                     int remaining = reqBuy.quantity - sell.quantity;
                     reqBuy.quantity = remaining;
-                    reqBuy.pub.send(company_name+" "+sell.client+" Sold"
-                            +" "+tradePrice +" "+ sell.quantity);
+
+                    reqBuy.price_sum += tradePrice;
+                    reqBuy.trade_counter++;
+
+                    sell.price_sum += tradePrice;
+                    sell.trade_counter++;
+
+                    pub.send(company_name+" "+sell.client+" Sold"
+                            +" "+sell.price_sum/sell.trade_counter +" "+ sell.initial_quantity);
+
                     sell_requests.remove(sell);
                     buy_requests.add(reqBuy);
+                    add = true;
                     //Say nothing to the buyer --> informs seller
                 }else if(sell.quantity > reqBuy.quantity){
                     int remaining = sell.quantity - reqBuy.quantity;
                     sell.quantity = remaining;
-                    reqBuy.pub.send(company_name+" "+reqBuy.client+" Bought"
-                            +" "+tradePrice +" "+ reqBuy.quantity);
+                    reqBuy.quantity = 0;
+
+                    reqBuy.price_sum += tradePrice;
+                    reqBuy.trade_counter++;
+
+                    sell.price_sum += tradePrice;
+                    sell.trade_counter++;
+
+
+                    pub.send(company_name+" "+reqBuy.client+" Bought"
+                            +" "+reqBuy.price_sum/reqBuy.trade_counter +" "+ reqBuy.initial_quantity);
                     break;
                     //Say nothing to the seller --> informs buyer
                 }else {
-                    System.out.println(company_name+sell.client+reqBuy.client);
-                    reqBuy.pub.send(company_name+" "+reqBuy.client+" Bought"
-                            +" "+tradePrice +" "+ reqBuy.quantity);
-                    reqBuy.pub.send(company_name+" "+sell.client+" Sold"
-                            +" "+tradePrice +" "+ sell.quantity);
+                    reqBuy.price_sum += tradePrice;
+                    reqBuy.trade_counter++;
+
+                    sell.price_sum += tradePrice;
+                    sell.trade_counter++;
+
+                    pub.send(company_name+" "+reqBuy.client+" Bought"
+                            +" "+reqBuy.price_sum/reqBuy.trade_counter +" "+ reqBuy.initial_quantity);
+                    pub.send(company_name+" "+sell.client+" Sold"
+                            +" "+sell.price_sum/sell.trade_counter +" "+ sell.initial_quantity);
+
                     sell_requests.remove(sell);
+                    reqBuy.quantity = 0;
                     //Informs seller and buyer
                     break;
                 }
             }
         }
+        if(reqBuy.quantity != 0 && !add){
+            buy_requests.add(reqBuy);
+        }
     }
 
 
-    synchronized void trade(RequestSell reqSell) {
+   synchronized void trade(RequestSell reqSell) {
+        boolean add = false;
         for(RequestBuy buy : buy_requests){
             if(buy.price >= reqSell.price) {
                 float tradePrice = (buy.price + reqSell.price) / 2;
                 this.numberOfTrades++;
                 if(this.numberOfTrades == 1){
                     this.openingValue = tradePrice;
-                    //sendMinorInfoDirectory("OPEN", this.openingValue);
+                    sendMinorInfoDirectory("OPEN", this.openingValue);
                 }
                 if(tradePrice < this.minimumValue) {
                     this.minimumValue = tradePrice;
-                    //sendMinorInfoDirectory("MIN", this.minimumValue);
+                    sendMinorInfoDirectory("MIN", this.minimumValue);
                 }else if(tradePrice > this.maximumValue) {
                     this.maximumValue = tradePrice;
-                    //sendMinorInfoDirectory("MAX", this.maximumValue);
+                    sendMinorInfoDirectory("MAX", this.maximumValue);
                 }
                 if (buy.quantity < reqSell.quantity) {
                     int remaining = reqSell.quantity - buy.quantity;
                     reqSell.quantity = remaining;
-                    reqSell.pub.send(company_name+" "+buy.client+" Bought"
-                            +" "+tradePrice +" "+ buy.quantity);
+
+                    buy.price_sum += tradePrice;
+                    buy.trade_counter++;
+
+                    reqSell.price_sum += tradePrice;
+                    reqSell.trade_counter++;
+
+                    pub.send(company_name+" "+buy.client+" Bought"
+                            +" "+buy.price_sum/buy.trade_counter +" "+ buy.initial_quantity);
+
                     buy_requests.remove(buy);
                     sell_requests.add(reqSell);
+                    add = true;
                     //Say nothing to the seller --> informs buyer
                 }else if(buy.quantity > reqSell.quantity){
                     int remaining = buy.quantity - reqSell.quantity;
                     buy.quantity = remaining;
-                    reqSell.pub.send(company_name+" "+reqSell.client+" Sold"
-                            +" "+tradePrice +" "+ reqSell.quantity);
+                    reqSell.quantity = 0;
+
+                    buy.price_sum += tradePrice;
+                    buy.trade_counter++;
+
+                    reqSell.price_sum += tradePrice;
+                    reqSell.trade_counter++;
+
+                    pub.send(company_name+" "+reqSell.client+" Sold"
+                            +" "+reqSell.price_sum/reqSell.trade_counter +" "+ reqSell.initial_quantity);
                     break;
                     //Say nothing to the buyer --> informs seller
                 }else {
-                    System.out.println(company_name+buy.client+reqSell.client);
-                    reqSell.pub.send(company_name+" "+buy.client+" Bought"
-                            +" "+tradePrice +" "+ buy.quantity);
-                    reqSell.pub.send(company_name+" "+reqSell.client+" Sold"
-                            +" "+tradePrice +" "+ reqSell.quantity);
+                    buy.price_sum += tradePrice;
+                    buy.trade_counter++;
+
+                    reqSell.price_sum += tradePrice;
+                    reqSell.trade_counter++;
+
+                    pub.send(company_name+" "+buy.client+" Bought"
+                            +" "+buy.price_sum/buy.trade_counter +" "+ buy.initial_quantity);
+
+                    pub.send(company_name+" "+reqSell.client+" Sold"
+                            +" "+reqSell.price_sum/reqSell.trade_counter +" "+ reqSell.initial_quantity);
+
                     buy_requests.remove(buy);
+                    reqSell.quantity = 0;
                     //Informs seller and buyer
                     break;
                 }
             }
+        }
+        if(reqSell.quantity != 0 && !add){
+            sell_requests.add(reqSell);
         }
     }
 
@@ -227,23 +287,22 @@ public class Share {
 
     class RequestBuy implements Request {
         int quantity;
+        int initial_quantity;
         float price;
+        float price_sum;
+        int trade_counter;
         long timestamp;
-        ZMQ.Socket pub;
         String client;
 
-        RequestBuy(int quantity, float price, ZMQ.Socket pub,
+        RequestBuy(int quantity, float price,
                    String client, long timestamp) {
             this.quantity = quantity;
+            this.initial_quantity = quantity;
             this.price = price;
-            this.pub = pub;
+            this.price_sum = 0;
+            this.trade_counter = 0;
             this.client = client;
             this.timestamp = timestamp;
-        }
-
-        RequestBuy(int quantity, float price) {
-            this.quantity = quantity;
-            this.price = price;
         }
 
         public long getTimestamp() {
@@ -253,21 +312,20 @@ public class Share {
 
     class RequestSell implements Request{
         int quantity;
+        int initial_quantity;
         float price;
+        float price_sum;
+        int trade_counter;
         long timestamp;
-        ZMQ.Socket pub;
         String client;
 
-        RequestSell(int quantity, float price) {
-            this.quantity = quantity;
-            this.price = price;
-        }
-
-        RequestSell(int quantity, float price, ZMQ.Socket pub,
+        RequestSell(int quantity, float price,
                     String client, long timestamp) {
             this.quantity = quantity;
+            this.initial_quantity = quantity;
             this.price = price;
-            this.pub = pub;
+            this.price_sum = 0;
+            this.trade_counter = 0;
             this.client = client;
             this.timestamp = timestamp;
         }

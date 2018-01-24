@@ -32,7 +32,7 @@ public class Client {
         ZMQ.Context context = ZMQ.context(1);
         ZMQ.Socket sub = context.socket(ZMQ.SUB);
         sub.connect("tcp://localhost:12349");
-        Thread handleReq = new HandleReq(is, os, sub, user);
+        Thread handleReq = new HandleReq(is, os, sub, context, user);
         handleReq.start();
         Thread handleRcv = new HandleRecv(sub);
         handleRcv.start();
@@ -41,12 +41,12 @@ public class Client {
     public static boolean auth(InputStream is, OutputStream os) {
         Scanner sc = new Scanner(System.in);
         boolean result = false;
-        System.out.println("Login/Registo?");
+        System.out.println("login or register?");
         String registerOrnot = "";
         String choice = sc.nextLine();
         if(choice.equals("login"))
             registerOrnot = choice;
-        else if(choice.equals("registo"))
+        else if(choice.equals("register"))
             registerOrnot = choice;
         else {
             System.out.println("Error");

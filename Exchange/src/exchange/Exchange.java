@@ -2,8 +2,8 @@ package exchange;
 
 import httpCommunication.DirectoryAccess;
 import httpCommunication.Json;
-import org.zeromq.ZMQ;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Exchange {
@@ -12,63 +12,55 @@ public class Exchange {
     DirectoryAccess http;
     Json json;
 
-
-
-    public Exchange(int exchangeId){
+    public Exchange(int exchangeId) {
         this.shares = new HashMap<>();
-        Share s = new Share("iota");
-        shares.put("iota", s);
-        /*json = new Json();
         http = new DirectoryAccess();
-
-        String query = "companies";
-        fillShares(query);*/
+        json = new Json();
+        fillShares("exchange/"+exchangeId);
     }
 
     public Map<String, Share> getShares() {
         return this.shares;
     }
 
-    public synchronized boolean buy_request(String share_name, int quantity,
-                                            float price, String client, ZMQ.Socket pub) {
+    public boolean buy_request(String share_name, int quantity,
+                                            float price, String client) {
         boolean existsShare = false;
-        Share share = shares.get(share_name);
-        if(share != null)
-            existsShare = true;
-        share.add_buy_request(quantity, price, pub, client);
+        Share share;
+        synchronized (shares) {
+            share = shares.get(share_name);
+            if (share != null)
+                existsShare = true;
+        }
+        share.add_buy_request(quantity, price, client);
         return existsShare;
     }
 
-    public synchronized boolean sell_request(String share_name, int quantity,
-                                             float price, String client, ZMQ.Socket pub) {
+    public boolean sell_request(String share_name, int quantity,
+                                             float price, String client) {
         boolean existsShare = false;
-        Share share = shares.get(share_name);
-        if(share != null)
-            existsShare = true;
-        share.add_sell_request(quantity, price, pub, client);
+        Share share;
+        synchronized (shares) {
+            share = shares.get(share_name);
+            if (share != null)
+                existsShare = true;
+        }
+        share.add_sell_request(quantity, price, client);
         return existsShare;
     }
-/*
+
     public void fillShares(String query){
         String reply = "";
         try {
-            reply = http.sendRequest(query,"GET");
-            JSONArray array = json.parseArray(reply);
-            for(int i = 0; i < array.size(); i++){
-                JSONObject e = (JSONObject) array.get(i);
-                String name = (String) e.get("name");
-                double opValue = (double) e.get("openingValue");
-                double clValue = (double) e.get("closingValue");
-                double minValue = (double) e.get("minimumValue");
-                double maxValue = (double) e.get("maximumValue");
-                Share share = new Share(name, opValue,
-                                        clValue, minValue,
-                                        maxValue);
-                shares.put(name, share);
+            reply = http.sendGetRequest(query);
+            List<String> shareNames = json.parseArray(reply);
+            for(String s : shareNames) {
+                Share share = new Share(s);
+                shares.put(s, share);
             }
-        } catch (IOException|ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-*/
+
 }

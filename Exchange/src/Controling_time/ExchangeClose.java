@@ -1,5 +1,6 @@
 package Controling_time;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import exchange.Exchange;
 import exchange.Share;
 import httpCommunication.DirectoryAccess;
@@ -8,13 +9,13 @@ import httpCommunication.Json;
 import java.io.IOException;
 
 public class ExchangeClose implements Runnable {
-    private boolean working;
+    private ExchangeOpen open;
     private Exchange exchange;
     private DirectoryAccess http;
     private Json json;
 
-    public ExchangeClose(boolean working, Exchange exchange){
-        this.working = working;
+    public ExchangeClose(ExchangeOpen open, Exchange exchange){
+        this.open = open;
         this.exchange = exchange;
         this.http = new DirectoryAccess();
         this.json = new Json();
@@ -23,7 +24,11 @@ public class ExchangeClose implements Runnable {
 
     @Override
     public void run() {
-        this.working = false;
+        try {
+            open.getSrv().close();
+            open.stop();
+        } catch (IOException e) { e.printStackTrace(); }
+
         for(Share s : exchange.getShares().values()){
             String[] args = {s.getCompany_name(),
                             String.valueOf(s.getOpeningValue()),

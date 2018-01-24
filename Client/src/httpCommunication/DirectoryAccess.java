@@ -14,7 +14,7 @@ public class DirectoryAccess {
     }
 
     public String sendRequest(String request, String type) throws IOException {
-        URL url = new URL("http://192.168.43.220:8080/" + request);
+        URL url = new URL("http://192.168.1.127:8080/" + request);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(type);
         con.setRequestProperty("Content-Type", "application/json");

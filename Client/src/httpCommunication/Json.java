@@ -31,30 +31,21 @@ public class Json {
     }
 
     public String getHost(String js) {
-        JSONObject o = new JSONObject("{list:"+js+"}");
-        JSONArray ja = (JSONArray) o.get("list");
-        StringBuilder sb = new StringBuilder();
-        JSONObject entry = (JSONObject) ja.get(0);
-        String host = (String) entry.get("host");
+        JSONObject o = new JSONObject(js);
+        String host = (String) o.get("host");
         return host;
     }
 
-    public int getPort(js) {
-        JSONObject o = new JSONObject("{list:"+js+"}");
-        JSONArray ja = (JSONArray) o.get("list");
-        StringBuilder sb = new StringBuilder();
-        JSONObject entry = (JSONObject) ja.get(0);
-        int port = Integer.parseInt(entry.get("port"));
+    public int getPort(String js) {
+        JSONObject o = new JSONObject(js);
+        int port = (int) o.get("port");
         return port;
     }
 
-    public int getExchangeId(String args) {
-        JSONObject o = new JSONObject("{list:"+js+"}");
-        JSONArray ja = (JSONArray) o.get("list");
-        StringBuilder sb = new StringBuilder();
-        JSONObject entry = (JSONObject) ja.get(0);
-        int port = Integer.parseInt(entry.get("exchangeId"));
-        return port;
+    public int getExchangeId(String js) {
+        JSONObject o = new JSONObject(js);
+        int exchangeId = (int) o.get("exchangeId");
+        return exchangeId;
     }
 
     public String createJsonMax(String[] args){
@@ -94,15 +85,23 @@ public class Json {
 
             sb.append("Company: ").append(name).append("\n");
 
-            sb.append("OpeningValue: ").append(openingValue).append("\t");
-            sb.append("ClosingValue: ").append(closingValue).append("\t");
-            sb.append("MinimumValue: ").append(minimumValue).append("\t");
-            sb.append("MaximumValue: ").append(maximumValue).append("\n");
+            if (openingValue > 0)
+                sb.append("OpeningValue: ").append(openingValue).append("\t");
+            if (closingValue > 0)
+                sb.append("ClosingValue: ").append(closingValue).append("\t");
+            if (minimumValue > 0)
+                sb.append("MinimumValue: ").append(minimumValue).append("\t");
+            if (maximumValue > 0)
+                sb.append("MaximumValue: ").append(maximumValue).append("\n");
 
-            sb.append("OpeningValueY: ").append(openingValueY).append("\t");
-            sb.append("ClosingValueY: ").append(closingValueY).append("\t");
-            sb.append("MinimumValueY: ").append(minimumValueY).append("\t");
-            sb.append("MaximumValueY: ").append(maximumValueY).append("\t");
+            if (openingValueY > 0)
+                sb.append("OpeningValueY: ").append(openingValueY).append("\t");
+            if (closingValueY > 0)
+                sb.append("ClosingValueY: ").append(closingValueY).append("\t");
+            if (minimumValueY > 0)
+                sb.append("MinimumValueY: ").append(minimumValueY).append("\t");
+            if (maximumValueY > 0)
+                sb.append("MaximumValueY: ").append(maximumValueY).append("\t");
             sb.append("\n\n");
         }
         return sb.toString();
