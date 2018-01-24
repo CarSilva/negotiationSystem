@@ -1,39 +1,37 @@
 syntax = "proto3";
 
-package server;
+package protobuf;
+
 
 message Buy {
   string companyBuy = 1;
   int32 qttBuy = 2;
   float priceMax = 3;
+  string clientB = 4;
+  string host = 5;
+  int32 port = 6;
 }
 message Sell {
   string companySell = 1;
   int32 qttSell = 2;
   float priceMin = 3;
+  string clientS = 4;
+  string host = 5;
+  int32 port = 6;
+}
+
+message Logout{
+  string username = 1;
 }
 
 message ResponseAfterRecv{
   string rep = 1;
 }
 
-message UpdateReply{
-  string result = 1;
-  string company = 2;
-  int32 quantity = 3;
-  float price = 4;
-}
-
-message Reply{
-  oneof reply{
-    ResponseAfterRecv rAR = 1;
-    UpdateReply uR = 2;
-  }
-}
-
 message General{
   oneof general {
     Buy buy = 1;
     Sell sell = 2;
+    Logout logout = 3;
   }
 }

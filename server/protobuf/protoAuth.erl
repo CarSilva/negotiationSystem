@@ -655,7 +655,7 @@ fetch_rpc_def(ServiceName, RpcName) ->
     erlang:error({no_such_rpc, ServiceName, RpcName}).
 
 
-get_package_name() -> server.
+get_package_name() -> protobuf.
 
 
 

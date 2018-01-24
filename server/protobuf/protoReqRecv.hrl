@@ -7,36 +7,22 @@
 
 -define(protoReqRecv_gpb_version, "4.1.1").
 
+-ifndef('LOGOUT_PB_H').
+-define('LOGOUT_PB_H', true).
+-record('Logout',
+        {username = []          :: iolist() | undefined % = 1
+        }).
+-endif.
+
 -ifndef('SELL_PB_H').
 -define('SELL_PB_H', true).
 -record('Sell',
         {companySell = []       :: iolist() | undefined, % = 1
          qttSell = 0            :: integer() | undefined, % = 2, 32 bits
-         priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined % = 3
-        }).
--endif.
-
--ifndef('UPDATEREPLY_PB_H').
--define('UPDATEREPLY_PB_H', true).
--record('UpdateReply',
-        {result = []            :: iolist() | undefined, % = 1
-         company = []           :: iolist() | undefined, % = 2
-         quantity = 0           :: integer() | undefined, % = 3, 32 bits
-         price = 0.0            :: float() | integer() | infinity | '-infinity' | nan | undefined % = 4
-        }).
--endif.
-
--ifndef('RESPONSEAFTERRECV_PB_H').
--define('RESPONSEAFTERRECV_PB_H', true).
--record('ResponseAfterRecv',
-        {rep = []               :: iolist() | undefined % = 1
-        }).
--endif.
-
--ifndef('REPLY_PB_H').
--define('REPLY_PB_H', true).
--record('Reply',
-        {reply                  :: {rAR, #'ResponseAfterRecv'{}} | {uR, #'UpdateReply'{}} | undefined % oneof
+         priceMin = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
+         clientS = []           :: iolist() | undefined, % = 4
+         host = []              :: iolist() | undefined, % = 5
+         port = 0               :: integer() | undefined % = 6, 32 bits
         }).
 -endif.
 
@@ -45,14 +31,24 @@
 -record('Buy',
         {companyBuy = []        :: iolist() | undefined, % = 1
          qttBuy = 0             :: integer() | undefined, % = 2, 32 bits
-         priceMax = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined % = 3
+         priceMax = 0.0         :: float() | integer() | infinity | '-infinity' | nan | undefined, % = 3
+         clientB = []           :: iolist() | undefined, % = 4
+         host = []              :: iolist() | undefined, % = 5
+         port = 0               :: integer() | undefined % = 6, 32 bits
         }).
 -endif.
 
 -ifndef('GENERAL_PB_H').
 -define('GENERAL_PB_H', true).
 -record('General',
-        {general                :: {buy, #'Buy'{}} | {sell, #'Sell'{}} | undefined % oneof
+        {general                :: {buy, #'Buy'{}} | {sell, #'Sell'{}} | {logout, #'Logout'{}} | undefined % oneof
+        }).
+-endif.
+
+-ifndef('RESPONSEAFTERRECV_PB_H').
+-define('RESPONSEAFTERRECV_PB_H', true).
+-record('ResponseAfterRecv',
+        {rep = []               :: iolist() | undefined % = 1
         }).
 -endif.
 

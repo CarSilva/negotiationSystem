@@ -1,108 +1,66 @@
 package exchange;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import httpCommunication.DirectoryAccess;
+import httpCommunication.Json;
 
-import static java.lang.Math.round;
+import java.io.IOException;
+import java.util.*;
 
 public class Exchange {
 
     private Map<String, Share> shares;
-    //falta povoar o mapa com shares
+    DirectoryAccess http;
+    Json json;
 
-    public Exchange() {
+    public Exchange(int exchangeId) {
         this.shares = new HashMap<>();
-        Share s = new Share("iota");
-        this.shares.put("iota", s);
+        http = new DirectoryAccess();
+        json = new Json();
+        fillShares("exchange/"+exchangeId);
     }
 
-    public boolean buy_request(String share_name, int quantity, float price) {
+    public Map<String, Share> getShares() {
+        return this.shares;
+    }
+
+    public boolean buy_request(String share_name, int quantity,
+                                            float price, String client) {
         boolean existsShare = false;
-        Share share = shares.get(share_name);
-        if(share != null)
-            existsShare = true;
-        // procura por share_name (key) mas pode-se alterar
-        // e procurar também por shares da companhia x
-        share.add_buy_request(quantity, price);
+        Share share;
+        synchronized (shares) {
+            share = shares.get(share_name);
+            if (share != null)
+                existsShare = true;
+        }
+        share.add_buy_request(quantity, price, client);
         return existsShare;
     }
 
-    public void sell_request(String share_name, int quantity, float price) {
-        Share share = shares.get(share_name);
-        share.add_sell_request(quantity, price);
+    public boolean sell_request(String share_name, int quantity,
+                                             float price, String client) {
+        boolean existsShare = false;
+        Share share;
+        synchronized (shares) {
+            share = shares.get(share_name);
+            if (share != null)
+                existsShare = true;
+        }
+        share.add_sell_request(quantity, price, client);
+        return existsShare;
     }
 
-    class Share {
-
-        String company_name;
-        Queue<Request> buy_requests = new LinkedList<>();
-        Queue<Request> sell_requests = new LinkedList<>();
-
-        Share (String company_name){
-            this.company_name = company_name;
-        }
-
-        class Request {
-            int quantity;
-            float price;
-
-            Request(int quantity, float price) {
-                this.quantity = quantity;
-                this.price = price;
+    public void fillShares(String query){
+        String reply = "";
+        try {
+            reply = http.sendGetRequest(query);
+            List<String> shareNames = json.parseArray(reply);
+            for(String s : shareNames) {
+                Share share = new Share(s);
+                shares.put(s, share);
             }
-        }
-
-        void add_buy_request(int quantity, float price) {
-
-            Request buy = new Request(quantity, price);
-
-            if (sell_requests.isEmpty())
-                buy_requests.add(buy);
-
-            else {
-                Request sell = sell_requests.remove();
-                aux(buy, sell);
-            }
-        }
-
-        void add_sell_request(int quantity, float price) {
-
-            Request sell = new Request(quantity, price);
-
-            if (buy_requests.isEmpty())
-                sell_requests.add(sell);
-
-            else {
-                Request buy = buy_requests.remove();
-                aux(buy, sell);
-            }
-        }
-
-        void aux(Request buy, Request sell) {
-
-            float sell_price = sell.price;
-            float buy_price = buy.price;
-
-            float mean = (sell_price + buy_price)/2;
-
-            int sell_quantity = sell.quantity;
-            int buy_quantity = buy.quantity;
-
-            if (sell_quantity < buy_quantity) {
-                int remaining = buy_quantity - sell_quantity;
-                buy_requests.add(new Request(remaining, buy_price));
-                //efectuada compra: quantidade=sell_quantity; preço=mean
-            } else
-
-            if (sell_quantity > buy_quantity) {
-                int remaining = sell_quantity - buy_quantity;
-                sell_requests.add(new Request(remaining, sell_price));
-                //efectuada compra: quantidade=buy_quantity; preço=mean
-
-            } //else
-            //efectuada compra: quantidade=sell_quantity=buy_quantity; preço: mean
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 }
