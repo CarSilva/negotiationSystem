@@ -66,6 +66,7 @@ public class HandleReq extends Thread {
                         e.printStackTrace();
                     }
                     receiveReply();
+                    System.exit(0);
                     break;
                 case "buy" :
                     if(s.length < 4 && s.length < 4){
